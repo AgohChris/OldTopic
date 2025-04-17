@@ -1,0 +1,29 @@
+Task Name;Start Date;Duration;Completion;Assigned To
+📁 Analyse;;;0;
+Analyse du besoin;2025-04-17;1;0;Dabo Ali
+Rédaction du cahier des charges;2025-04-18;1;100;Dabo Ali
+Identification des rôles et utilisateurs;2025-04-19;1;0;Py
+Diagramme de cas d'utilisation;2025-04-20;1;0;Py
+📁 Conception;;;0;
+Diagramme de classes;2025-04-21;1;0;Py
+Diagramme de séquence 'Ajout de sujet';2025-04-22;1;0;Py
+Schéma base de données;2025-04-23;0.5;0;Py
+📁 Développement;;;0;
+Mise en place de l’environnement backend;2025-04-24;1;0;Py
+Création projet Django + App;2025-04-25;0.5;100;Py
+Modèle User personnalisé;2025-04-26;1;0;Py
+Authentification avec JWT;2025-04-27;2;0;Py
+CRUD des sujets/corrigés (Backend);2025-04-29;2;0;Py
+Upload de fichiers;2025-05-01;1;0;Py
+Système de permissions;2025-05-02;1;0;Py
+📁 Frontend;;;0;
+Initialisation projet Vite JS;2025-05-03;1;0;Dabo Ali
+Intégration des endpoints;2025-05-04;2;0;Dabo Ali
+Formulaire de login/inscription;2025-05-06;1;0;Dabo Ali
+Interface d’upload admin;2025-05-07;1;0;Dabo Ali
+Interface de recherche et téléchargement;2025-05-08;1;0;Dabo Ali
+📁 Tests & Déploiement;;;0;
+Tests avec Postman;2025-05-09;1;0;Py
+Intégration continue (optionnelle);2025-05-10;0.5;0;Py
+Déploiement backend (Render);2025-05-11;1;0;Py
+Déploiement frontend (Vercel);2025-05-12;1;0;Dabo Ali
