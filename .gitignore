@@ -1,3 +1,3 @@
 .env
-bakend
-frontend
+/backend/
+/frontend/
