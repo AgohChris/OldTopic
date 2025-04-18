@@ -83,12 +83,12 @@ DATABASES = {
         'PASSWORD': '1234', 
         'HOST': 'localhost',  
         'PORT': '5432',
-    },
-
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+    # 'sqlite': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
