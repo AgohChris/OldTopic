@@ -1,18 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-04-12" view-index="0" gantt-divider-location="354" resource-divider-location="300" version="3.3.3311" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-05-28" view-index="0" gantt-divider-location="653" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Name" width="199" order="0"/>
-        <field id="tpd4" name="Begin date" width="76" order="1"/>
-        <field id="tpd5" name="End date" width="78" order="2"/>
+        <field id="tpd3" name="Nom" width="330" order="0"/>
+        <field id="tpd4" name="Date de début" width="159" order="1"/>
+        <field id="tpd5" name="Date de fin" width="162" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
+        <timeline><![CDATA[31,8,29,30,7,27,19,11,12,15,2,32,5,13,9,25,14,33,3,28,21]]></timeline>
+        <option id="color.recent"><![CDATA[#ff3300 #ff9900 #ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Name" width="209" order="0"/>
-        <field id="1" name="Default role" width="85" order="1"/>
+        <field id="0" name="Nom" width="209" order="0"/>
+        <field id="1" name="Rôle par défaut" width="85" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -38,39 +40,63 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="1" uid="254d0a7b9529403783e454350fcb25fc" name="Analyse" meeting="false" start="2025-04-17" duration="4" complete="0" expand="true">
-            <task id="2" uid="439a32ce4f98463aaeb0c7cf92090867" name="Analyse du besoin" meeting="false" start="2025-04-17" duration="1" complete="0" expand="true"/>
-            <task id="3" uid="bdaebd18e04842909d08d133c8b78591" name="Rédaction du cahier des charges" meeting="false" start="2025-04-18" duration="1" complete="0" expand="true"/>
-            <task id="4" uid="925590aa60c04c5abe65f4007cfa1b4d" name="Identification des rôles et utilisateurs" meeting="false" start="2025-04-19" duration="1" complete="0" expand="true"/>
-            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-20" duration="1" complete="0" expand="true"/>
+        <task id="1" uid="254d0a7b9529403783e454350fcb25fc" name="Analyse" meeting="false" start="2025-04-19" duration="1" complete="0" expand="false">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+            <task id="2" uid="439a32ce4f98463aaeb0c7cf92090867" name="Analyse du besoin" meeting="false" start="2025-04-19" duration="1" complete="0" expand="true">
+                <depend id="3" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="3" uid="bdaebd18e04842909d08d133c8b78591" name="Rédaction du cahier des charges" meeting="true" start="2025-04-20" duration="0" complete="0" thirdDate="2025-04-20" thirdDate-constraint="1" expand="true"/>
         </task>
-        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" start="2025-04-21" duration="3" complete="0" expand="false">
-            <task id="7" uid="c609ae87cbe8445ea5c699c811e20098" name="Diagramme de classes" meeting="false" start="2025-04-21" duration="1" complete="0" expand="true"/>
-            <task id="8" uid="34d0a20357694de8ba9cf30c9dc62fa9" name="Diagramme de séquence 'Ajout de sujet'" meeting="false" start="2025-04-22" duration="1" complete="0" expand="true"/>
-            <task id="9" uid="7a1c4333c92a4faabe965ccff57498aa" name="Schéma base de données" meeting="false" start="2025-04-23" duration="1" complete="0" expand="true"/>
+        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" project="true" start="2025-04-21" duration="10" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" expand="false">
+            <depend id="10" type="2" difference="0" hardness="Strong"/>
+            <depend id="18" type="2" difference="0" hardness="Strong"/>
+            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-21" duration="2" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="7" uid="c609ae87cbe8445ea5c699c811e20098" name="Diagramme de classes" meeting="false" start="2025-04-22" duration="3" complete="0" thirdDate="2025-04-22" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="8" uid="34d0a20357694de8ba9cf30c9dc62fa9" name="Diagramme de séquence" meeting="false" start="2025-04-25" duration="3" complete="0" thirdDate="2025-04-25" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="9" uid="7a1c4333c92a4faabe965ccff57498aa" name="Schéma base de données" meeting="false" start="2025-04-28" duration="1" complete="0" thirdDate="2025-04-28" thirdDate-constraint="1" priority="4" expand="true"/>
+            <task id="29" uid="4fed9e4bc2fb4205a6726269d0722c7d" name="Mise au propre des diagrammes" meeting="false" start="2025-04-29" duration="2" complete="0" thirdDate="2025-04-29" thirdDate-constraint="1" expand="true"/>
         </task>
-        <task id="10" uid="99e66926ccbc407a9a36c54e18c3dd5b" name="Développement" meeting="false" start="2025-04-24" duration="9" complete="11" expand="false">
-            <task id="11" uid="f6c66ad436ad4ba29b3fd2f62b2679d1" name="Mise en place de l’environnement backend" meeting="false" start="2025-04-24" duration="1" complete="0" expand="true"/>
-            <task id="12" uid="14f9d180eea340ad83f23df5e35fdf5c" name="Création projet Django + App" meeting="false" start="2025-04-25" duration="1" complete="100" expand="true"/>
-            <task id="13" uid="54856f8cc1a947f1bec90a9f93dd1d27" name="Modèle User personnalisé" meeting="false" start="2025-04-26" duration="1" complete="0" expand="true"/>
-            <task id="14" uid="326c6a4294ee4e42972f713c485250c6" name="Authentification avec JWT" meeting="false" start="2025-04-27" duration="2" complete="0" expand="true"/>
-            <task id="15" uid="46ddbf66e09643a4b768ada2a8353eaa" name="CRUD des sujets/corrigés (Backend)" meeting="false" start="2025-04-29" duration="2" complete="0" expand="true"/>
-            <task id="16" uid="23b13492b7ef4d9394ed0a61dfa4f0b2" name="Upload de fichiers" meeting="false" start="2025-05-01" duration="1" complete="0" expand="true"/>
-            <task id="17" uid="d78bb79503be4d459b8aab658db967b3" name="Système de permissions" meeting="false" start="2025-05-02" duration="1" complete="0" expand="true"/>
+        <task id="10" uid="99e66926ccbc407a9a36c54e18c3dd5b" name="Développement Backend" meeting="false" start="2025-05-01" duration="37" complete="5" expand="false">
+            <depend id="24" type="2" difference="0" hardness="Strong"/>
+            <task id="11" uid="f6c66ad436ad4ba29b3fd2f62b2679d1" name="Mise en place de l’environnement backend" meeting="false" start="2025-05-01" duration="1" complete="100" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="12" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="12" uid="14f9d180eea340ad83f23df5e35fdf5c" name="Création projet Django + App" meeting="false" start="2025-05-02" duration="1" complete="100" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="13" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="13" uid="54856f8cc1a947f1bec90a9f93dd1d27" name="Modèle User personnalisé" color="#ff0000" meeting="false" start="2025-05-03" duration="2" complete="0" priority="4" expand="true">
+                <depend id="14" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="14" uid="326c6a4294ee4e42972f713c485250c6" name="Authentification avec JWT ou personnalisé" color="#ff9900" meeting="false" start="2025-05-05" duration="3" complete="0" thirdDate="2025-04-03" thirdDate-constraint="1" priority="4" expand="true">
+                <depend id="15" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="15" uid="46ddbf66e09643a4b768ada2a8353eaa" name="CRUD'S" color="#ff3300" meeting="false" start="2025-05-08" duration="30" complete="0" thirdDate="2025-05-06" thirdDate-constraint="1" priority="4" expand="true"/>
         </task>
-        <task id="18" uid="54a16e922d134d43963f1ef628c3be40" name="Frontend" meeting="false" start="2025-05-03" duration="6" complete="0" expand="false">
-            <task id="19" uid="57f0b347c8e144eb925362c8db7efeac" name="Initialisation projet Vite JS" meeting="false" start="2025-05-03" duration="1" complete="0" expand="true"/>
-            <task id="20" uid="336b28969c154937af62875b4c7bb98d" name="Intégration des endpoints" meeting="false" start="2025-05-04" duration="2" complete="0" expand="true"/>
-            <task id="21" uid="a0e37c4ffa9d4279a213de11c5323470" name="Formulaire de login/inscription" meeting="false" start="2025-05-06" duration="1" complete="0" expand="true"/>
-            <task id="22" uid="bac3f82dc1ae4317b8c89eee8a2c855d" name="Interface d’upload admin" meeting="false" start="2025-05-07" duration="1" complete="0" expand="true"/>
-            <task id="23" uid="cdc75d7621cf40b989bad356b7dbfe9f" name="Interface de recherche et téléchargement" meeting="false" start="2025-05-08" duration="1" complete="0" expand="true"/>
+        <task id="18" uid="54a16e922d134d43963f1ef628c3be40" name="Developpement Frontend" meeting="false" start="2025-05-01" duration="43" complete="0" expand="false">
+            <depend id="24" type="2" difference="0" hardness="Strong"/>
+            <task id="19" uid="57f0b347c8e144eb925362c8db7efeac" name="Initialisation projet React-ViteJs" meeting="false" start="2025-05-01" duration="1" complete="0" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="21" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="21" uid="a0e37c4ffa9d4279a213de11c5323470" name="Creation des Composants" meeting="false" start="2025-05-02" duration="30" complete="0" thirdDate="2025-05-01" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="30" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="30" uid="a7fb51e3f9e241ea80f78641784cf792" name="Configuration des Routes" meeting="false" start="2025-06-01" duration="2" complete="0" thirdDate="2025-06-01" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="31" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="31" uid="ea4acb3fd0424c50822754950a64f147" name="Connexion avec le Backend" color="#ff3300" meeting="false" start="2025-06-03" duration="10" complete="0" thirdDate="2025-05-03" thirdDate-constraint="1" priority="4" expand="true"/>
         </task>
-        <task id="24" uid="b5de0d8289884acb91a32e0f13926a13" name="Tests &amp; Déploiement" meeting="false" start="2025-05-09" duration="4" complete="0" expand="false">
-            <task id="25" uid="647d09b3d7c345359fc4300cc371c47a" name="Tests avec Postman" meeting="false" start="2025-05-09" duration="1" complete="0" expand="true"/>
-            <task id="26" uid="dda86c078daf409eac932a53d3e33975" name="Intégration continue (optionnelle)" meeting="false" start="2025-05-10" duration="1" complete="0" expand="true"/>
-            <task id="27" uid="c6d496c0dca24694ac85b598f2f8ea99" name="Déploiement backend (Render)" meeting="false" start="2025-05-11" duration="1" complete="0" expand="true"/>
-            <task id="28" uid="dfacf93fa6cc456dbd81e314b7e68ac1" name="Déploiement frontend (Vercel)" meeting="false" start="2025-05-12" duration="1" complete="0" expand="true"/>
+        <task id="24" uid="b5de0d8289884acb91a32e0f13926a13" name="Tests &amp; Déploiement" meeting="false" start="2025-06-13" duration="12" complete="0" expand="false">
+            <task id="25" uid="647d09b3d7c345359fc4300cc371c47a" name="Tests de l'application" meeting="false" start="2025-06-13" duration="7" complete="0" thirdDate="2025-06-05" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="33" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="33" uid="b07eb6a56bc947bc8160bb6bf2efed62" name="Validation" meeting="false" start="2025-06-20" duration="2" complete="0" thirdDate="2025-03-12" thirdDate-constraint="1" priority="2" expand="true">
+                <depend id="27" type="2" difference="0" hardness="Strong"/>
+                <depend id="28" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="27" uid="c6d496c0dca24694ac85b598f2f8ea99" name="Déploiement backend (Railway)" meeting="false" start="2025-06-22" duration="3" complete="0" thirdDate="2025-06-13" thirdDate-constraint="1" priority="4" expand="true"/>
+            <task id="28" uid="dfacf93fa6cc456dbd81e314b7e68ac1" name="Déploiement frontend (netlify)" meeting="false" start="2025-06-22" duration="3" complete="0" thirdDate="2025-06-13" thirdDate-constraint="1" priority="4" expand="true"/>
         </task>
+        <task id="32" uid="52f2115250e74c998953309ff8545db5" name="Maintenace Continue" meeting="true" start="2025-03-30" duration="0" complete="0" thirdDate="2025-03-30" thirdDate-constraint="1" priority="4" expand="true"/>
     </tasks>
     <resources/>
     <allocations/>
