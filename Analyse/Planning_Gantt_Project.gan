@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-06-10" view-index="0" gantt-divider-location="651" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-04-10" view-index="0" gantt-divider-location="445" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="328" order="0"/>
-        <field id="tpd4" name="Date de début" width="159" order="1"/>
-        <field id="tpd5" name="Date de fin" width="162" order="2"/>
+        <field id="tpd3" name="Nom" width="220" order="0"/>
+        <field id="tpd4" name="Date de début" width="96" order="1"/>
+        <field id="tpd5" name="Date de fin" width="112" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
-        <timeline><![CDATA[21,32,25,8,19,31,30,33,5,28,2,14,9,15,12,7,11,29,3,13,27]]></timeline>
+        <timeline><![CDATA[15,14,19,2,9,27,5,3,29,25,7,28,8,11,33,13,31,30,21,12,32]]></timeline>
         <option id="color.recent"><![CDATA[#ff3300 #ff9900 #ff0000]]></option>
     </view>
     <view id="resource-table">
@@ -40,23 +40,23 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="1" uid="254d0a7b9529403783e454350fcb25fc" name="Analyse" meeting="false" start="2025-04-21" duration="1" complete="0" expand="false">
+        <task id="1" uid="254d0a7b9529403783e454350fcb25fc" name="Analyse" meeting="false" start="2025-04-21" duration="2" complete="90" expand="true">
             <depend id="6" type="2" difference="0" hardness="Strong"/>
-            <task id="2" uid="439a32ce4f98463aaeb0c7cf92090867" name="Analyse du besoin" meeting="false" start="2025-04-21" duration="1" complete="0" expand="true">
+            <task id="2" uid="439a32ce4f98463aaeb0c7cf92090867" name="Analyse du besoin" meeting="false" start="2025-04-21" duration="1" complete="100" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true">
                 <depend id="3" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="3" uid="bdaebd18e04842909d08d133c8b78591" name="Rédaction du cahier des charges" meeting="true" start="2025-04-22" duration="0" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true"/>
+            <task id="3" uid="bdaebd18e04842909d08d133c8b78591" name="Rédaction du cahier des charges" color="#8cb6ce" meeting="false" start="2025-04-22" duration="1" complete="80" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true"/>
         </task>
-        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" project="true" start="2025-04-22" duration="7" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" expand="false">
+        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" project="true" start="2025-04-23" duration="6" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true">
             <depend id="10" type="2" difference="0" hardness="Strong"/>
             <depend id="18" type="2" difference="0" hardness="Strong"/>
-            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-22" duration="2" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" priority="2" expand="true"/>
-            <task id="7" uid="c609ae87cbe8445ea5c699c811e20098" name="Diagramme de classes" meeting="false" start="2025-04-22" duration="3" complete="0" thirdDate="2025-04-22" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-23" duration="2" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="7" uid="c609ae87cbe8445ea5c699c811e20098" name="Diagramme de classes" meeting="false" start="2025-04-23" duration="3" complete="0" thirdDate="2025-04-22" thirdDate-constraint="1" priority="2" expand="true"/>
             <task id="8" uid="34d0a20357694de8ba9cf30c9dc62fa9" name="Diagramme de séquence" meeting="false" start="2025-04-25" duration="3" complete="0" thirdDate="2025-04-25" thirdDate-constraint="1" priority="2" expand="true"/>
             <task id="9" uid="7a1c4333c92a4faabe965ccff57498aa" name="Schéma base de données" meeting="false" start="2025-04-28" duration="1" complete="0" thirdDate="2025-04-28" thirdDate-constraint="1" priority="4" expand="true"/>
             <task id="29" uid="4fed9e4bc2fb4205a6726269d0722c7d" name="Mise au propre des diagrammes" meeting="false" start="2025-04-29" duration="2" complete="0" thirdDate="2025-04-29" thirdDate-constraint="1" expand="true"/>
         </task>
-        <task id="10" uid="99e66926ccbc407a9a36c54e18c3dd5b" name="Développement Backend" meeting="false" start="2025-05-01" duration="37" complete="5" expand="false">
+        <task id="10" uid="99e66926ccbc407a9a36c54e18c3dd5b" name="Développement Backend" meeting="false" start="2025-05-01" duration="37" complete="5" expand="true">
             <depend id="24" type="2" difference="0" hardness="Strong"/>
             <task id="11" uid="f6c66ad436ad4ba29b3fd2f62b2679d1" name="Mise en place de l’environnement backend" meeting="false" start="2025-05-01" duration="1" complete="100" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
                 <depend id="12" type="2" difference="0" hardness="Strong"/>
@@ -72,9 +72,9 @@
             </task>
             <task id="15" uid="46ddbf66e09643a4b768ada2a8353eaa" name="CRUD'S" color="#ff3300" meeting="false" start="2025-05-12" duration="30" complete="0" thirdDate="2025-05-06" thirdDate-constraint="1" priority="4" expand="true"/>
         </task>
-        <task id="18" uid="54a16e922d134d43963f1ef628c3be40" name="Developpement Frontend" meeting="false" start="2025-05-01" duration="43" complete="0" expand="false">
+        <task id="18" uid="54a16e922d134d43963f1ef628c3be40" name="Developpement Frontend" meeting="false" start="2025-05-01" duration="43" complete="2" expand="true">
             <depend id="24" type="2" difference="0" hardness="Strong"/>
-            <task id="19" uid="57f0b347c8e144eb925362c8db7efeac" name="Initialisation projet React-ViteJs" meeting="false" start="2025-05-01" duration="1" complete="0" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
+            <task id="19" uid="57f0b347c8e144eb925362c8db7efeac" name="Initialisation projet React-ViteJs" meeting="false" start="2025-05-01" duration="1" complete="100" thirdDate="2025-04-17" thirdDate-constraint="1" priority="2" expand="true">
                 <depend id="21" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="21" uid="a0e37c4ffa9d4279a213de11c5323470" name="Creation des Composants" meeting="false" start="2025-05-02" duration="30" complete="0" thirdDate="2025-05-01" thirdDate-constraint="1" priority="2" expand="true">
@@ -85,7 +85,7 @@
             </task>
             <task id="31" uid="ea4acb3fd0424c50822754950a64f147" name="Connexion avec le Backend" color="#ff3300" meeting="false" start="2025-06-17" duration="10" complete="0" thirdDate="2025-05-05" thirdDate-constraint="1" priority="4" expand="true"/>
         </task>
-        <task id="24" uid="b5de0d8289884acb91a32e0f13926a13" name="Tests &amp; Déploiement" meeting="false" start="2025-07-01" duration="12" complete="0" expand="false">
+        <task id="24" uid="b5de0d8289884acb91a32e0f13926a13" name="Tests &amp; Déploiement" meeting="false" start="2025-07-01" duration="12" complete="0" expand="true">
             <task id="25" uid="647d09b3d7c345359fc4300cc371c47a" name="Tests de l'application" meeting="false" start="2025-07-01" duration="7" complete="0" thirdDate="2025-06-05" thirdDate-constraint="1" priority="2" expand="true">
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
             </task>
@@ -98,9 +98,13 @@
         </task>
         <task id="32" uid="52f2115250e74c998953309ff8545db5" name="Maintenace Continue" meeting="false" start="2025-07-17" duration="300" complete="0" thirdDate="2025-07-17" thirdDate-constraint="1" priority="4" expand="true"/>
     </tasks>
-    <resources/>
+    <resources>
+        <resource id="0" name="" function="Default:0" contacts="" phone=""/>
+    </resources>
     <allocations/>
-    <vacations/>
+    <vacations>
+        <vacation start="2025-04-17" end="2025-08-01" resourceid="0"/>
+    </vacations>
     <previous/>
     <roles roleset-name="Default"/>
 </project>
