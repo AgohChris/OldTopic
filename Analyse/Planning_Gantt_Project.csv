@@ -1,29 +1,21 @@
-Task Name;Start Date;Duration;Completion;Assigned To
-📁 Analyse;;;0;
-Analyse du besoin;2025-04-17;1;0;Dabo Ali
-Rédaction du cahier des charges;2025-04-18;1;100;Dabo Ali
-Identification des rôles et utilisateurs;2025-04-19;1;0;Py
-Diagramme de cas d'utilisation;2025-04-20;1;0;Py
-📁 Conception;;;0;
-Diagramme de classes;2025-04-21;1;0;Py
-Diagramme de séquence 'Ajout de sujet';2025-04-22;1;0;Py
-Schéma base de données;2025-04-23;0.5;0;Py
-📁 Développement;;;0;
-Mise en place de l’environnement backend;2025-04-24;1;0;Py
-Création projet Django + App;2025-04-25;0.5;100;Py
-Modèle User personnalisé;2025-04-26;1;0;Py
-Authentification avec JWT;2025-04-27;2;0;Py
-CRUD des sujets/corrigés (Backend);2025-04-29;2;0;Py
-Upload de fichiers;2025-05-01;1;0;Py
-Système de permissions;2025-05-02;1;0;Py
-📁 Frontend;;;0;
-Initialisation projet Vite JS;2025-05-03;1;0;Dabo Ali
-Intégration des endpoints;2025-05-04;2;0;Dabo Ali
-Formulaire de login/inscription;2025-05-06;1;0;Dabo Ali
-Interface d’upload admin;2025-05-07;1;0;Dabo Ali
-Interface de recherche et téléchargement;2025-05-08;1;0;Dabo Ali
-📁 Tests & Déploiement;;;0;
-Tests avec Postman;2025-05-09;1;0;Py
-Intégration continue (optionnelle);2025-05-10;0.5;0;Py
-Déploiement backend (Render);2025-05-11;1;0;Py
-Déploiement frontend (Vercel);2025-05-12;1;0;Dabo Ali
+ID,Nom,Date de début,Date de fin,Durée,Avancée,Coût,Priorité,Responsable,Prédécesseurs,Numéro hiérarchique,Ressources,Assignments,Nouvelle tâche,Notes,Lien internet
+2,"  Analyse du besoin",21/04/2025,21/04/2025,1,0,0,1,,,1.1,,,,,
+3,"  Rédaction du cahier des charges",22/04/2025,22/04/2025,0,0,0,1,,2,1.2,,,"#000000",,
+5,"  Diagramme de cas d'utilisation",22/04/2025,23/04/2025,2,0,0,2,,,2.1,,,,,
+7,"  Diagramme de classes",22/04/2025,24/04/2025,3,0,0,2,,,2.2,,,,,
+8,"  Diagramme de séquence",25/04/2025,29/04/2025,3,0,0,2,,,2.3,,,,,
+9,"  Schéma base de données",28/04/2025,28/04/2025,1,0,0,4,,,2.4,,,,,
+29,"  Mise au propre des diagrammes",29/04/2025,30/04/2025,2,0,0,1,,,2.5,,,,,
+11,"  Mise en place de l’environnement backend",01/05/2025,01/05/2025,1,100,0,2,,,3.1,,,,,
+12,"  Création projet Django + App",02/05/2025,02/05/2025,1,100,0,2,,11,3.2,,,,,
+13,"  Modèle User personnalisé",05/05/2025,06/05/2025,2,0,0,4,,12,3.3,,,"#ff0000",,
+14,"  Authentification avec JWT ou personnalisé",07/05/2025,09/05/2025,3,0,0,4,,13,3.4,,,"#ff9900",,
+15,"  CRUD'S",12/05/2025,20/06/2025,30,0,0,4,,14,3.5,,,"#ff3300",,
+19,"  Initialisation projet React-ViteJs",01/05/2025,01/05/2025,1,0,0,2,,,4.1,,,,,
+21,"  Creation des Composants",02/05/2025,12/06/2025,30,0,0,2,,19,4.2,,,,,
+30,"  Configuration des Routes",13/06/2025,16/06/2025,2,0,0,2,,21,4.3,,,,,
+31,"  Connexion avec le Backend",17/06/2025,30/06/2025,10,0,0,4,,30,4.4,,,"#ff3300",,
+25,"  Tests de l'application",01/07/2025,09/07/2025,7,0,0,2,,,5.1,,,,,
+33,"  Validation",10/07/2025,11/07/2025,2,0,0,2,,25,5.2,,,,,
+27,"  Déploiement backend (Railway)",14/07/2025,16/07/2025,3,0,0,4,,33,5.3,,,,,
+28,"  Déploiement frontend (netlify)",14/07/2025,16/07/2025,3,0,0,4,,33,5.4,,,,,
