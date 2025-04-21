@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-04-10" view-index="0" gantt-divider-location="445" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Plateforme Sujets Universitaires" company="" webLink="" view-date="2025-04-17" view-index="0" gantt-divider-location="147" resource-divider-location="300" version="3.3.3311" locale="en_US">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="220" order="0"/>
-        <field id="tpd4" name="Date de début" width="96" order="1"/>
-        <field id="tpd5" name="Date de fin" width="112" order="2"/>
+        <field id="tpd3" name="Name" width="68" order="0"/>
+        <field id="tpd4" name="Begin date" width="29" order="1"/>
+        <field id="tpd5" name="End date" width="34" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
-        <timeline><![CDATA[15,14,19,2,9,27,5,3,29,25,7,28,8,11,33,13,31,30,21,12,32]]></timeline>
+        <timeline><![CDATA[28,8,5,33,15,21,12,3,9,25,11,31,29,14,7,2,19,32,13,30,27]]></timeline>
         <option id="color.recent"><![CDATA[#ff3300 #ff9900 #ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="209" order="0"/>
-        <field id="1" name="Rôle par défaut" width="85" order="1"/>
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -47,10 +47,10 @@
             </task>
             <task id="3" uid="bdaebd18e04842909d08d133c8b78591" name="Rédaction du cahier des charges" color="#8cb6ce" meeting="false" start="2025-04-22" duration="1" complete="80" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true"/>
         </task>
-        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" project="true" start="2025-04-23" duration="6" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true">
+        <task id="6" uid="217f95e3ef284e73a156464a548f15d1" name="Conception" meeting="false" project="true" start="2025-04-23" duration="6" complete="18" thirdDate="2025-04-21" thirdDate-constraint="1" expand="true">
             <depend id="10" type="2" difference="0" hardness="Strong"/>
             <depend id="18" type="2" difference="0" hardness="Strong"/>
-            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-23" duration="2" complete="0" thirdDate="2025-04-21" thirdDate-constraint="1" priority="2" expand="true"/>
+            <task id="5" uid="fb6dc9f5e84e4c3ea426eda8646af69b" name="Diagramme de cas d'utilisation" meeting="false" start="2025-04-23" duration="2" complete="100" thirdDate="2025-04-21" thirdDate-constraint="1" priority="2" expand="true"/>
             <task id="7" uid="c609ae87cbe8445ea5c699c811e20098" name="Diagramme de classes" meeting="false" start="2025-04-23" duration="3" complete="0" thirdDate="2025-04-22" thirdDate-constraint="1" priority="2" expand="true"/>
             <task id="8" uid="34d0a20357694de8ba9cf30c9dc62fa9" name="Diagramme de séquence" meeting="false" start="2025-04-25" duration="3" complete="0" thirdDate="2025-04-25" thirdDate-constraint="1" priority="2" expand="true"/>
             <task id="9" uid="7a1c4333c92a4faabe965ccff57498aa" name="Schéma base de données" meeting="false" start="2025-04-28" duration="1" complete="0" thirdDate="2025-04-28" thirdDate-constraint="1" priority="4" expand="true"/>
