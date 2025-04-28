@@ -80,25 +80,12 @@
 ---
 
 ## 📈 Roadmap (Back)
-- [x] Authentification / SA avec vérification par email
-- [x] Gestion utilisateurs
-- [x] API sujets & téléchargements
-- [x] Historique
-- [x] Statistiques
+- [ ] Authentification / SA avec vérification par email
+- [ ] Gestion utilisateurs
+- [ ] API sujets & téléchargements
+- [ ] Historique
+- [ ] Statistiques
 - [ ] Notifications par email (password reset / suspension)
 - [ ] Export CSV des stats (optionnel)
 
 ---
-
-## 🧑‍💻 Auteurs
-- **Agoh Chris** - Backend & API
-
-**Github :**
-- [Agoh Chris](https://github.com/AgohChris)
-
----
-
-## 🚀 Licence
-Projet académique réalisé dans le cadre de la Licence 3 Génie Logiciel à l'Université de Technologie d'Abidjan.
-
-
