@@ -1,5 +1,5 @@
 from .models import *
-from .serializers import SujetSerializer
+from .serializers import *
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,14 +14,21 @@ def home(request):
 # Authentification & Gestion des Comptes
 # class login_view(APIView):
 #     def post(self, request):
+
+
 #         return Response({"message": "Login endpoint"}, status=status.HTTP_200_OK)
-#
-#
-# class register_view(APIView):
-#     def post(self, request):
-#         return Response({"message": "Register endpoint"}, status=status.HTTP_201_CREATED)
-#
-#
+
+
+class EtudiantRegistrationView(APIView):
+    def post(self, request):
+        serializers = EtudiantRegistrationSerializer(data=request.data)
+
+        if serializers.is_valid():
+            serializers.save()
+            return Response({"message": "Inscripton reussie"})
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # class admin_register_view(APIView):
 #     def post(self, request):
 #         return Response({"message": "Admin register endpoint"}, status=status.HTTP_201_CREATED)

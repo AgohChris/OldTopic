@@ -19,6 +19,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+AUTH_USER_MODEL = 'oldtopic.User'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -31,6 +33,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'oldtopic',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

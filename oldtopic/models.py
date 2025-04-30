@@ -1,85 +1,91 @@
 from datetime import timezone
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 # Create your models here.
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, username, email, password=None, role='etudiant', **extra_fields):
+        if not email:
+            raise ValueError("L'utilisateur doit avoir une adresse email")
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email, role=role, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError("Le superutilisateur doit avoir is_staff=True.")
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
+
+        return self.create_user(username, email, password, role='superadmin', **extra_fields)
+
+
+class User(AbstractUser):
     ROLES = (
         ('admin', 'Admin'),
         ('etudiant', 'Etudiant'),
         ('superadmin', 'SuperAdmin'),
     )
-    role = models.CharField(max_length=20, choices=ROLES)
-    nom = models.CharField(max_length=50)
-    prenom = models.CharField(max_length=50)
-    etat = models.CharField(max_length=20, default='inactif')
+    role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
+
+    objects = UserManager()  # Associez le gestionnaire personnalisé
+
+
+    def is_admin(self):
+        return self.role == 'admin'
+
+    def is_superadmin(self):
+        return self.role == 'superadmin'
+
+    def is_etudiant(self):
+        return self.role == 'etudiant'
 
     def __str__(self):
-        return f'{self.nom} {self.prenom}'
+        return f'{self.username} ({self.role})'
+
 
 
 class Etudiant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    matricule = models.CharField(max_length=30, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='etudiant_profile')
+    matricule = models.CharField(max_length=15, unique=True)
 
-    def rechercher_sujet(self, matiere):
-        return Sujet.objects.filter(matiere=matiere)
-    def telecharger_sujet(self, sujet_id):
-        sujet = Sujet.objects.get(id=sujet_id)
-        Telecharger.objects.create(etudiant=self, sujet=sujet, DateTelechargement=timezone.now())
-        sujet.nb_telechargement += 1
-        sujet.save()
-
-    def voir_historique(self):
-        return Telecharger.objects.filter(etudiant=self)
+    
+    def __str__(self):
+        return f'{self.user.username} - {self.matricule}'
 
 
+class PreEnregistrementMatricule(models.Model):
+    matricule = models.CharField(max_length=15, unique=True)
 
     def __str__(self):
         return self.matricule
 
-
 class Admin(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_profile')
     post = models.CharField(max_length=30)
 
 
-    def modifier_sujet(self, sujet_id, new_donnees):
-        sujet = Sujet.objects.get(id=sujet_id)
-        for key, value in new_donnees.items():
-            setattr(sujet, key, value)
-        sujet.save()
-
-
-    def ajouter_sujet(self, sujet):
-        sujet.save()
-
-    def supprimer_sujet(self, sujet_id):
-        sujet = Sujet.objects.get(id=sujet_id)
-        sujet.delete()
-
-    def suspendre_etudiant(self, etudiant_id, motif):
-        Suspendre.objects.create(user_id=etudiant_id,
-                                 admin=self.user,
-                                 DateSuspension=timezone.now(),
-                                 Motif = motif
-                                 )
-
-    def voir_statistiques(self):
-        return Stats.objects.all()
-
     def __str__(self):
-        return self.post
+        
+        return f'{self.user.username} - {self.post}'
+
 
 
 class SuperAdmin(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='superadmin_profile')
+    
     def __str__(self):
-        return self.user.matricule
+        return self.user.username
 
 
 class Stats(models.Model):
