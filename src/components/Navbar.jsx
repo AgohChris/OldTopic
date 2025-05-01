@@ -33,10 +33,17 @@ const NavBar = () => {
       </div>
 
       <div className="hidden md:flex space-x-4">
-        <a href="#home" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Accueil</a>
-        <a href="#about" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">À Propos</a>
-        <a href="#contact" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Contact</a>
-        <a href="#service" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Historique</a>
+        <a href="#" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Accueil</a>
+        <a href="#" className="bg-green-800 text-white p-5 font-semibold cursor-pointer ml-9 my-1 mx-1 rounded-full px-5 py-2 text-xl
+                        bg-gradient-to-r from-green-300 to-green-900
+                        transition-all duration-300
+                        hover:from-green-400 hover:to-green-800
+                        hover:scale-105">Historique</a>
+        <a href="#" className="bg-green-800 text-white p-5 font-semibold cursor-pointer ml-9 my-1 mx-1 rounded-full px-5 py-2 text-xl
+                        bg-gradient-to-r from-green-300 to-green-900
+                        transition-all duration-300
+                        hover:from-green-400 hover:to-green-800
+                        hover:scale-105">Profil</a>
       </div>
 
       <div className="hidden md:flex space-x-4">
@@ -63,9 +70,16 @@ const NavBar = () => {
       {isMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white bg-opacity-10 backdrop-blur-sm shadow-lg  rounded-lg m-9 mx-auto space-x-9">
           <a href="#home" className="block mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Accueil</a>
-          <a href="#about" className="block mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">À Propos</a>
-          <a href="#contact" className="block mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Contact</a>
-          <a href="#service" className=" block mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">Historique</a>
+          <a href="#about" className="block bg-green-800 text-white p-5 font-semibold cursor-pointer ml-9 my-1 mx-1 rounded-full px-5 py-2 text-xl
+                        bg-gradient-to-r from-green-300 to-green-900
+                        transition-all duration-300
+                        hover:from-green-400 hover:to-green-800
+                        hover:scale-105">Historique</a>
+          <a href="#contact" className="block bg-green-800 text-white p-5 font-semibold cursor-pointer ml-9 my-1 mx-1 rounded-full px-5 py-2 text-xl
+                        bg-gradient-to-r from-green-300 to-green-900
+                        transition-all duration-300
+                        hover:from-green-400 hover:to-green-800
+                        hover:scale-105">Profil</a>
           <div className="flex space-x-4 mt-4 pl-4">
             <a href="#" className="mx-2 hover:bg-green-800 hover:text-white transition-colors rounded-full px-5 py-2 text-xl">
               <i className="fa-brands fa-instagram"></i>
