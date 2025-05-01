@@ -14,11 +14,83 @@ def home(request):
 
 
 # Authentification & Gestion des Comptes
-# class login_view(APIView):
-#     def post(self, request):
+class Etudiantlogin_view(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(username=email, password=password)
 
 
-#         return Response({"message": "Login endpoint"}, status=status.HTTP_200_OK)
+        if user is not None:
+            if user.is_etudiant() and user.is_active:
+                self.envoie_mail_de_signal(user.email, user.last_name)
+                return Response({"message": "connexion Réussi", "role":"etudiant"}, status=status.HTTP_200_OK)
+            elif not user.is_active:
+                return Response({"error": "Votre compte n'est pas activé."}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                return Response({"error": "Votre compte n'est pas autorisé a se connecter ici."}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            self.envoie_mail_de_prevention(user.email, user.last_name)
+            return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)    
+    
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="de connexion à OldTopic",
+            message = f"Bonjour {nom}, Vous avez tenter de vous connecter a votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+    def envoie_mail_de_prevention(self, email, nom):
+        send_mail(
+            subject="Tentative de connexion à OldTopic",
+            message = f"Attention {nom}, Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+class Adminlogin_view(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(username=email, password=password)
+
+
+        if user is not None:
+            if user.is_etudiant() and user.is_active:
+                self.envoie_mail_de_signal(user.email, user.last_name)
+                return Response({"message": "connexion Réussi", "role":"admin"}, status=status.HTTP_200_OK)
+            elif not user.is_active:
+                return Response({"error": "Votre compte n'est pas activé."}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                return Response({"error": "Votre compte n'est pas autorisé a se connecter ici."}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            self.envoie_mail_de_prevention(user.email, user.last_name)
+            return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)  
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Tentative de connexion à OldTopic",
+            message = f"Bonjour Admin {nom}, Vous avez tenter de vous connecter a votre compte OldTopic. \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant au SuperAdmin \nou Changer de Mot de passe.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )  
+
+
+    def envoie_mail_de_prevention(self, email, nom):
+        send_mail(
+            subject="Tentative de connexion à OldTopic",
+            message = f"Attention {nom}, Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
 
 class EtudiantRegistrationView(APIView):
@@ -32,6 +104,7 @@ class EtudiantRegistrationView(APIView):
 
 
 class VerifierCodeView(APIView):
+
     def post(self, request):
         # email = request.data.get('email')
         code = request.data.get('code')
@@ -66,7 +139,6 @@ class AjoutAdminView(APIView):
             serializers.save()
             return Response({"message": "Administrateur Ajouté avec succès"})
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 class AdminUpdateView(APIView): 

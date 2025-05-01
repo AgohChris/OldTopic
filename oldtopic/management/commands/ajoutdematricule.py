@@ -5,7 +5,9 @@ class Command(BaseCommand):
     help = "Ajoute des matricules préenregistrés"
 
     def handle(self, *args, **kwargs):
-        matricules = ['AGOC1507050001', 'DABOA2805010002', 'AGOC1505030001']
+        matricules = ['DABA2805010002', 'AGOV2307010001',
+                      'KOUY2912030006', 'ALLN1205030001'
+                      ]
         for matricule in matricules:
             PreEnregistrementMatricule.objects.get_or_create(matricule=matricule)
         self.stdout.write(self.style.SUCCESS("Matricules ajoutés avec succès."))
