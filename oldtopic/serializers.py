@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from .utils import generation_mdp
+from .utils import generation_mdp, genererCodeVerif
 from django.core.mail import send_mail
 
 
@@ -77,17 +77,23 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         fields = ['nom', 'prenom', 'email', 'matricule', 'password', 'password2']
 
 
-    def validation_matricule(self, value):
+    def validate_matricule(self, value):
         if not PreEnregistrementMatricule.objects.filter(matricule=value).exists():
             raise serializers.ValidationError("Ce matricule n'est pas Autorisé")
         return value
     
 
+
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError({"password": "les mots de passe ne correspondent pas."})
-        return data
+    
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError({"email": "Cet email est déja utilisé"})
 
+        
+
+        return data
 
     def create(self, validated_data):
 
@@ -99,15 +105,19 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         matricule = validated_data.pop('matricule')
         password = validated_data.pop('password')
 
-        # Creation de l'utilisateur
 
+        verification_code = genererCodeVerif()
+
+        # Creation de l'utilisateur 
         user = User.objects.create_user(
             username = email,
             email=email,
             password = password,
             first_name = prenom,
             last_name = nom,
-            role = 'etudiant'
+            role = 'etudiant',
+            is_active=False,
+            verification_code = verification_code
         )
 
         # creation du profile etudiant 
@@ -116,7 +126,18 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         
         PreEnregistrementMatricule.objects.filter(matricule=matricule).delete()
 
+        self.envoie_du_code_verif(email, verification_code, nom)
+
         return etudiant
+    
+    def envoie_du_code_verif(self, email, verification_code, nom):
+        send_mail(
+            subject="Code de Vérification - OldTopic",
+            message = f"Bonjour {nom}, Votre code vérification est le suivant : \n{verification_code} \nveuillez le sisir pour activer votre compte.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
 
 

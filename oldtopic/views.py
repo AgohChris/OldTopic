@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail
 
 
 def home(request):
@@ -30,6 +31,31 @@ class EtudiantRegistrationView(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class VerifierCodeView(APIView):
+    def post(self, request):
+        # email = request.data.get('email')
+        code = request.data.get('code')
+        try:
+            user = User.objects.get(verification_code=code)
+            user.is_active = True #on active le compte
+            user.verification_code = None #puis on supprime le code de vérification qu'on a génnerer
+            user.save()
+            
+            self.envoie_mail_succes(user.email, user.last_name)
+            return Response({"message": "Votre Compte à été activer avec succè"}, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({"message": "Votre code est incorrect ou invalide"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def envoie_mail_succes(self, email, nom):
+        send_mail(
+            subject="Compte OldTopic activer",
+            message = f"Bonjour {nom}, Votre compte à est désormais actif vous pouvez vous connecter et reviser en toute tranquilité.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
 
 class AjoutAdminView(APIView):

@@ -7,3 +7,10 @@ def generation_mdp(longueur=12):
     generer = rd.choices(caract, k=longueur)
     print(generer)
     return ''.join(generer)
+
+
+def genererCodeVerif():
+    code = rd.randint(111111, 999999)
+    print(code)
+    return code
+

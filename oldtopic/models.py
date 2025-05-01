@@ -1,5 +1,5 @@
 from datetime import timezone
-
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
@@ -37,8 +37,10 @@ class User(AbstractUser):
         ('superadmin', 'SuperAdmin'),
     )
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
+    is_active = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
 
-    objects = UserManager()  # Associez le gestionnaire personnalisé
+    objects = UserManager()  
 
 
     def is_admin(self):
@@ -56,7 +58,7 @@ class User(AbstractUser):
 
 
 class Etudiant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='etudiant_profile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='etudiant_profile')
     matricule = models.CharField(max_length=15, unique=True)
 
     
@@ -69,6 +71,8 @@ class PreEnregistrementMatricule(models.Model):
 
     def __str__(self):
         return self.matricule
+
+
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_profile')
