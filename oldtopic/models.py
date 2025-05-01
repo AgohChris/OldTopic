@@ -74,6 +74,9 @@ class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_profile')
     post = models.CharField(max_length=30)
 
+    def nb_post(self):
+        return Sujet.objects.filter(auteur=self.user.username).count()
+
 
     def __str__(self):
         
