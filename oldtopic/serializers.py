@@ -81,7 +81,6 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         return value
     
 
-
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError({"password": "les mots de passe ne correspondent pas."})
@@ -92,6 +91,7 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         
 
         return data
+
 
     def create(self, validated_data):
 
@@ -128,6 +128,7 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
 
         return etudiant
     
+
     def envoie_du_code_verif(self, email, verification_code, nom):
         send_mail(
             subject="Code de Vérification - OldTopic",
