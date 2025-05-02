@@ -1,3 +1,6 @@
+from pyexpat.errors import messages
+from unittest.result import failfast
+
 from .models import *
 from .serializers import *
 from django.http import HttpResponse
@@ -149,9 +152,94 @@ class AdminUpdateView(APIView):
             return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
         
         data = request.data
-        user.last_name = data.get('nom', user.first_name)
+        user.last_name = data.get('nom', user.last_name)
+        user.set_password = data.get('password', user.password)
+        user.save()
+        self.envoie_mail_de_signal(user.email, user.nom)
+
+        return Response({"messages": "Vos Infos ont été mise a jour avec Succès"}, status=status.HTTP_200_OK)
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Modfication des infos de votre compte OldTopic",
+            message = f"Bonjour Admin {nom}, les modification éffectuer a votre compte OldTopic on bien été prise en compte."
+                      f" \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant au SuperAdmin",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+class EtudiantUpdateview(APIView):
+    def put(self, request):
+        user = request.user
+
+        if not user.is_authenticated or not user.is_etudiant():
+            return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
+
+        data = request.data
+        user.last_name = data.get('nom', user.last_name)
         user.set_password = data.get('password', user.password)
         user.save()
 
-        return Response({"messages": "Vos Infos ont été mise a jour avec Succès"}, status=status.HTTP_200_OK)
-    
+        self.envoie_mail_de_signal(user.email, user.first_name)
+
+
+        return Response({"message": "Vos Infos ont été mise a jour avec succès"}, status=status.HTTP_200_OK)
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Modfication des infos de votre compte OldTopic",
+            message = f"Bonjour {nom}, les modification éffectuer a votre compte OldTopic on bien été prise en compte."
+                      f" \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant a un Admin de l'école",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+class MdpResetRequestView(APIView):
+    def post(self, request):
+        serializers = mdpResetRequestSerializer(data=request.data)
+
+        if serializers.is_valid():
+            serializers.save()
+            return Response({"message": "Un code de réinitalisation à été envoyé a votre adresse email"}, status=status.HTTP_200_OK)
+        
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+class VerifCodeReinitialisationView(APIView):
+    def post(self, request):
+        serializer = verifCodeReinitialisationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            request.session['user_id'] = user.id
+            return Response({"message": "Code valide.", "email": user.email}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
+   
+
+class NouveauMotDePasseView(APIView):
+    def post(self, request):
+        user_id = request.session.get('user_id') 
+        if not user_id:
+            return Response({"error": "Utilisateur non identifié. Veuillez recommencer le processus."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Validation et enregistrement du nouveau mot de passe
+        serializer = NouveauMotDePasseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response({"message": "Mot de passe réinitialisé avec succès."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+

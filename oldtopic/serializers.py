@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from .utils import generation_mdp, genererCodeVerif
+from .utils import generation_mdp, genererCodeVerif, genererCodeReinitilisation
 from django.core.mail import send_mail
 
 
@@ -59,9 +59,7 @@ class AdminRegistrationSerializer(serializers.ModelSerializer):
 
         return admin
     
-
-
-    
+  
 
 class EtudiantRegistrationSerializer(serializers.ModelSerializer):
     nom = serializers.CharField(write_only=True)
@@ -180,54 +178,81 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
     
 
 
+class  mdpResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
-        
-
-
-class SuperAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SuperAdmin
-        fields = "__all__"
-       
-
-class StatsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Stats
-        fields = "__all__"
-     
-
-class SuspendreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Suspendre
-        fields = "__all__"
-        
-
-class GererSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Gerer
-        fields = "__all__"
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Cet Utilisateur n'existe pas.")
+        return value
+    
+    def save(self):
+        email = self.validated_data['email']
+        user = User.objects.get(email=email)
 
 
-class TelechargerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Telecharger
-        fields = "__all__"
-        
+        # on génre le code de reinitialisation pour l'enregistrer dans la BD avant de l'envoyer par email 
+        reset_code = genererCodeReinitilisation()
+        user.verification_code = reset_code
+        user.save()
 
-class VisualiserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Visualiser
-        fields = "__all__"
+        self.envoie_du_code_de_reset_par_mail(user.email, reset_code, user.last_name)
+
+    
+    def envoie_du_code_de_reset_par_mail(self, email, code, nom):
+        send_mail(
+            subject="Votre Code de Réinitialisation",
+            message=f"Bonjour {nom}, \n\n Votre code de réinitialisation est {code}" 
+                    " \n\n Saisissez le pour réinitialiser votre mot de passe",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
 
-class  SujetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sujet
-        fields = "__all__"
-       
 
-class  HistoriqueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Historique
-        fields = "__all__"
-       
+
+class verifCodeReinitialisationSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=6)
+
+    def validate_code(self, value):
+        if not User.objects.filter(verification_code=value).exists():
+            raise serializers.ValidationError("Code de réinitalisation invalide.")
+        return value
+    def save(self):
+        code = self.validated_data['code']
+        user = User.objects.get(verification_code=code)
+        return user 
+
+
+
+class NouveauMotDePasseSerializer(serializers.Serializer):
+    nouveau_mdp = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    confirm_nouveau_mdp = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+    def validate(self, data):
+        # Vérifie si les mots de passe correspondent
+        if data['nouveau_mdp'] != data['confirm_nouveau_mdp']:
+            raise serializers.ValidationError({"password": "Les mots de passe ne correspondent pas."})
+        return data
+
+    def save(self, user):
+        # Met à jour le mot de passe de l'utilisateur
+        nouveau_mdp = self.validated_data['nouveau_mdp']
+        user.set_password(nouveau_mdp)
+        user.verification_code = None  # Supprime le code après réinitialisation
+        user.save()
+
+        self.envoie_mail_de_signal_succes(user.email, user.last_name)
+
+
+    def envoie_mail_de_signal_succes(self, email, nom):
+
+        send_mail(
+            subject="Mot de passse réinitaliser",
+            message=f"Bonjour {nom}, \n\n Votre mot de passe à été reinitialiser avec succès",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+

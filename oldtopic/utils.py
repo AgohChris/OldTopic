@@ -13,3 +13,9 @@ def genererCodeVerif():
     code = rd.randint(111111, 999999)
     print(code)
     return code
+
+
+def genererCodeReinitilisation():
+    codereinit = rd.randint(111111, 999999)
+    print(codereinit)
+    return codereinit
