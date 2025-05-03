@@ -303,7 +303,7 @@ const Hero = () => {
               <img
                 src="/uta.png"
                 alt="Université de Technologie Avancée"
-                className="rounded-lg shadow-xl object-cover  w-full h-50 "
+                className="rounded-lg shadow-xl object-cover  w-full  "
               />
 
               {/* Éléments décoratifs autour de l'image */}
