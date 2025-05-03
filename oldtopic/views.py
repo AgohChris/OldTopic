@@ -17,6 +17,8 @@ def home(request):
 
 
 # Authentification & Gestion des Comptes
+
+# login Etudiant
 class Etudiantlogin_view(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -56,6 +58,7 @@ class Etudiantlogin_view(APIView):
         )
 
 
+# login Admin
 class Adminlogin_view(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -67,7 +70,7 @@ class Adminlogin_view(APIView):
         if user is not None:
             if user.is_admin() and user.is_active:
                 self.envoie_mail_de_signal(user.email, user.last_name)
-                return Response({"message": "connexion Réussi", "role":"admin"}, status=status.HTTP_200_OK)
+                return Response({"message": "connexion Réussi", "role":"admin", "username": f"{user.last_name}"}, status=status.HTTP_200_OK)
             elif not user.is_active:
                 return Response({"error": "Votre compte n'est pas activé."}, status=status.HTTP_403_FORBIDDEN)
             else:
@@ -96,6 +99,7 @@ class Adminlogin_view(APIView):
         )
 
 
+# Inscription Etudiant
 class EtudiantRegistrationView(APIView):
     def post(self, request):
         serializers = EtudiantRegistrationSerializer(data=request.data)
@@ -106,6 +110,7 @@ class EtudiantRegistrationView(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Verification de code a 6 chiffre lors de l'inscription de l'étudiant
 class VerifierCodeView(APIView):
 
     def post(self, request):
@@ -134,6 +139,7 @@ class VerifierCodeView(APIView):
         )
 
 
+# Ajout d'un Admin par le SuperAdmin
 class AjoutAdminView(APIView):
     def post(self, request):
         serializers = AjoutAdminSerializer(data=request.data)
@@ -144,6 +150,7 @@ class AjoutAdminView(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# View pour les mises a jour des infos de l'admin
 class AdminUpdateView(APIView): 
     def put(self, request):
         user = request.user
@@ -170,6 +177,7 @@ class AdminUpdateView(APIView):
         )
 
 
+# Mise a jour des infos de l'étudiant
 class EtudiantUpdateview(APIView):
     def put(self, request):
         user = request.user
@@ -177,15 +185,29 @@ class EtudiantUpdateview(APIView):
         if not user.is_authenticated or not user.is_etudiant():
             return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
 
-        data = request.data
-        user.last_name = data.get('nom', user.last_name)
-        user.set_password = data.get('password', user.password)
+        ancien_mdp = request.data("ancien_mdp")
+        nouveau_mdp = request.data("nouveau_mdp")
+        confirm_nouveau_mdp = request.data("confirm_nouveau_mdp")
+
+        if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
+            return Response({"error": "Tous les champs sont obligtoire"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.check_password(ancien_mdp):
+            return Response({"error": "L'ancien mot de passe est incorrecte"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if nouveau_mdp != confirm_nouveau_mdp:
+            return Response({"error": "les mots de passes ne correspondent pas."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if nouveau_mdp == ancien_mdp:
+            return Response({"error": "le nouveau mot de passe n'est pas différents de l'ancien. Choisissez un autre mot de passe."})
+
+        user.set_password(nouveau_mdp)
         user.save()
 
         self.envoie_mail_de_signal(user.email, user.first_name)
 
+        return Response({"error": "Votre mot de passe à été modifier."}, status=status.HTTP_200_OK)
 
-        return Response({"message": "Vos Infos ont été mise a jour avec succès"}, status=status.HTTP_200_OK)
 
     def envoie_mail_de_signal(self, email, nom):
         send_mail(
@@ -198,6 +220,7 @@ class EtudiantUpdateview(APIView):
         )
 
 
+# Reinitialisation du mot de passe
 class MdpResetRequestView(APIView):
     def post(self, request):
         serializers = mdpResetRequestSerializer(data=request.data)
@@ -209,8 +232,7 @@ class MdpResetRequestView(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-
-
+# Verification du code a 6 chiffres pour la reinitialisation
 class VerifCodeReinitialisationView(APIView):
     def post(self, request):
         serializer = verifCodeReinitialisationSerializer(data=request.data)
@@ -221,7 +243,7 @@ class VerifCodeReinitialisationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
    
-
+# Enregistrement du nouveau mot de passe
 class NouveauMotDePasseView(APIView):
     def post(self, request):
         user_id = request.session.get('user_id') 

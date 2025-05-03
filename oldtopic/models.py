@@ -164,6 +164,14 @@ class Sujet(models.Model):
     nb_telechargement = models.IntegerField()
 
 
+class newletter(models.Model):
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.email
+
+
+
 class Historique(models.Model):
     date_consultation = models.DateTimeField(auto_now=True)
     action = models.CharField(max_length=30)

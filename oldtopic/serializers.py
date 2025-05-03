@@ -134,6 +134,8 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
     
 
 
+
+
 class  mdpResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -212,3 +214,10 @@ class NouveauMotDePasseSerializer(serializers.Serializer):
             fail_silently=False,
         )
 
+
+
+class NewsLetterEmailSendSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = newletter
+        fields = ['email']
