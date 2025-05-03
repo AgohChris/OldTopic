@@ -65,7 +65,7 @@ class Adminlogin_view(APIView):
 
 
         if user is not None:
-            if user.is_etudiant() and user.is_active:
+            if user.is_admin() and user.is_active:
                 self.envoie_mail_de_signal(user.email, user.last_name)
                 return Response({"message": "connexion Réussi", "role":"admin"}, status=status.HTTP_200_OK)
             elif not user.is_active:
@@ -73,7 +73,7 @@ class Adminlogin_view(APIView):
             else:
                 return Response({"error": "Votre compte n'est pas autorisé a se connecter ici."}, status=status.HTTP_403_FORBIDDEN)
         else:
-            self.envoie_mail_de_prevention(user.email, user.last_name)
+            self.envoie_mail_de_prevention(email)
             return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)  
 
     def envoie_mail_de_signal(self, email, nom):
@@ -89,7 +89,7 @@ class Adminlogin_view(APIView):
     def envoie_mail_de_prevention(self, email, nom):
         send_mail(
             subject="Tentative de connexion à OldTopic",
-            message = f"Attention {nom}, Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
+            message = f"Attention!\n\n Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
             from_email="agohchris90@gmail.com",
             recipient_list=[email],
             fail_silently=False,

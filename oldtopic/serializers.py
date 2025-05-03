@@ -13,52 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password', 'password2']
 
 
-
-class AdminRegistrationSerializer(serializers.ModelSerializer):
-
-    
-    nom = serializers.CharField(write_only=True)
-    prenom = serializers.CharField(write_only=True)
-    email = serializers.EmailField(write_only=True)
-    matricule = serializers.CharField(write_only=True)
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
-    password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
-
-    class Meta:
-        model = Admin
-        fields = ['nom', 'prenom', 'email', 'password', 'password2']
-
-
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError({"password": "les mots de passe ne correspondent pas."})
-        return data
-
-    def create(self, validated_data):
-        # Suppression des champs unitil dans la table User comme Matricule par exemple
-
-        nom = validated_data.pop('nom')
-        prenom = validated_data.pop('prenom')
-        email = validated_data.pop('email')
-        password = validated_data.pop('password')
-
-        # Creation de l'utilisateur
-
-        user = User.objects.create_user(
-            username = email,
-            email=email,
-            password = password,
-            first_name = prenom,
-            last_name = nom,
-            role = 'admin'
-        )
-
-        # creation du profile etudiant
-
-        admin = Admin.objects.create(user=user)
-
-        return admin
-    
   
 
 class EtudiantRegistrationSerializer(serializers.ModelSerializer):
@@ -159,7 +113,8 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
             email=email,
             password=password,
             last_name=nom,
-            role='admin'
+            role='admin',
+            is_active=True
         )
 
         admin = Admin.objects.create(user=user)
