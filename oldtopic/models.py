@@ -35,8 +35,8 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
 
-    USERNAME_FIELD = 'username'  # Par défaut, Django utilise 'username'
-    REQUIRED_FIELDS = ['email']  # Champs requis pour createsuperuser
+    USERNAME_FIELD = 'username'  
+    REQUIRED_FIELDS = ['email']
 
     ROLES = (
         ('admin', 'Admin'),

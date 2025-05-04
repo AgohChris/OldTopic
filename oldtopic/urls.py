@@ -20,7 +20,7 @@ urlpatterns = [
     # ======Connexion
     path('auth/login/etudiant/', Etudiantlogin_view.as_view(), name='login_student'),
 
-    # ======Modification des infos 
+    # ======Modification des infos de l'étudiants 
     path('auth/etudiant/update/profile', EtudiantUpdateview.as_view(), name='update_student_profile'),
 
 

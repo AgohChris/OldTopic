@@ -2,6 +2,7 @@ from pyexpat.errors import messages
 from unittest.result import failfast
 from django.utils import timezone
 
+
 from .models import *
 from .serializers import *
 from django.http import HttpResponse
@@ -179,10 +180,13 @@ class AdminUpdateView(APIView):
 
 
 # Mise a jour des infos de l'étudiant
+
 class EtudiantUpdateview(APIView):
     def put(self, request):
         user = request.user
 
+
+        # Pour vérifier s'il s'est authentifier
         if not user.is_authenticated or not user.is_etudiant():
             return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -207,7 +211,7 @@ class EtudiantUpdateview(APIView):
 
         self.envoie_mail_de_signal(user.email, user.first_name)
 
-        return Response({"error": "Votre mot de passe à été modifier."}, status=status.HTTP_200_OK)
+        return Response({"message": "Votre mot de passe à été modifier."}, status=status.HTTP_200_OK)
 
 
     def envoie_mail_de_signal(self, email, nom):
