@@ -222,10 +222,9 @@ class NewsLetterEmailSendSerializer(serializers.ModelSerializer):
         fields = ['email']
 
 
-    def validate(self, value):
-        if newletter.objects.filter(email=value).exists:
+    def validate_email(self, value):
+        if newletter.objects.filter(email=value).exists():
             raise serializers.ValidationError("Cet email est déja inscrit a la Newletter")
-        self.send_confirmation_email(newletter.email)
         return value
     
 
@@ -234,7 +233,6 @@ class NewsLetterEmailSendSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
     
         self.send_confirmation_email(email)
-        
         return instance
 
 

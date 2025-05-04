@@ -1,5 +1,6 @@
 from pyexpat.errors import messages
 from unittest.result import failfast
+from django.utils import timezone
 
 from .models import *
 from .serializers import *
@@ -263,17 +264,17 @@ class NouveauMotDePasseView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# Abonnement a la newsletter
 class AbonnementNewsletterView(APIView):
     def post(self, request):
-        serializers = NewsLetterEmailSendSerializer(datat = request.data)
+        serializers = NewsLetterEmailSendSerializer(data = request.data)
         if serializers.is_valid():
             serializers.save()
             return Response({"message": "Inscription a la newsletter"}, status=status.HTTP_200_OK)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
+# Desabonnement a la newsletter
 class DesabonnementNewsletter(APIView):
     def delete(self, request):
         email = request.data.get('email')
@@ -288,7 +289,7 @@ class DesabonnementNewsletter(APIView):
             return Response({"error":"Cet email n'existe pas"}, status=status.HTTP_400_BAD_REQUEST)
         
 
-
+# Enregistrement de la newsletter
 class NewsLetterMessageView(APIView):
     def post(self, request):
 
@@ -303,7 +304,9 @@ class NewsLetterMessageView(APIView):
         messages = newsletterMessage.objects.all()
         serializer = NewsletterMessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
+# Envoi de la newsletter  
 class SendNewsletterView(APIView):
     def post(self, request, message_id):
         try:
@@ -316,8 +319,8 @@ class SendNewsletterView(APIView):
 
         for abonnees in Les_Abonnees:
             send_mail(
-                subject=message.subject,
-                message=message.content,
+                subject=message.objet,
+                message=message.contenue,
                 from_email="agohchris90@gmail.com",
                 recipient_list=[abonnees.email],
                 fail_silently=False,

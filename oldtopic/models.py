@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils.timezone import now
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -10,8 +10,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, role='etudiant', **extra_fields):
-        if not email:
-            raise ValueError("L'utilisateur doit avoir une adresse email")
+        if not username:
+            raise ValueError("L'utilisateur doit avoir un nom d'utilisateur")
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, role=role, **extra_fields)
         user.set_password(password)
@@ -21,16 +21,23 @@ class UserManager(BaseUserManager):
     def create_superuser(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError("Le superutilisateur doit avoir is_staff=True.")
         if extra_fields.get('is_superuser') is not True:
+            raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
+        if extra_fields.get('is_active') is not True:
             raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
 
         return self.create_user(username, email, password, role='superadmin', **extra_fields)
 
 
 class User(AbstractUser):
+
+    USERNAME_FIELD = 'username'  # Par défaut, Django utilise 'username'
+    REQUIRED_FIELDS = ['email']  # Champs requis pour createsuperuser
+
     ROLES = (
         ('admin', 'Admin'),
         ('etudiant', 'Etudiant'),
@@ -63,7 +70,7 @@ class Etudiant(models.Model):
 
     
     def __str__(self):
-        return f'{self.user.username} - {self.matricule}'
+        return f'{self.user.username} - {self.matricule} - {self.user.first_name} - {self.user.last_name}'
 
 
 class PreEnregistrementMatricule(models.Model):
@@ -74,8 +81,7 @@ class PreEnregistrementMatricule(models.Model):
     Filiere = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return self.matricule, self.nom
-
+        return f'{self.matricule} - {self.nom} {self.prenom} - {self.Filiere} - {self.Niveau}'
 
 
 
@@ -95,9 +101,17 @@ class Admin(models.Model):
 
 class SuperAdmin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='superadmin_profile')
+    role = models.CharField(max_length=30, default='SuperAdmin')
+    permissions = models.TextField(blank=True, null=True)
+    date_creation = models.DateTimeField(default=now)
     
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} - {self.role}'
+    
+
+    @staticmethod
+    def count_superadmins():
+        return SuperAdmin.objects.count()
 
 
 class Stats(models.Model):
