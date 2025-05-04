@@ -134,8 +134,6 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
     
 
 
-
-
 class  mdpResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -218,6 +216,42 @@ class NouveauMotDePasseSerializer(serializers.Serializer):
 
 class NewsLetterEmailSendSerializer(serializers.ModelSerializer):
 
+
     class Meta:
         model = newletter
         fields = ['email']
+
+
+    def validate(self, value):
+        if newletter.objects.filter(email=value).exists:
+            raise serializers.ValidationError("Cet email est déja inscrit a la Newletter")
+        self.send_confirmation_email(newletter.email)
+        return value
+    
+
+    def create(self, validated_data):
+        email = validated_data['email']
+        instance = super().create(validated_data)
+    
+        self.send_confirmation_email(email)
+        
+        return instance
+
+
+    def send_confirmation_email(self, email):
+
+        send_mail(
+            subject="Confirmation d'inscription à la newsletter",
+            message="Merci de vous être inscrit à notre newsletter !",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+
+class NewsletterMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = newsletterMessage
+        fields = ['id', 'objet', 'contenue', 'created_at', 'sent_at']
+        read_only_fields = ['created_at', 'sent_at']

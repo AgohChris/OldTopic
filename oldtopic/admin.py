@@ -15,4 +15,5 @@ admin.site.register(Telecharger)
 admin.site.register(Visualiser)
 admin.site.register(Sujet)
 admin.site.register(Historique)
+admin.site.register(newletter)
 

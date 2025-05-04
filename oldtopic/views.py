@@ -264,4 +264,66 @@ class NouveauMotDePasseView(APIView):
 
 
 
+class AbonnementNewsletterView(APIView):
+    def post(self, request):
+        serializers = NewsLetterEmailSendSerializer(datat = request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response({"message": "Inscription a la newsletter"}, status=status.HTTP_200_OK)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
+
+class DesabonnementNewsletter(APIView):
+    def delete(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error":"Pour vous désabonner, l'email est requis."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            abonnement = newletter.objects.get(email=email)
+            abonnement.delete()
+
+            return Response({"messsage": "Désonscription réussie."}, status=status.HTTP_200_OK)
+        except newletter.DoesNotExist:
+            return Response({"error":"Cet email n'existe pas"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class NewsLetterMessageView(APIView):
+    def post(self, request):
+
+        serializer = NewsletterMessageSerializer(data=request.data)
+        if serializer.is_valid():
+            message  = serializer.save()
+            return Response({"message":"Message Créé aec succès", "message":serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        # Pour lister tous les messages de la newsletter 
+        messages = newsletterMessage.objects.all()
+        serializer = NewsletterMessageSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class SendNewsletterView(APIView):
+    def post(self, request, message_id):
+        try:
+            message = newsletterMessage.objects.get(id=message_id)
+        except newsletterMessage.DoesNotExist:
+            return Response({"error":"message introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
+
+        Les_Abonnees = newletter.objects.all()
+
+        for abonnees in Les_Abonnees:
+            send_mail(
+                subject=message.subject,
+                message=message.content,
+                from_email="agohchris90@gmail.com",
+                recipient_list=[abonnees.email],
+                fail_silently=False,
+            )
+
+        message.sent_at = timezone.now()
+        message.save()
+
+        return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)

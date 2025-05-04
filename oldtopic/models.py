@@ -68,9 +68,14 @@ class Etudiant(models.Model):
 
 class PreEnregistrementMatricule(models.Model):
     matricule = models.CharField(max_length=15, unique=True)
+    nom = models.CharField(max_length=60, null=True)
+    prenom = models.CharField(max_length=70, null=True)
+    Niveau = models.CharField(max_length=30, null=True)
+    Filiere = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return self.matricule
+        return self.matricule, self.nom
+
 
 
 
@@ -166,10 +171,19 @@ class Sujet(models.Model):
 
 class newletter(models.Model):
     email = models.EmailField()
-
+    
     def __str__(self):
         return self.email
 
+
+class newsletterMessage(models.Model):
+    objet = models.CharField(max_length=255)
+    contenue = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.objet
 
 
 class Historique(models.Model):
