@@ -159,17 +159,17 @@ function Profil() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-xl text-gray-600">Chargement de votre profil...</p>
+          <p className="mt-4 text-xl text-white">Chargement de votre profil...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white min-h-screen">
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -191,17 +191,18 @@ function Profil() {
           initial="hidden"
           animate="visible"
           variants={sectionVariants}
-          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-1"
+          className=" rounded-xl shadow-md overflow-hidden md:col-span-1
+                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
         >
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
               <IconCamera className="mr-2 text-teal-500" />
               Photo de profil
             </h2>
             
             <div className="flex flex-col items-center justify-center">
               <div className="relative group">
-                <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-400 to-green-500 flex items-center justify-center overflow-hidden relative">
+                <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-900 to-green-600 flex items-center justify-center overflow-hidden relative">
                   {photoPreview ? (
                     <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -223,7 +224,7 @@ function Profil() {
                 </label>
               </div>
               
-              <p className="mt-4 text-sm text-gray-500 text-center">
+              <p className="mt-4 text-sm text-teal-600 text-center">
                 Cliquez sur la photo pour modifier
               </p>
               
@@ -264,57 +265,58 @@ function Profil() {
           initial="hidden"
           animate="visible"
           variants={sectionVariants}
-          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-2"
+          className=" rounded-xl shadow-md overflow-hidden md:col-span-2
+                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
         >
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
               <IconUser className="mr-2 text-teal-500" />
               Informations personnelles
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <label className="block text-sm font-medium text-teal-700 mb-1">Nom complet</label>
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
                   <IconUser className="text-gray-500 mr-2" />
                   <span>{userData.nom}</span>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <label className="block text-sm font-medium text-teal-700 mb-1">Email</label>
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
                   <IconEmail className="text-gray-500 mr-2" />
                   <span>{userData.email}</span>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filière</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <label className="block text-sm font-medium text-teal-700 mb-1">Filière</label>
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
                   <IconGraduationCap className="text-gray-500 mr-2" />
                   <span>{userData.filiere}</span>
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Niveau</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <label className="block text-sm font-medium text-teal-700 mb-1">Niveau</label>
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
                   <IconGraduationCap className="text-gray-500 mr-2" />
                   <span>{userData.niveau}</span>
                 </div>
               </div>
               
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Institution</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <label className="block text-sm font-medium text-teal-700 mb-1">Institution</label>
+                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
                   <IconBuilding className="text-gray-500 mr-2" />
                   <span>{userData.institution}</span>
                 </div>
               </div>
             </div>
             
-            <div className="mt-6 text-sm text-gray-500">
+            <div className="mt-6 text-sm text-gray-400">
               Pour modifier ces informations, veuillez contacter l'administration.
             </div>
           </div>
@@ -326,10 +328,11 @@ function Profil() {
           initial="hidden"
           animate="visible"
           variants={sectionVariants}
-          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-3"
+          className=" rounded-xl shadow-md overflow-hidden md:col-span-3
+                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
         >
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
               <IconLock className="mr-2 text-teal-500" />
               Sécurité - Modification du mot de passe
             </h2>
@@ -337,10 +340,10 @@ function Profil() {
             <form onSubmit={handlePasswordSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe actuel</label>
+                  <label className="block text-sm font-medium text-teal-700 mb-1">Mot de passe actuel</label>
                   <input 
                     type="password" 
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                     value={ancienMdp}
                     onChange={(e) => setAncienMdp(e.target.value)}
                     required
@@ -348,10 +351,10 @@ function Profil() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
+                  <label className="block text-sm font-medium text-teal-700 mb-1">Nouveau mot de passe</label>
                   <input 
                     type="password" 
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                     value={nouveauMdp}
                     onChange={(e) => setNouveauMdp(e.target.value)}
                     required
@@ -359,10 +362,10 @@ function Profil() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+                  <label className="block text-sm font-medium text-teal-700 mb-1">Confirmer le mot de passe</label>
                   <input 
                     type="password" 
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                     value={confirmMdp}
                     onChange={(e) => setConfirmMdp(e.target.value)}
                     required
@@ -418,20 +421,21 @@ function Profil() {
           initial="hidden"
           animate="visible"
           variants={sectionVariants}
-          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-3"
+          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-3
+                  bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
         >
           <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Résumé de votre activité</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Résumé de votre activité</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-teal-50 to-green-100 p-6 rounded-xl shadow-inner">
+              <div className="bg-gradient-to-br from-teal-700 to-green-100 p-6 rounded-xl shadow-inner">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-teal-600 mb-2">37</div>
-                  <p className="text-teal-800">Ressources téléchargées</p>
+                  <div className="text-4xl font-bold text-teal-900 mb-2">37</div>
+                  <p className="text-teal-900">Ressources téléchargées</p>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-br from-blue-50 to-sky-100 p-6 rounded-xl shadow-inner">
+              <div className="bg-gradient-to-br from-blue-100 to-sky-300 p-6 rounded-xl shadow-inner">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-blue-600 mb-2">124</div>
                   <p className="text-blue-800">Ressources consultées</p>

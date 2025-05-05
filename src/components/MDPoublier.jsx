@@ -20,7 +20,6 @@ function MDPoublier() {
 
   const [formData, setFormData] = useState({
     email: '',
-    matricule: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,10 +42,6 @@ function MDPoublier() {
       newErrors.email = "L'email est requis";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Format d'email invalide";
-    }
-    
-    if (!formData.matricule.trim()) {
-      newErrors.matricule = "Le matricule est requis";
     }
     
     setErrors(newErrors);
@@ -173,27 +168,6 @@ function MDPoublier() {
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
           </div>
           
-          <div>
-            <label htmlFor="matricule" className="block text-sm font-medium text-gray-700 mb-1">
-              Numéro de matricule
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <IconID />
-              </div>
-              <input
-                id="matricule"
-                type="text"
-                name="matricule"
-                value={formData.matricule}
-                onChange={handleChange}
-                autoComplete="username"
-                className={`pl-10 w-full p-3 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent ${errors.matricule ? 'border-red-500' : 'border-gray-200'}`}
-                placeholder="Exemple: 2022012345"
-              />
-            </div>
-            {errors.matricule && <p className="mt-1 text-sm text-red-600">{errors.matricule}</p>}
-          </div>
           
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
             <div className="flex">

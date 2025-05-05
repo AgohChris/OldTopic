@@ -188,17 +188,17 @@ function Historique() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-xl text-gray-600">Chargement de votre historique...</p>
+          <p className="mt-4 text-xl text-white">Chargement de votre historique...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white min-h-screen">
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -214,11 +214,11 @@ function Historique() {
       </motion.div>
 
       {/* Barre de filtres */}
-      <div className="mb-10 bg-white rounded-xl shadow-md p-4">
+      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconFilter />
-            <h2 className="text-lg font-bold text-gray-800">Filtres</h2>
+            <h2 className="text-lg font-semibold text-white truncate">Filtres</h2>
           </div>
           <button 
             onClick={() => setFiltreVisible(!filtreVisible)}
@@ -230,11 +230,11 @@ function Historique() {
 
         <div className="flex flex-wrap items-center gap-4 mt-4">
           <div>
-            <label className="text-sm text-gray-600 block mb-1">Type</label>
+            <label className="text-sm text-white block mb-1">Type</label>
             <select
               value={typeFiltre}
               onChange={(e) => setTypeFiltre(e.target.value)}
-              className="p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+              className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
             >
               <option value="Tous">Tous les types</option>
               <option value="Téléchargement">Téléchargement</option>
@@ -250,11 +250,11 @@ function Historique() {
           >
             <div className="flex flex-wrap gap-4 pt-4">
               <div>
-                <label className="text-sm text-gray-600 block mb-1">Filière</label>
+                <label className="text-sm text-white block mb-1">Filière</label>
                 <select
                   value={filiereFiltre}
                   onChange={(e) => setFiliereFiltre(e.target.value)}
-                  className="p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                  className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                 >
                   <option value="Toutes">Toutes les filières</option>
                   {filieres.map(filiere => (
@@ -264,11 +264,11 @@ function Historique() {
               </div>
 
               <div>
-                <label className="text-sm text-gray-600 block mb-1">Niveau</label>
+                <label className="text-sm text-white block mb-1">Niveau</label>
                 <select
                   value={niveauFiltre}
                   onChange={(e) => setNiveauFiltre(e.target.value)}
-                  className="p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+                  className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                 >
                   <option value="Tous">Tous les niveaux</option>
                   {niveaux.map(niveau => (
@@ -283,17 +283,17 @@ function Historique() {
 
       {/* Résultats de recherche */}
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">
+        <h2 className="text-xl font-bold text-white">
           Résultats ({activitesFiltrees.length} activités)
         </h2>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-white">
           Trié par date (plus récent)
         </div>
       </div>
 
       <div className="space-y-6">
         {activitesFiltrees.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl shadow">
+          <div className="text-center py-16 bg-white rounded-xl shadow ">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -308,38 +308,40 @@ function Historique() {
               initial="hidden"
               animate="visible"
               variants={cardVariants}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow
+              bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
             >
-              <div className="md:flex">
+              <div className="md:flex ">
                 {/* Bande latérale avec informations essentielles */}
-                <div className={`w-full md:w-48 p-4 flex flex-col justify-center items-center ${activite.type === 'Téléchargement' ? 'bg-gradient-to-br from-emerald-50 to-teal-100' : 'bg-gradient-to-br from-blue-50 to-sky-100'}`}>
+                <div className={`w-full md:w-48 p-4 flex flex-col justify-center items-center 
+                  ${activite.type === 'Téléchargement' ? '' : ''}`}>
                   <div className="flex flex-col items-center mb-6 text-center">
                     <div className={`h-16 w-16 flex items-center justify-center rounded-full ${activite.type === 'Téléchargement' ? 'bg-emerald-500' : 'bg-blue-500'} text-white mb-3`}>
                       {activite.type === 'Téléchargement' ? <IconDownload /> : <IconEye />}
                     </div>
                     <div>
                       <p className="font-bold text-gray-900">{activite.type}</p>
-                      <p className="text-sm text-gray-600">{formatDate(activite.date)}</p>
+                      <p className="text-sm text-gray-400">{formatDate(activite.date)}</p>
                     </div>
                   </div>
                   
                   <div className="flex flex-col items-center text-center">
-                    <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center font-bold text-white mb-2">
+                    <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-400 mb-2">
                       {activite.avatar}
                     </div>
                     <div>
-                      <p className="text-sm text-gray-800">{activite.auteur}</p>
-                      <p className="text-xs text-gray-500">Auteur</p>
+                      <p className="text-sm text-gray-400">{activite.auteur}</p>
+                      <p className="text-xs text-gray-400">Auteur</p>
                     </div>
                   </div>
                 </div>
                 
                 {/* Contenu principal */}
                 <div className="p-6 md:flex-1">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">{activite.titre}</h3>
+                  <h3 className="text-2xl font-bold text-white mb-2">{activite.titre}</h3>
                   
-                  <div className="bg-gray-50 border-l-4 border-gray-300 p-4 mb-6 rounded">
-                    <p className="text-gray-700 italic">"{activite.description}"</p>
+                  <div className=" border-l-4 border-gray-300 p-4 mb-6 rounded">
+                    <p className="text-gray-400 italic">"{activite.description}"</p>
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mb-6">
@@ -355,7 +357,7 @@ function Historique() {
                   </div>
                   
                   <div className="flex justify-end gap-3 mt-auto">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">
+                    <button className="flex items-center gap-2 px-4 py-2 border border-sky-100 text-teal-600 rounded-lg hover:bg-sky-200 transition">
                       <IconEye />
                       <span>Voir</span>
                     </button>
@@ -376,27 +378,29 @@ function Historique() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.6 }}
-        className="mt-12 bg-white rounded-xl shadow-lg p-6 overflow-hidden"
+        className="mt-12 bg-white rounded-xl shadow-lg p-6 overflow-hidden
+        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Analyse détaillée : <span className="text-teal-600">"Sujet Téléchargement"</span>
+        <h2 className="text-2xl font-bold mb-6 text-white
+        ">
+          Analyse détaillée : <span className="text-teal-500">"Sujet Téléchargement"</span>
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-teal-50 to-green-100 p-6 rounded-xl shadow-inner">
+          <div className="bg-gradient-to-br from-teal-700 to-green-100 p-6 rounded-xl shadow-inner">
             <div className="text-center">
-              <div className="text-5xl font-bold text-teal-600 mb-2">{totalDownloads}</div>
+              <div className="text-5xl font-bold text-teal-900 mb-2">{totalDownloads}</div>
               <div className="flex items-center justify-center">
-                <IconDownload className="text-teal-500 mr-2" />
+                <IconDownload className="text-teal-900 mr-2" />
                 <p className="text-teal-800">Téléchargements totaux</p>
               </div>
             </div>
             <div className="h-2 w-full bg-white bg-opacity-40 rounded-full mt-4">
-              <div className="h-2 bg-teal-500 rounded-full" style={{ width: `${(totalDownloads/5)*100}%` }}></div>
+              <div className="h-2 bg-teal-900 rounded-full" style={{ width: `${(totalDownloads/5)*100}%` }}></div>
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-blue-50 to-sky-100 p-6 rounded-xl shadow-inner">
+          <div className="bg-gradient-to-br from-blue-100 to-sky-300 p-6 rounded-xl shadow-inner">
             <div className="text-center">
               <div className="text-5xl font-bold text-blue-600 mb-2">{totalViews}</div>
               <div className="flex items-center justify-center">

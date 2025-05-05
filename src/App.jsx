@@ -7,6 +7,7 @@ import RegisterStudent from "./components/RegisterStudent";
 import LoginStudent from "./components/LoginStudent";
 import MDPoublier from "./components/MDPoublier";
 import AuthLayout from "./components/AuthLayout";
+import DownloadList from "./components/DownloadList";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route index element={<Hero />} /> {/* page d'accueil */}
         <Route path="profil" element={<Profil />} />
         <Route path="historique" element={<Historique />} />
+        <Route path="download" element={<DownloadList />} />
       </Route>
       
       {/* Redirection pour toutes les routes non définies */}

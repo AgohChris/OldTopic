@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom";
 import { Search, ChevronDown, BookOpen, GraduationCap, Book } from 'lucide-react';
-
 const Hero = () => {
   const [filiere, setFiliere] = useState('');
   const [niveau, setNiveau] = useState('');
   const [matiere, setMatiere] = useState('');
+  const [annee, setAnnee] = useState('');
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [searchFocused, setSearchFocused] = useState(false);
@@ -14,19 +17,23 @@ const Hero = () => {
   const dropdownTriggerRefs = {
     filiere: useRef(null),
     niveau: useRef(null),
-    matiere: useRef(null)
+    matiere: useRef(null),
+    annee: useRef(null)
   };
 
   const dropdownMenuRefs = {
     filiere: useRef(null),
     niveau: useRef(null),
-    matiere: useRef(null)
+    matiere: useRef(null),
+    annee: useRef(null)
+
   };
 
   // Options
-  const filieres = ['IGL', 'RIT', 'Économie', 'FBA', 'Génie Civil', 'Architecture', 'Médecine', 'Pharmacie', 'Droit', 'Science Politique', 'Sociologie', 'Histoire', 'Géographie'];
-  const niveaux = ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2', 'Doctorat', 'DUT', 'BTS'];
+  const filieres = ['IGL', 'RIT', 'Économie', 'FBA', 'Pharmacie', 'Droit'];
+  const niveaux = ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2','BTS 2', 'BTS 1'];
   const matieres = ['Maths', 'Physique', 'Info', 'Statistique', 'Chimie', 'Biologie', 'Économétrie', 'Droit Commercial', 'Comptabilité', 'Marketing', 'Algorithmique', 'Base de Données', 'Réseaux', 'Analyse Numérique', 'Chimie Organique', 'Biochimie', 'Microéconomie', 'Macroéconomie'];
+  const annees = ['2025','2024', '2023', '2022', '2021', '2020'];
 
   // Gestion des clics extérieurs
   useEffect(() => {
@@ -51,14 +58,16 @@ const Hero = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!filiere || !niveau || !matiere) {
+    if (!filiere || !niveau || !matiere || !annee) {
       alert("Merci de sélectionner tous les champs !");
       return;
     }
     setIsLoading(true);
     setTimeout(() => {
-      console.log({ filiere, niveau, matiere });
+      console.log({ filiere, niveau, matiere, annee });
       setIsLoading(false);
+      // Effectue la redirection vers ton composant "download"
+      navigate('/download');
     }, 1500);
   };
 
@@ -71,6 +80,8 @@ const Hero = () => {
     if (type === 'filiere') setFiliere(option);
     if (type === 'niveau') setNiveau(option);
     if (type === 'matiere') setMatiere(option);
+    if (type === 'annee') setAnnee(option);
+
     setDropdownOpen(null);
   };
 
@@ -92,7 +103,7 @@ const Hero = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="container mx-auto px-4 relative z-20 py-19">
+      <div className="container mx-auto px-4 relative z-20 py-29">
         {/* ... (contenu inchangé jusqu'au formulaire) ... */}
 
         <motion.div
@@ -260,6 +271,40 @@ const Hero = () => {
                 </div>
               )}
             </div>
+
+            {/* Sélecteur d'année */}
+<div className="relative w-full md:w-1/3 px-2 py-3">
+  <div
+    ref={dropdownTriggerRefs.annee}
+    onClick={(e) => handleDropdownClick(e, 'annee')}
+    className="flex items-center justify-between cursor-pointer text-gray-200 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+  >
+    <span className={annee ? 'text-white' : 'text-gray-400'}>
+      {annee || 'Année'}
+    </span>
+    <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${dropdownOpen === 'annee' ? 'rotate-180' : ''}`} />
+  </div>
+
+  {dropdownOpen === 'annee' && (
+    <div
+      ref={dropdownMenuRefs.annee}
+      className="absolute left-0 right-0 mt-2 mx-2 bg-gray-800 rounded-lg shadow-lg z-50"
+    >
+      <div className="max-h-30 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-700 pr-4">
+        {annees.map((option) => (
+          <div
+            key={option}
+            className="px-4 py-2 text-gray-200 hover:bg-green-600/30 hover:text-white cursor-pointer transition-colors"
+            onClick={() => handleOptionSelect(option, 'annee')}
+          >
+            {option}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
 
             {/* Bouton de recherche (inchangé) */}
             <button
