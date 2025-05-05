@@ -214,7 +214,7 @@ function Historique() {
       </motion.div>
 
       {/* Barre de filtres */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300">
+      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3  hover:border-green-400/30 transition-all duration-300">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconFilter />
@@ -291,7 +291,7 @@ function Historique() {
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2">
         {activitesFiltrees.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl shadow ">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,10 +308,10 @@ function Historique() {
               initial="hidden"
               animate="visible"
               variants={cardVariants}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow
-              bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow
+        bg-white/5  backdrop-blur-sm border border-white/10 rounded-xl  hover:border-green-400/30 transition-all duration-300"
             >
-              <div className="md:flex ">
+              <div className="md:flex  ">
                 {/* Bande latérale avec informations essentielles */}
                 <div className={`w-full md:w-48 p-4 flex flex-col justify-center items-center 
                   ${activite.type === 'Téléchargement' ? '' : ''}`}>
