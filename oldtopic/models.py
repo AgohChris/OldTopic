@@ -46,6 +46,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
     is_active = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
+    
 
     objects = UserManager()  
 

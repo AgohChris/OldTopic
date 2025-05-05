@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
+from rest_framework.permissions import IsAuthenticated
+
 
 
 def home(request):
@@ -182,17 +184,30 @@ class AdminUpdateView(APIView):
 # Mise a jour des infos de l'étudiant
 
 class EtudiantUpdateview(APIView):
-    def put(self, request):
-        user = request.user
 
+    # permission_classes = [IsAuthenticated]
 
-        # Pour vérifier s'il s'est authentifier
-        if not user.is_authenticated or not user.is_etudiant():
-            return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
+    def put(self, request, user_id):
 
-        ancien_mdp = request.data("ancien_mdp")
-        nouveau_mdp = request.data("nouveau_mdp")
-        confirm_nouveau_mdp = request.data("confirm_nouveau_mdp")
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "Cet Utilisateur n'existe pas!"}, status=status.HTTP_404_NOT_FOUND)
+
+        # user = request.user
+        # print(f"Utilisateur : {user}, Authentifié : {user.is_authenticated}, Est étudiant : {user.is_etudiant()}")
+
+        if not user.is_etudiant():
+            return Response({"error":"Cet utilisateur n'est pas un Etudiant"}, status=status.HTTP_403_FORBIDDEN)
+
+        # print(f"En-têtes de la requête : {request.headers}")
+        # # Pour vérifier s'il s'est authentifier
+        # if not user.is_authenticated or not user.is_etudiant():
+        #     return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
+
+        ancien_mdp = request.data.get("ancien_mdp")
+        nouveau_mdp = request.data.get("nouveau_mdp")
+        confirm_nouveau_mdp = request.data.get("confirm_nouveau_mdp")
 
         if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
             return Response({"error": "Tous les champs sont obligtoire"}, status=status.HTTP_400_BAD_REQUEST)

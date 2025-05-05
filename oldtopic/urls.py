@@ -21,7 +21,7 @@ urlpatterns = [
     path('auth/login/etudiant/', Etudiantlogin_view.as_view(), name='login_student'),
 
     # ======Modification des infos de l'étudiants 
-    path('auth/etudiant/update/profile', EtudiantUpdateview.as_view(), name='update_student_profile'),
+    path('auth/etudiant/<int:user_id>/update/profile', EtudiantUpdateview.as_view(), name='update_student_profile'),
 
 
                                         #=========Admin==============
