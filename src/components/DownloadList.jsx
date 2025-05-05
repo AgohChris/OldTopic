@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { 
   FileText, DownloadCloud, Clock, BookOpen, ChevronLeft, ChevronRight, 
-  GraduationCap, Search, Filter, Grid, List, X, FileDown, Users, Info, Star
+  GraduationCap, Search, Filter, Grid, List, X, FileDown, Users, Info, Eye
 } from 'lucide-react';
 
 const DownloadList = () => {
@@ -220,25 +220,6 @@ const DownloadList = () => {
     );
   };
 
-  // Notation avec étoiles
-  const RatingStars = ({ rating }) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    
-    return (
-      <div className="flex items-center">
-        {[...Array(5)].map((_, i) => (
-          <Star 
-            key={i}
-            className={`w-4 h-4 ${i < fullStars ? 'text-yellow-400 fill-yellow-400' : 
-              (i === fullStars && hasHalfStar ? 'text-yellow-400' : 'text-gray-400')}`}
-          />
-        ))}
-        <span className="ml-1 text-sm text-gray-300">{rating.toFixed(1)}</span>
-      </div>
-    );
-  };
-
   // Rendu du mode de chargement
   if (isLoading) {
     return (
@@ -297,21 +278,13 @@ const DownloadList = () => {
             </div>
             
             {/* Statistiques */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-gray-700/20 p-4 rounded-lg">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-400">Téléchargements</span>
                   <FileDown className="w-5 h-5 text-teal-400" />
                 </div>
                 <p className="text-2xl font-bold text-white">{doc.downloads}</p>
-              </div>
-              
-              <div className="bg-gray-700/20 p-4 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-400">Note</span>
-                  <Star className="w-5 h-5 text-yellow-400" />
-                </div>
-                <RatingStars rating={doc.rating} />
               </div>
               
               <div className="bg-gray-700/20 p-4 rounded-lg">
@@ -330,8 +303,8 @@ const DownloadList = () => {
               </div>
               <div className="flex gap-3">
                 <button className="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center">
-                  <Info className="w-5 h-5 mr-2" />
-                  Détails supplémentaires
+                  <Eye className="w-5 h-5 mr-2" />
+                  Visualiser
                 </button>
                 <button className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition-colors flex items-center">
                   <DownloadCloud className="w-5 h-5 mr-2" />
@@ -521,12 +494,11 @@ const DownloadList = () => {
                 </div>
 
                 {/* Statistiques */}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center mb-4">
                   <div className="flex items-center">
                     <FileDown className="w-4 h-4 mr-1 text-gray-400" />
-                    <span className="text-sm text-gray-400">{item.downloads}</span>
+                    <span className="text-sm text-gray-400">{item.downloads} téléchargements</span>
                   </div>
-                  <RatingStars rating={item.rating} />
                 </div>
 
                 {/* Barre de séparation */}
@@ -540,7 +512,7 @@ const DownloadList = () => {
                       onClick={() => setSelectedDocument(item)}
                       className="flex items-center px-3 py-2 bg-gray-700/50 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
                     >
-                      <Info className="w-4 h-4" />
+                      <Eye className="w-4 h-4" />
                     </button>
                     <button className="flex items-center px-4 py-2 bg-teal-600/20 text-teal-400 rounded-lg hover:bg-teal-500/30 transition-colors">
                       <DownloadCloud className="w-5 h-5 mr-2" />

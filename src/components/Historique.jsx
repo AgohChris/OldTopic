@@ -1,131 +1,272 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { 
+  FileText, DownloadCloud, Clock, BookOpen, ChevronLeft, ChevronRight, 
+  GraduationCap, Search, Filter, Grid, List, X, FileDown, Users, Eye
+} from 'lucide-react';
 
-const activites = [
-  {
-    id: 1,
-    type: 'Téléchargement',
-    titre: 'Introduction à React',
-    description: 'Un guide complet pour démarrer avec React.js.',
-    auteur: 'Jean Dupont',
-    filiere: 'Informatique',
-    matiere: 'Développement Web',
-    niveau: 'Licence 2',
-    date: '2025-05-01',
-    avatar: 'JD'
-  },
-  {
-    id: 2,
-    type: 'Vue',
-    titre: 'Introduction à React',
-    description: 'Un guide complet pour démarrer avec React.js.',
-    auteur: 'Jean Dupont',
-    filiere: 'Informatique',
-    matiere: 'Développement Web',
-    niveau: 'Licence 2',
-    date: '2025-05-02',
-    avatar: 'JD'
-  },
-  {
-    id: 3,
-    type: 'Téléchargement',
-    titre: 'Sujet Téléchargement',
-    description: 'Sujet d\'examen en réseaux informatiques.',
-    auteur: 'Mme Koné',
-    filiere: 'Réseaux',
-    matiere: 'Architecture réseau',
-    niveau: 'Master 1',
-    date: '2025-05-03',
-    avatar: 'MK'
-  },
-  {
-    id: 4,
-    type: 'Vue',
-    titre: 'Sujet Téléchargement',
-    description: 'Sujet d\'examen en réseaux informatiques.',
-    auteur: 'Mme Koné',
-    filiere: 'Réseaux',
-    matiere: 'Architecture réseau',
-    niveau: 'Master 1',
-    date: '2025-05-04',
-    avatar: 'MK'
-  },
-  {
-    id: 5,
-    type: 'Vue',
-    titre: 'Introduction à JavaScript',
-    description: 'Les bases essentielles pour comprendre JS.',
-    auteur: 'Ali Dabo',
-    filiere: 'Informatique',
-    matiere: 'Programmation',
-    niveau: 'Licence 1',
-    date: '2025-05-05',
-    avatar: 'AD'
-  }
-];
-
-// Extraction des catégories uniques
-const filieres = [...new Set(activites.map(a => a.filiere))];
-const niveaux = [...new Set(activites.map(a => a.niveau))];
-
-// Icônes SVG
-const IconDownload = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-  </svg>
-);
-
-const IconEye = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-  </svg>
-);
-
-const IconUser = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-  </svg>
-);
-
-const IconFolder = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-  </svg>
-);
-
-const IconBook = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-  </svg>
-);
-
-const IconGraduationCap = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path d="M12 14l9-5-9-5-9 5 9 5z" />
-    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-  </svg>
-);
-
-const IconCalendar = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>
-);
-
-const IconFilter = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-  </svg>
-);
-
-function Historique() {
-  const [typeFiltre, setTypeFiltre] = useState('Tous');
-  const [filiereFiltre, setFiliereFiltre] = useState('Toutes');
-  const [niveauFiltre, setNiveauFiltre] = useState('Tous');
-  const [filtreVisible, setFiltreVisible] = useState(false);
+const Historique = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' ou 'list'
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilters, setActiveFilters] = useState({
+    type: null,
+    faculty: null,
+    level: null,
+    date: null,
+    subject: null
+  });
+  const [showFilters, setShowFilters] = useState(false);
+  const itemsPerPage = viewMode === 'grid' ? 6 : 8;
+
+  // Données fictives pour la démo
+  const historyItems = [
+    {
+      id: 1,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 2,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 3,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 4,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 5,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 6,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 7,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 8,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 9,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 10,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 11,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 12,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+    {
+      id: 14,
+      title: 'Examen Final - Mathématiques Avancées avec des concepts très complexes et des applications poussées',
+      subject: 'Mathématiques',
+      year: '2023',
+      faculty: 'IGL',
+      type: 'Examen',
+      size: '2.4 MB',
+      level: 'Master 2',
+      viewCount: 14,
+      lastViewed: '25/04/2025',
+      date: '15/12/2023',
+      author: 'Prof. Dupont',
+      description: 'Ce document contient l\'examen final du cours de Mathématiques Avancées. Il couvre les concepts de calcul différentiel, d\'analyse vectorielle et de topologie.',
+      accessType: 'Téléchargé'
+    },
+  ];
+
+  // Extraction des options de filtrage uniques
+  const filterOptions = {
+    type: [...new Set(historyItems.map(d => d.type))],
+    faculty: [...new Set(historyItems.map(d => d.faculty))],
+    level: [...new Set(historyItems.map(d => d.level))],
+    date: [...new Set(historyItems.map(d => d.date))],
+    subject: [...new Set(historyItems.map(d => d.subject))]
+  };
+
+  // Filtre les historiques en fonction de la recherche et des filtres actifs
+  const filteredHistory = historyItems.filter(doc => {
+    // Recherche textuelle
+    const matchesSearch = searchTerm === '' || 
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.subject.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filtres appliqués
+    const matchesType = !activeFilters.type || doc.type === activeFilters.type;
+    const matchesFaculty = !activeFilters.faculty || doc.faculty === activeFilters.faculty;
+    const matchesLevel = !activeFilters.level || doc.level === activeFilters.level;
+    const matchesDate = !activeFilters.date || doc.date === activeFilters.date;
+    const matchesSubject = !activeFilters.subject || doc.subject === activeFilters.subject;
+    
+    return matchesSearch && matchesType && matchesFaculty && matchesLevel && matchesDate && matchesSubject;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredHistory.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredHistory.slice(startIndex, startIndex + itemsPerPage);
+
+  // Réinitialiser la page quand les filtres ou la recherche changent
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, activeFilters, viewMode]);
 
   // Simulation de chargement
   useEffect(() => {
@@ -135,289 +276,505 @@ function Historique() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fonction de filtrage
-  const activitesFiltrees = activites
-    .filter(a => typeFiltre === 'Tous' || a.type === typeFiltre)
-    .filter(a => filiereFiltre === 'Toutes' || a.filiere === filiereFiltre)
-    .filter(a => niveauFiltre === 'Tous' || a.niveau === niveauFiltre)
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  // Statistiques
-  const stats = activites.filter(a => a.titre === 'Sujet Téléchargement');
-  const totalDownloads = stats.filter(a => a.type === 'Téléchargement').length;
-  const totalViews = stats.filter(a => a.type === 'Vue').length;
-
-  // Formater la date
-  const formatDate = (dateString) => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  // Badge pour le type de document
+  const TypeBadge = ({ type }) => {
+    const colors = {
+      'Examen': 'bg-red-500/20 text-red-400',
+      'Travaux Dirigés': 'bg-blue-500/20 text-blue-400',
+      'Correction': 'bg-green-500/20 text-green-400',
+      'Cours': 'bg-purple-500/20 text-purple-400',
+      'Travaux Pratiques': 'bg-yellow-500/20 text-yellow-400'
+    };
+    
+    return (
+      <span className={`text-xs px-2 py-1 rounded-full ${colors[type] || 'bg-gray-500/20 text-gray-400'}`}>
+        {type}
+      </span>
+    );
   };
 
-  // Pour les animations des cartes
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i) => ({ 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        delay: i * 0.1, 
-        duration: 0.5, 
-        ease: "easeOut" 
-      } 
-    })
+  // Badge pour le type d'accès
+  const AccessBadge = ({ accessType }) => {
+    const colors = {
+      'Téléchargé': 'bg-green-500/20 text-green-400',
+      'Consulté': 'bg-blue-500/20 text-blue-400',
+      'Favoris': 'bg-yellow-500/20 text-yellow-400'
+    };
+    
+    return (
+      <span className={`text-xs px-2 py-1 rounded-full ${colors[accessType] || 'bg-gray-500/20 text-gray-400'}`}>
+        {accessType}
+      </span>
+    );
   };
 
-  // Animation du titre
-  const titleVariants = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.7, 
-        ease: "easeOut"
-      }
-    }
-  };
-
-  // Animation de la section de filtres
-  const filterVariants = {
-    closed: { height: 0, opacity: 0 },
-    open: { height: "auto", opacity: 1, transition: { duration: 0.3 } }
-  };
-
+  // Rendu du mode de chargement
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-xl text-white">Chargement de votre historique...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mx-auto"></div>
+          <p className="mt-4 text-xl text-white">Chargement de l'historique...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={titleVariants}
-        className="text-center mb-12"
-      >
-        <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-green-400 to-teal-600 bg-clip-text text-transparent">
-          Historique d'activité
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Suivez vos interactions avec les ressources pédagogiques pour optimiser votre apprentissage.
-        </p>
-      </motion.div>
-
-      {/* Barre de filtres */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3  hover:border-green-400/30 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <IconFilter />
-            <h2 className="text-lg font-semibold text-white truncate">Filtres</h2>
-          </div>
-          <button 
-            onClick={() => setFiltreVisible(!filtreVisible)}
-            className="text-sm font-medium text-teal-600 hover:text-teal-800"
-          >
-            {filtreVisible ? 'Masquer les filtres' : 'Afficher plus de filtres'}
-          </button>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-4 mt-4">
-          <div>
-            <label className="text-sm text-white block mb-1">Type</label>
-            <select
-              value={typeFiltre}
-              onChange={(e) => setTypeFiltre(e.target.value)}
-              className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+  // Vue détaillée d'un document
+  const DocumentDetail = () => {
+    if (!selectedDocument) return null;
+    
+    const doc = selectedDocument;
+    
+    return (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          {/* Header avec bouton de fermeture */}
+          <div className="flex justify-between items-center p-6 border-b border-gray-700">
+            <h3 className="text-2xl font-bold text-white">{doc.title}</h3>
+            <button 
+              onClick={() => setSelectedDocument(null)}
+              className="p-2 rounded-full hover:bg-gray-700 transition-colors"
             >
-              <option value="Tous">Tous les types</option>
-              <option value="Téléchargement">Téléchargement</option>
-              <option value="Vue">Vue</option>
-            </select>
+              <X className="w-6 h-6 text-gray-400" />
+            </button>
           </div>
-
-          <motion.div 
-            className="w-full overflow-hidden"
-            variants={filterVariants}
-            initial="closed"
-            animate={filtreVisible ? "open" : "closed"}
-          >
-            <div className="flex flex-wrap gap-4 pt-4">
-              <div>
-                <label className="text-sm text-white block mb-1">Filière</label>
-                <select
-                  value={filiereFiltre}
-                  onChange={(e) => setFiliereFiltre(e.target.value)}
-                  className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
-                >
-                  <option value="Toutes">Toutes les filières</option>
-                  {filieres.map(filiere => (
-                    <option key={filiere} value={filiere}>{filiere}</option>
-                  ))}
-                </select>
+          
+          {/* Contenu */}
+          <div className="p-6">
+            {/* Métadonnées principales */}
+            <div className="flex flex-wrap gap-4 mb-6">
+              <TypeBadge type={doc.type} />
+              <AccessBadge accessType={doc.accessType} />
+              <div className="flex items-center text-gray-300">
+                <BookOpen className="w-4 h-4 mr-2 text-teal-400" />
+                {doc.faculty} • {doc.subject}
               </div>
-
-              <div>
-                <label className="text-sm text-white block mb-1">Niveau</label>
-                <select
-                  value={niveauFiltre}
-                  onChange={(e) => setNiveauFiltre(e.target.value)}
-                  className="p-2 bg-teal-100 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
-                >
-                  <option value="Tous">Tous les niveaux</option>
-                  {niveaux.map(niveau => (
-                    <option key={niveau} value={niveau}>{niveau}</option>
-                  ))}
-                </select>
+              <div className="flex items-center text-gray-300">
+                <GraduationCap className="w-4 h-4 mr-2 text-teal-400" />
+                {doc.level}
+              </div>
+              <div className="flex items-center text-gray-300">
+                <Clock className="w-4 h-4 mr-2 text-teal-400" />
+                Consulté le: {doc.lastViewed}
               </div>
             </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Résultats de recherche */}
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">
-          Résultats ({activitesFiltrees.length} activités)
-        </h2>
-        <div className="text-sm text-white">
-          Trié par date (plus récent)
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {activitesFiltrees.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl shadow ">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">Aucun résultat</h3>
-            <p className="mt-2 text-gray-500">Essayez de modifier vos filtres pour voir plus de résultats.</p>
+            
+            {/* Description */}
+            <div className="bg-gray-700/30 rounded-lg p-4 mb-6">
+              <h4 className="text-lg font-medium text-white mb-2">Description</h4>
+              <p className="text-gray-300">{doc.description}</p>
+            </div>
+            
+            {/* Statistiques */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-gray-700/20 p-4 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Consultations</span>
+                  <Eye className="w-5 h-5 text-teal-400" />
+                </div>
+                <p className="text-2xl font-bold text-white">{doc.viewCount}</p>
+              </div>
+              
+              <div className="bg-gray-700/20 p-4 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Date du document</span>
+                  <Clock className="w-5 h-5 text-teal-400" />
+                </div>
+                <p className="text-xl font-bold text-white">{doc.date}</p>
+              </div>
+              
+              <div className="bg-gray-700/20 p-4 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Auteur</span>
+                  <Users className="w-5 h-5 text-teal-400" />
+                </div>
+                <p className="text-lg font-medium text-white">{doc.author}</p>
+              </div>
+            </div>
+            
+            {/* Actions */}
+            <div className="flex justify-between items-center">
+              <div>
+                <span className="text-sm text-gray-400">{doc.size}</span>
+              </div>
+              <div className="flex gap-3">
+                <button className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition-colors flex items-center">
+                  <Eye className="w-5 h-5 mr-2" />
+                  Visualiser
+                </button>
+                <button className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition-colors flex items-center">
+                  <DownloadCloud className="w-5 h-5 mr-2" />
+                  Télécharger
+                </button>
+              </div>
+            </div>
           </div>
-        ) : (
-          activitesFiltrees.map((activite, index) => (
-            <motion.div
-              key={activite.id}
-              custom={index}
-              initial="hidden"
-              animate="visible"
-              variants={cardVariants}
-      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow
-        bg-white/5  backdrop-blur-sm border border-white/10 rounded-xl  hover:border-green-400/30 transition-all duration-300"
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-30 px-4 sm:px-6 lg:px-8">
+      {/* Fond animé subtil */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <div className="absolute inset-0 bg-gradient-radial from-teal-500/10 to-transparent"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* En-tête avec titre et statistiques */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 mb-4">
+            Historique des Documents
+          </h2>
+          <p className="text-lg text-gray-300 max-w-3xl mx-auto mb-6">
+            Retrouvez tous les documents que vous avez consultés ou téléchargés
+          </p>
+          
+          {/* Statistiques générales */}
+          <div className="inline-flex bg-white/5 backdrop-blur-sm rounded-xl p-1 border border-white/10">
+            <div className="px-4 py-2 border-r border-white/10">
+              <span className="text-sm text-gray-400">Documents consultés</span>
+              <p className="text-xl font-bold text-white">{historyItems.length}</p>
+            </div>
+            <div className="px-4 py-2 border-r border-white/10">
+              <span className="text-sm text-gray-400">Téléchargements</span>
+              <p className="text-xl font-bold text-white">{historyItems.filter(item => item.accessType === 'Téléchargé').length}</p>
+            </div>
+            <div className="px-4 py-2">
+              <span className="text-sm text-gray-400">Dernière activité</span>
+              <p className="text-xl font-bold text-white">05/05/25</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Barre de recherche et filtres */}
+        <div className="mb-8 flex flex-col lg:flex-row gap-4 items-center">
+          <div className="relative flex-grow">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Rechercher dans l'historique..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-gray-800/50 border border-gray-700 w-full pl-12 pr-4 py-3 rounded-xl text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div className="flex gap-3 items-center">
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center px-4 py-3 rounded-xl ${showFilters ? 'bg-teal-600 text-white' : 'bg-gray-800/50 border border-gray-700 text-gray-300'}`}
             >
-              <div className="md:flex  ">
-                {/* Bande latérale avec informations essentielles */}
-                <div className={`w-full md:w-48 p-4 flex flex-col justify-center items-center 
-                  ${activite.type === 'Téléchargement' ? '' : ''}`}>
-                  <div className="flex flex-col items-center mb-6 text-center">
-                    <div className={`h-16 w-16 flex items-center justify-center rounded-full ${activite.type === 'Téléchargement' ? 'bg-emerald-500' : 'bg-blue-500'} text-white mb-3`}>
-                      {activite.type === 'Téléchargement' ? <IconDownload /> : <IconEye />}
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">{activite.type}</p>
-                      <p className="text-sm text-gray-400">{formatDate(activite.date)}</p>
-                    </div>
+              <Filter className="w-5 h-5 mr-2" />
+              Filtres
+            </button>
+            
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-1 flex">
+              <button 
+                onClick={() => setViewMode('grid')} 
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-gray-700 text-white' : 'text-gray-400'}`}
+              >
+                <Grid className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={() => setViewMode('list')} 
+                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-gray-700 text-white' : 'text-gray-400'}`}
+              >
+                <List className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Panneau de filtres */}
+        {showFilters && (
+          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {Object.entries(filterOptions).map(([filterType, options]) => (
+                <div key={filterType}>
+                  <label className="block text-sm font-medium text-gray-300 mb-2 capitalize">
+                    {filterType === 'faculty' ? 'Faculté' : filterType === 'level' ? 'Niveau' : filterType === 'type' ? 'Type' : filterType === 'subject' ? 'Matière' : filterType}
+                  </label>
+                  <select
+                    value={activeFilters[filterType] || ''}
+                    onChange={(e) => setActiveFilters({...activeFilters, [filterType]: e.target.value || null})}
+                    className="bg-gray-700 border border-gray-600 text-white rounded-lg block w-full p-2.5"
+                  >
+                    <option value="">Tous</option>
+                    {options.map(option => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setActiveFilters({type: null, faculty: null, level: null, date: null, subject: null})}
+                className="px-4 py-2 text-gray-300 hover:text-white mr-4"
+              >
+                Réinitialiser
+              </button>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500"
+              >
+                Appliquer
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Message si aucun résultat */}
+        {filteredHistory.length === 0 && (
+          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-12 text-center">
+            <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-white mb-2">Aucun document dans l'historique</h3>
+            <p className="text-gray-400 mb-6">Essayez de modifier vos critères de recherche ou vos filtres.</p>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setActiveFilters({type: null, faculty: null, level: null, date: null, subject: null});
+              }}
+              className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-500"
+            >
+              Réinitialiser la recherche
+            </button>
+          </div>
+        )}
+        
+        {/* Vue grille */}
+        {viewMode === 'grid' && filteredHistory.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentItems.map((item) => (
+              <div
+                key={item.id}
+                className="group  bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm"
+              >
+                <div className="flex items-start mb-4">
+                  <div className="bg-teal-500/10 p-3 rounded-lg mr-4 flex-shrink-0">
+                    <FileText className="w-6 h-6 text-teal-400" />
                   </div>
-                  
-                  <div className="flex flex-col items-center text-center">
-                    <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-400 mb-2">
-                      {activite.avatar}
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">{activite.auteur}</p>
-                      <p className="text-xs text-gray-400">Auteur</p>
+                  <div className="min-w-0">
+                    <h3 
+                      className="text-lg font-semibold text-white truncate group-hover:text-teal-400 transition-colors duration-300 cursor-pointer"
+                      onClick={() => setSelectedDocument(item)}
+                    >
+                      {item.title}
+                    </h3>
+                    <div className="flex items-center mt-1">
+                      <TypeBadge type={item.type} />
+                      <span className="ml-2 text-sm text-gray-400">{item.subject}</span>
                     </div>
                   </div>
                 </div>
-                
-                {/* Contenu principal */}
-                <div className="p-6 md:flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-2">{activite.titre}</h3>
-                  
-                  <div className=" border-l-4 border-gray-300 p-4 mb-6 rounded">
-                    <p className="text-gray-400 italic">"{activite.description}"</p>
+
+                {/* Métadonnées */}
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <div className="flex items-center text-sm text-gray-300">
+                    <BookOpen className="w-4 h-4 mr-1 text-teal-400" />
+                    {item.faculty}
                   </div>
-                  
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-medium rounded-full">
-                      {activite.filiere}
-                    </span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                      {activite.matiere}
-                    </span>
-                    <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
-                      {activite.niveau}
-                    </span>
+                  <div className="flex items-center text-sm text-gray-300">
+                    <Clock className="w-4 h-4 mr-1 text-teal-400" />
+                    {item.lastViewed}
                   </div>
-                  
-                  <div className="flex justify-end gap-3 mt-auto">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-sky-100 text-teal-600 rounded-lg hover:bg-sky-200 transition">
-                      <IconEye />
-                      <span>Voir</span>
+                  <div className="flex items-center text-sm text-gray-300">
+                    <GraduationCap className="w-4 h-4 mr-1 text-teal-400" />
+                    {item.level}
+                  </div>
+                </div>
+
+                {/* Statistiques */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <Eye className="w-4 h-4 mr-1 text-gray-400" />
+                    <span className="text-sm text-gray-400">{item.viewCount} consultations</span>
+                  </div>
+                  <AccessBadge accessType={item.accessType} />
+                </div>
+
+                {/* Barre de séparation */}
+                <div className="border-t border-white/10 my-4"></div>
+
+                {/* Footer du document */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">{item.size}</span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setSelectedDocument(item)}
+                      className="flex items-center px-3 py-2 bg-gray-700/50 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      <Eye className="w-4 h-4" />
                     </button>
-                    <button className={`flex items-center gap-2 px-4 py-2 ${activite.type === 'Téléchargement' ? 'bg-teal-600' : 'bg-teal-600'} text-white rounded-lg hover:bg-teal-700 transition`}>
-                      <IconDownload />
+                    <button className="flex items-center px-4 py-2 bg-teal-600/20 text-teal-400 rounded-lg hover:bg-teal-500/30 transition-colors">
+                      <DownloadCloud className="w-5 h-5 mr-2" />
                       <span>Télécharger</span>
                     </button>
                   </div>
                 </div>
               </div>
-            </motion.div>
-          ))
+            ))}
+          </div>
         )}
-      </div>
+        
+        {/* Vue liste */}
+        {viewMode === 'list' && filteredHistory.length > 0 && (
+          <div className=" bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-green-500/10">
+                  <th className="text-left py-4 px-6 text-gray-300 font-medium">Document</th>
+                  <th className="text-left py-4 px-4 text-gray-300 font-medium hidden md:table-cell">Matière</th>
+                  <th className="text-left py-4 px-4 text-gray-300 font-medium hidden lg:table-cell">Date consultée</th>
+                  <th className="text-left py-4 px-4 text-gray-300 font-medium hidden xl:table-cell">Statut</th>
+                  <th className="text-right py-4 px-6 text-gray-300 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((item, index) => (
+                  <tr 
+                    key={item.id} 
+                    className={`border-t border-white/5 hover:bg-white/5 transition-colors ${index % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
+                  >
+                    <td className="py-4 px-6">
+                      <div className="flex items-center">
+                        <div className="bg-teal-500/10 p-2 rounded-lg mr-3 flex-shrink-0">
+                          <FileText className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <h4 
+                            className="font-medium text-white hover:text-teal-400 transition-colors cursor-pointer truncate max-w-xs"
+                            onClick={() => setSelectedDocument(item)}
+                          >
+                            {item.title}
+                          </h4>
+                          <div className="flex items-center mt-1">
+                            <TypeBadge type={item.type} />
+                            <span className="ml-2 text-xs text-gray-400">{item.date}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 hidden md:table-cell">
+                      <div className="flex items-center">
+                        <BookOpen className="w-4 h-4 mr-2 text-teal-400" />
+                        <span className="text-gray-300">{item.subject}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 hidden lg:table-cell">
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2 text-teal-400" />
+                        <span className="text-gray-300">{item.lastViewed}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 hidden xl:table-cell">
+                      <AccessBadge accessType={item.accessType} />
+                    </td>
+                    <td className="py-4 px-6 text-right">
+                      <div className="flex justify-end items-center space-x-2">
+                        <button 
+                          onClick={() => setSelectedDocument(item)}
+                          className="p-2 bg-gray-700/50 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button className="flex items-center px-4 py-2 bg-teal-600/20 text-teal-400 rounded-lg hover:bg-teal-500/30 transition-colors">
+                          <DownloadCloud className="w-4 h-4 mr-2" />
+                          <span>Télécharger</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-      {/* Tableau de bord analytique */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="mt-12 bg-white rounded-xl shadow-lg p-6 overflow-hidden
-        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-white
-        ">
-          Analyse détaillée : <span className="text-teal-500">"Sujet Téléchargement"</span>
-        </h2>
+                       {/* Pagination améliorée */}
+                       {totalPages > 1 && (
+          <div className="flex justify-center mt-8 space-x-2 items-center">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-300" />
+            </button>
+
+            <div className="flex space-x-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-4 py-2 rounded-lg ${
+                    page === currentPage
+                      ? 'bg-teal-500 text-white'
+                      : 'bg-white/5 text-gray-300 hover:bg-white/10'
+                  } transition-colors`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-300" />
+            </button>
+          </div>
+        )}
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-teal-700 to-green-100 p-6 rounded-xl shadow-inner">
-            <div className="text-center">
-              <div className="text-5xl font-bold text-teal-900 mb-2">{totalDownloads}</div>
-              <div className="flex items-center justify-center">
-                <IconDownload className="text-teal-900 mr-2" />
-                <p className="text-teal-800">Téléchargements totaux</p>
+        {/* Bannière statistiques */}
+        {filteredHistory.length > 0 && (
+          <div className="mt-12 mb-8 bg-gradient-to-r from-teal-500/20 to-blue-500/20 rounded-xl p-6 border border-teal-500/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex items-center">
+                <div className="bg-teal-500/20 p-3 rounded-full mr-4">
+                  <FileText className="w-6 h-6 text-teal-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Total documents consultés</p>
+                  <p className="text-2xl font-bold text-white">{filteredHistory.length}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="bg-teal-500/20 p-3 rounded-full mr-4">
+                  <DownloadCloud className="w-6 h-6 text-teal-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Documents téléchargés</p>
+                  <p className="text-2xl font-bold text-white">{historyItems.filter(d => d.accessType === 'Téléchargé').length}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="bg-teal-500/20 p-3 rounded-full mr-4">
+                  <Clock className="w-6 h-6 text-teal-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Dernière consultation</p>
+                  <p className="text-2xl font-bold text-white">25/04/25</p>
+                </div>
               </div>
             </div>
-            <div className="h-2 w-full bg-white bg-opacity-40 rounded-full mt-4">
-              <div className="h-2 bg-teal-900 rounded-full" style={{ width: `${(totalDownloads/5)*100}%` }}></div>
-            </div>
           </div>
-          
-          <div className="bg-gradient-to-br from-blue-100 to-sky-300 p-6 rounded-xl shadow-inner">
-            <div className="text-center">
-              <div className="text-5xl font-bold text-blue-600 mb-2">{totalViews}</div>
-              <div className="flex items-center justify-center">
-                <IconEye className="text-blue-500 mr-2" />
-                <p className="text-blue-800">Vues totales</p>
-              </div>
-            </div>
-            <div className="h-2 w-full bg-white bg-opacity-40 rounded-full mt-4">
-              <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${(totalViews/5)*100}%` }}></div>
-            </div>
-          </div>
-        </div>
-        
-       
-      </motion.div>
+        )}
+        </div>   
+              {/* Modal détail du document */}
+      {selectedDocument && <DocumentDetail />}   
     </div>
   );
-}
+};
 
 export default Historique;

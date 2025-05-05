@@ -13,7 +13,7 @@ const Footer = () => {
     <footer className="bg-gradient-to-b from-gray-800 to-gray-950 text-gray-300 pt-16 pb-8 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Newsletter section */}
-        <div className="mb-16 bg-gradient-to-r from-teal-900/30 to-gray-900/30 p-8 rounded-xl shadow-lg border border-gray-800">
+        <div className="mb-16 bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="max-w-md">
               <h3 className="text-2xl font-bold text-white mb-2">Restez informé</h3>

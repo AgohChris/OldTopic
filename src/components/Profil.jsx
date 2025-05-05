@@ -1,59 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { Camera, Lock, User, Mail, GraduationCap, Building, Save, CheckCircle, Pencil, Calendar, X, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-// Icônes SVG
-const IconCamera = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
-const IconLock = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-  </svg>
-);
-
-const IconUser = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-  </svg>
-);
-
-const IconEmail = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-  </svg>
-);
-
-const IconGraduationCap = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path d="M12 14l9-5-9-5-9 5 9 5z" />
-    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-  </svg>
-);
-
-const IconBuilding = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-  </svg>
-);
-
-const IconSave = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-  </svg>
-);
-
-const IconSuccess = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-function Profil() {
+export default function Profil() {
   // Données utilisateur (simulées)
   const [userData, setUserData] = useState({
     nom: "Nassere Yacouba",
@@ -61,20 +9,32 @@ function Profil() {
     filiere: "IGL",
     niveau: "Licence 3",
     institution: "UTA",
+    dateInscription: "12/09/2022",
     photo: null
   });
 
+  // États pour la modification
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState({...userData});
+
   // États pour la modification du mot de passe
+  const [passwordSection, setPasswordSection] = useState(false);
   const [ancienMdp, setAncienMdp] = useState("");
   const [nouveauMdp, setNouveauMdp] = useState("");
   const [confirmMdp, setConfirmMdp] = useState("");
   const [mdpError, setMdpError] = useState("");
   const [mdpSuccess, setMdpSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false
+  });
 
   // État pour le chargement
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [activeTab, setActiveTab] = useState('info');
 
   // Simulation de chargement
   useEffect(() => {
@@ -83,6 +43,13 @@ function Profil() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
+
+  // Réinitialiser les données d'édition lorsque le mode édition est désactivé
+  useEffect(() => {
+    if (!editMode) {
+      setEditData({...userData});
+    }
+  }, [editMode, userData]);
 
   // Fonction pour gérer le changement de photo
   const handlePhotoChange = (e) => {
@@ -126,42 +93,40 @@ function Profil() {
       // Réinitialiser le message de succès après 3 secondes
       setTimeout(() => {
         setMdpSuccess(false);
+        setPasswordSection(false);
       }, 3000);
     }, 1000);
   };
 
-  // Animation des sections
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i) => ({ 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        delay: i * 0.2, 
-        duration: 0.5, 
-        ease: "easeOut" 
-      } 
-    })
+  // Fonction pour sauvegarder les modifications du profil
+  const handleSaveProfile = () => {
+    setIsSaving(true);
+    
+    // Simulation d'une API call
+    setTimeout(() => {
+      setUserData({...editData});
+      setIsSaving(false);
+      setEditMode(false);
+    }, 1000);
   };
 
-  // Animation du titre
-  const titleVariants = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.7, 
-        ease: "easeOut"
-      }
-    }
+  // Fonction pour sauvegarder la photo
+  const handleSavePhoto = () => {
+    setIsSaving(true);
+    
+    // Simulation d'une API call
+    setTimeout(() => {
+      setUserData({...userData, photo: photoPreview});
+      setIsSaving(false);
+      setPhotoPreview(null);
+    }, 1000);
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mx-auto"></div>
           <p className="mt-4 text-xl text-white">Chargement de votre profil...</p>
         </div>
       </div>
@@ -169,290 +134,401 @@ function Profil() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={titleVariants}
-        className="text-center mb-12"
-      >
-        <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-green-400 to-teal-600 bg-clip-text text-transparent">
-          Votre Profil
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Gérez vos informations personnelles et paramètres de sécurité.
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Section Photo de profil */}
-        <motion.div
-          custom={0}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className=" rounded-xl shadow-md overflow-hidden md:col-span-1
-                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
-        >
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
-              <IconCamera className="mr-2 text-teal-500" />
-              Photo de profil
-            </h2>
-            
-            <div className="flex flex-col items-center justify-center">
-              <div className="relative group">
-                <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-900 to-green-600 flex items-center justify-center overflow-hidden relative">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-5xl font-bold text-white">
-                      {userData.nom.split(' ').map(name => name[0]).join('')}
-                    </span>
-                  )}
-                </div>
-                <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
-                  <span className="bg-white p-2 rounded-full">
-                    <IconCamera className="text-teal-600" />
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-30 px-4 sm:px-6 lg:px-8">
+      {/* En-tête avec photo de profil */}
+      <div className="max-w-6xl mx-auto
+      ">
+        <div className="p-8 mb-8 relative overflow-hidden
+        bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+          {/* Éléments décoratifs */}
+          <div className="absolute -top-14 -right-14 w-64 h-64 bg-teal-500 opacity-10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl"></div>
+          
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10
+          ">
+            {/* Photo de profil */}
+            <div className="relative group">
+              <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-600 to-blue-600 flex items-center justify-center overflow-hidden border-4 border-white/10 shadow-lg">
+                {userData.photo ? (
+                  <img src={userData.photo} alt="Profil" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-5xl font-bold text-white">
+                    {userData.nom.split(' ').map(name => name[0]).join('')}
                   </span>
-                  <input 
-                    type="file" 
-                    className="hidden" 
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                  />
-                </label>
+                )}
               </div>
-              
-              <p className="mt-4 text-sm text-teal-600 text-center">
-                Cliquez sur la photo pour modifier
-              </p>
-              
+              <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                <span className="bg-white p-2 rounded-full">
+                  <Camera size={24} className="text-teal-600" />
+                </span>
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                />
+              </label>
+            </div>
+            
+            {/* Informations principales */}
+            <div className="text-center md:text-left
+            ">
+              <h1 className="text-4xl font-black bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
+                {userData.nom}
+              </h1>
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mt-3 text-gray-300">
+                <div className="flex items-center justify-center md:justify-start">
+                  <Mail size={16} className="mr-2 text-teal-400" />
+                  {userData.email}
+                </div>
+                <div className="flex items-center justify-center md:justify-start">
+                  <GraduationCap size={16} className="mr-2 text-teal-400" />
+                  {userData.filiere} - {userData.niveau}
+                </div>
+                <div className="flex items-center justify-center md:justify-start">
+                  <Calendar size={16} className="mr-2 text-teal-400" />
+                  Inscrit depuis {userData.dateInscription}
+                </div>
+              </div>
+            </div>
+
+            {/* Boutons d'action */}
+            <div className="absolute top-2 right-2 flex gap-2">
               {photoPreview && (
                 <button 
-                  className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center"
-                  onClick={() => {
-                    // Simuler la sauvegarde
-                    setIsSaving(true);
-                    setTimeout(() => {
-                      setUserData({...userData, photo: photoPreview});
-                      setIsSaving(false);
-                    }, 1000);
-                  }}
+                  onClick={handleSavePhoto}
+                  className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded-full transition-colors"
                 >
-                  {isSaving ? 
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sauvegarde...
-                    </span> : 
-                    <>
-                      <IconSave className="mr-2" />
-                      Enregistrer
-                    </>
-                  }
+                  {isSaving ? (
+                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  ) : (
+                    <Save size={18} />
+                  )}
                 </button>
               )}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Section Informations personnelles */}
-        <motion.div
-          custom={1}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className=" rounded-xl shadow-md overflow-hidden md:col-span-2
-                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
-        >
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
-              <IconUser className="mr-2 text-teal-500" />
-              Informations personnelles
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">Nom complet</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
-                  <IconUser className="text-gray-500 mr-2" />
-                  <span>{userData.nom}</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">Email</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
-                  <IconEmail className="text-gray-500 mr-2" />
-                  <span>{userData.email}</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">Filière</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
-                  <IconGraduationCap className="text-gray-500 mr-2" />
-                  <span>{userData.filiere}</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-teal-700 mb-1">Niveau</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
-                  <IconGraduationCap className="text-gray-500 mr-2" />
-                  <span>{userData.niveau}</span>
-                </div>
-              </div>
-              
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-teal-700 mb-1">Institution</label>
-                <div className="flex items-center border border-gray-300 rounded-lg p-3 bg-teal-100">
-                  <IconBuilding className="text-gray-500 mr-2" />
-                  <span>{userData.institution}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 text-sm text-gray-400">
-              Pour modifier ces informations, veuillez contacter l'administration.
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Section Sécurité - Modification du mot de passe */}
-        <motion.div
-          custom={2}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className=" rounded-xl shadow-md overflow-hidden md:col-span-3
-                        bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
-        >
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center">
-              <IconLock className="mr-2 text-teal-500" />
-              Sécurité - Modification du mot de passe
-            </h2>
-            
-            <form onSubmit={handlePasswordSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-teal-700 mb-1">Mot de passe actuel</label>
-                  <input 
-                    type="password" 
-                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
-                    value={ancienMdp}
-                    onChange={(e) => setAncienMdp(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-teal-700 mb-1">Nouveau mot de passe</label>
-                  <input 
-                    type="password" 
-                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
-                    value={nouveauMdp}
-                    onChange={(e) => setNouveauMdp(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-teal-700 mb-1">Confirmer le mot de passe</label>
-                  <input 
-                    type="password" 
-                    className="w-full p-3 border text-white border-teal-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent"
-                    value={confirmMdp}
-                    onChange={(e) => setConfirmMdp(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              
-              {mdpError && (
-                <div className="mt-4 text-red-500 bg-red-50 p-3 rounded-lg">
-                  {mdpError}
-                </div>
-              )}
-              
-              {mdpSuccess && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 text-green-700 bg-green-50 p-3 rounded-lg flex items-center"
-                >
-                  <IconSuccess className="mr-2" />
-                  Votre mot de passe a été modifié avec succès.
-                </motion.div>
-              )}
-              
-              <div className="mt-6 flex justify-center">
+              {!editMode ? (
                 <button 
-                  type="submit"
-                  className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center"
-                  disabled={isSaving}
+                  onClick={() => setEditMode(true)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition-colors"
                 >
-                  {isSaving ? 
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Modification en cours...
-                    </span> : 
-                    <>
-                      <IconLock className="mr-2" />
-                      Modifier le mot de passe
-                    </>
-                  }
+                  <Pencil size={18} />
                 </button>
-              </div>
-            </form>
+              ) : (
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setEditMode(false)}
+                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                  <button 
+                    onClick={handleSaveProfile}
+                    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-colors"
+                  >
+                    {isSaving ? (
+                      <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    ) : (
+                      <CheckCircle size={18} />
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </motion.div>
-        
-        {/* Section des statistiques d'activité */}
-        <motion.div
-          custom={3}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="bg-white rounded-xl shadow-md overflow-hidden md:col-span-3
-                  bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-400/30 transition-all duration-300"
-        >
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-white mb-6">Résumé de votre activité</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-teal-700 to-green-100 p-6 rounded-xl shadow-inner">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-teal-900 mb-2">37</div>
-                  <p className="text-teal-900">Ressources téléchargées</p>
+        </div>
+
+        {/* Onglets de navigation */}
+        <div className="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
+          <button 
+            onClick={() => setActiveTab('info')}
+            className={`px-6 py-3 rounded-full transition-all ${
+              activeTab === 'info' 
+                ? 'bg-teal-500 text-white font-medium shadow-lg' 
+                : 'bg-white/5 text-gray-300 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center">
+              <User size={18} className="mr-2" />
+              <span>Informations</span>
+            </div>
+          </button>
+          <button 
+            onClick={() => setActiveTab('security')}
+            className={`px-6 py-3 rounded-full transition-all ${
+              activeTab === 'security' 
+                ? 'bg-teal-500 text-white font-medium shadow-lg' 
+                : 'bg-white/5 text-gray-300 hover:bg-white/10'
+            }`}
+          >
+            <div className="flex items-center">
+              <Lock size={18} className="mr-2" />
+              <span>Sécurité</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Contenu des onglets */}
+        <div className="space-y-6">
+          {/* Informations personnelles */}
+          {activeTab === 'info' && (
+            <div className=" bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <User className="mr-3 text-teal-400" />
+                Informations personnelles
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Nom complet */}
+                <div>
+                  <label className="block text-sm font-medium text-teal-400 mb-2">Nom complet</label>
+                  {!editMode ? (
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                      <User size={20} className="text-gray-400" />
+                      <span className="text-white">{userData.nom}</span>
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      value={editData.nom}
+                      onChange={(e) => setEditData({...editData, nom: e.target.value})}
+                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                    />
+                  )}
+                </div>
+                
+                {/* Email */}
+                <div>
+                  <label className="block text-sm font-medium text-teal-400 mb-2">Email</label>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <Mail size={20} className="text-gray-400" />
+                    <span className="text-white">{userData.email}</span>
+                  </div>
+                </div>
+                
+                {/* Filière */}
+                <div>
+                  <label className="block text-sm font-medium text-teal-400 mb-2">Filière</label>
+                  {!editMode ? (
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                      <GraduationCap size={20} className="text-gray-400" />
+                      <span className="text-white">{userData.filiere}</span>
+                    </div>
+                  ) : (
+                    <select
+                      value={editData.filiere}
+                      onChange={(e) => setEditData({...editData, filiere: e.target.value})}
+                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                    >
+                      <option value="IGL">IGL</option>
+                      <option value="RT">RT</option>
+                      <option value="SI">SI</option>
+                      <option value="MIAGE">MIAGE</option>
+                    </select>
+                  )}
+                </div>
+                
+                {/* Niveau */}
+                <div>
+                  <label className="block text-sm font-medium text-teal-400 mb-2">Niveau</label>
+                  {!editMode ? (
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                      <GraduationCap size={20} className="text-gray-400" />
+                      <span className="text-white">{userData.niveau}</span>
+                    </div>
+                  ) : (
+                    <select
+                      value={editData.niveau}
+                      onChange={(e) => setEditData({...editData, niveau: e.target.value})}
+                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                    >
+                      <option value="Licence 1">Licence 1</option>
+                      <option value="Licence 2">Licence 2</option>
+                      <option value="Licence 3">Licence 3</option>
+                      <option value="Master 1">Master 1</option>
+                      <option value="Master 2">Master 2</option>
+                    </select>
+                  )}
+                </div>
+                
+                {/* Institution */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-teal-400 mb-2">Institution</label>
+                  {!editMode ? (
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                      <Building size={20} className="text-gray-400" />
+                      <span className="text-white">{userData.institution}</span>
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      value={editData.institution}
+                      onChange={(e) => setEditData({...editData, institution: e.target.value})}
+                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                    />
+                  )}
                 </div>
               </div>
               
-              <div className="bg-gradient-to-br from-blue-100 to-sky-300 p-6 rounded-xl shadow-inner">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">124</div>
-                  <p className="text-blue-800">Ressources consultées</p>
+              {!editMode && (
+                <div className="mt-8 text-center">
+                  <button 
+                    onClick={() => setEditMode(true)}
+                    className="inline-flex items-center px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-full transition-colors shadow-lg"
+                  >
+                    <Pencil size={18} className="mr-2" />
+                    Modifier mes informations
+                  </button>
                 </div>
-              </div>
+              )}
             </div>
-            
-            <div className="mt-6 text-center">
-              <a href="/historique" className="text-teal-600 hover:text-teal-800 font-medium">
-                Voir l'historique complet →
-              </a>
+          )}
+
+          {/* Sécurité */}
+          {activeTab === 'security' && (
+            <div className=" bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Lock className="mr-3 text-teal-400" />
+                Sécurité du compte
+              </h2>
+              
+              {!passwordSection ? (
+                <div className="text-center py-12">
+                  <div className="mb-8">
+                    <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Lock size={40} className="text-teal-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Votre mot de passe</h3>
+                    <p className="text-gray-300">Modifiez votre mot de passe pour sécuriser votre compte</p>
+                  </div>
+                  
+                  <button 
+                    onClick={() => setPasswordSection(true)}
+                    className="inline-flex items-center px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-full transition-colors shadow-lg"
+                  >
+                    <Lock size={18} className="mr-2" />
+                    Modifier mon mot de passe
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handlePasswordSubmit} className="space-y-6">
+                  {/* Ancien mot de passe */}
+                  <div>
+                    <label className="block text-sm font-medium text-teal-400 mb-2">Mot de passe actuel</label>
+                    <div className="relative">
+                      <input 
+                        type={showPassword.old ? "text" : "password"}
+                        className="w-full p-4 pr-12 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                        value={ancienMdp}
+                        onChange={(e) => setAncienMdp(e.target.value)}
+                        required
+                      />
+                      <button 
+                        type="button"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        onClick={() => setShowPassword({...showPassword, old: !showPassword.old})}
+                      >
+                        {showPassword.old ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Nouveau mot de passe */}
+                  <div>
+                    <label className="block text-sm font-medium text-teal-400 mb-2">Nouveau mot de passe</label>
+                    <div className="relative">
+                      <input 
+                        type={showPassword.new ? "text" : "password"}
+                        className="w-full p-4 pr-12 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                        value={nouveauMdp}
+                        onChange={(e) => setNouveauMdp(e.target.value)}
+                        required
+                      />
+                      <button 
+                        type="button"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        onClick={() => setShowPassword({...showPassword, new: !showPassword.new})}
+                      >
+                        {showPassword.new ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Confirmer mot de passe */}
+                  <div>
+                    <label className="block text-sm font-medium text-teal-400 mb-2">Confirmer le nouveau mot de passe</label>
+                    <div className="relative">
+                      <input 
+                        type={showPassword.confirm ? "text" : "password"}
+                        className="w-full p-4 pr-12 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
+                        value={confirmMdp}
+                        onChange={(e) => setConfirmMdp(e.target.value)}
+                        required
+                      />
+                      <button 
+                        type="button"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        onClick={() => setShowPassword({...showPassword, confirm: !showPassword.confirm})}
+                      >
+                        {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Message d'erreur */}
+                  {mdpError && (
+                    <div className="p-4 bg-red-900/20 border border-red-500/50 rounded-xl flex items-center gap-3">
+                      <AlertCircle size={20} className="text-red-500" />
+                      <span className="text-red-400">{mdpError}</span>
+                    </div>
+                  )}
+                  
+                  {/* Message de succès */}
+                  {mdpSuccess && (
+                    <div className="p-4 bg-green-900/20 border border-green-500/50 rounded-xl flex items-center gap-3">
+                      <CheckCircle size={20} className="text-green-500" />
+                      <span className="text-green-400">Votre mot de passe a été modifié avec succès.</span>
+                    </div>
+                  )}
+                  
+                  {/* Boutons d'action */}
+                  <div className="flex justify-center gap-4 pt-4">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setPasswordSection(false);
+                        setAncienMdp("");
+                        setNouveauMdp("");
+                        setConfirmMdp("");
+                        setMdpError("");
+                      }}
+                      className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-full transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <button 
+                      type="submit"
+                      className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-full transition-colors flex items-center"
+                      disabled={isSaving}
+                    >
+                      {isSaving ? (
+                        <>
+                          <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                          Modification...
+                        </>
+                      ) : (
+                        <>
+                          <Lock size={18} className="mr-2" />
+                          Modifier le mot de passe
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-          </div>
-        </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-export default Profil;
