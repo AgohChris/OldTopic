@@ -575,9 +575,6 @@ const DownloadList = () => {
                         <span className="text-gray-300">{item.level}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-4 hidden xl:table-cell">
-                      <RatingStars rating={item.rating} />
-                    </td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex justify-end items-center space-x-2">
                         <button 
