@@ -93,6 +93,18 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         )
 
 
+class EtudiantModifieMdpSerializer(serializers.Serializer):
+    ancien_mdp = serializers.CharField(required =True)
+    nouveau_mdp = serializers.CharField(required =True)
+    confirm_nouveau_mdp = serializers.CharField(required =True)
+
+    def validate(self, data):
+        if data['nouveau_mdp'] != data['confirm_nouveau_mdp']:
+            raise serializers.ValidationError("Les mots de passe ne correspondent pas.")
+        
+        
+        return data
+
 
 class AjoutAdminSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)
@@ -132,7 +144,19 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
             fail_silently=False,
         )
     
+class AdminUpdateSerializer(serializers.Serializer):
+    nom = serializers.CharField(required=False)
+    photo = serializers.ImageField(required=False)
 
+class AdminModifierMdpSerializer(serializers.Serializer):
+    ancien_mdp = serializers.CharField(required =True)
+    nouveau_mdp = serializers.CharField(required =True)
+    confirm_nouveau_mdp = serializers.CharField(required =True)
+
+    def validate(self, data):
+        if data['nouveau_mdp'] != data['confirm_nouveau_mdp']:
+            raise serializers.ValidationError("Les mots de passe ne correspondent pas.")        
+        return data
 
 class  mdpResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -253,3 +277,7 @@ class NewsletterMessageSerializer(serializers.ModelSerializer):
         model = newsletterMessage
         fields = ['id', 'objet', 'contenue', 'created_at', 'sent_at']
         read_only_fields = ['created_at', 'sent_at']
+
+
+
+

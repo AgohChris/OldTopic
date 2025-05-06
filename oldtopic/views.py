@@ -33,6 +33,7 @@ class Etudiantlogin_view(APIView):
 
         if user is not None:
             if user.is_etudiant() and user.is_active:
+                request.session['user_id'] = user.id  # Stocker l'ID utilisateur dans la session
                 self.envoie_mail_de_signal(user.email, user.last_name)
                 return Response({"message": "connexion Réussi", "role":"etudiant"}, status=status.HTTP_200_OK)
             elif not user.is_active:
@@ -73,6 +74,7 @@ class Adminlogin_view(APIView):
 
         if user is not None:
             if user.is_admin() and user.is_active:
+                request.session['user_id'] = user.id  # Stocker l'ID utilisateur dans la session
                 self.envoie_mail_de_signal(user.email, user.last_name)
                 return Response({"message": "connexion Réussi", "role":"admin", "username": f"{user.last_name}"}, status=status.HTTP_200_OK)
             elif not user.is_active:
@@ -157,33 +159,35 @@ class AjoutAdminView(APIView):
 class AdminModifieMdpView(APIView):
 
     def put(self, request):
-        user = request.user  # Identifiez l'utilisateur connecté directement
+        user_id = request.session.get('user_id')
+
+        if not user_id:
+           return Response({"error":"Utilisateur non identifier."}, status=status.HTTP_401_UNAUTHORIZED)
+       
+
+        try:
+           user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+           return Response({"error": "Cet utilisateur n'existe pas"}, status=status.HTTP_404_NOT_FOUND)
+        
 
         if not user.is_admin():
-            return Response({"error": "Vous n'êtes pas un Admin"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Vous n'êtes pas un amin"}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = AdminModifierMdpSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            user.last_name = data.get('nom', user.last_name)
 
-        ancien_mdp = request.data.get("ancien_mdp")
-        nouveau_mdp = request.data.get("nouveau_mdp")
-        confirm_nouveau_mdp = request.data.get("confirm_nouveau_mdp")
+            if 'photo' in request.FILES:
+                user.photo = request.FILES['photo']
+            
+            user.save()
+            self.envoie_mail_de_signal(user.email, user.first_name)
 
-        if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
-            return Response({"error": "Tous les champs sont obligatoires"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not user.check_password(ancien_mdp):
-            return Response({"error": "L'ancien mot de passe est incorrect"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if nouveau_mdp != confirm_nouveau_mdp:
-            return Response({"error": "Les mots de passe ne correspondent pas"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if nouveau_mdp == ancien_mdp:
-            return Response({"error": "Le nouveau mot de passe doit être différent de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.set_password(nouveau_mdp)
-        user.save()
-
-        self.envoie_mail_de_signal(user.email, user.first_name)
-
-        return Response({"message": "Votre mot de passe a été modifié avec succès"}, status=status.HTTP_200_OK)
+            return Response({"message":"Vos informations ont été modifié"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
     def envoie_mail_de_signal(self, email, nom):
         send_mail(
@@ -200,23 +204,34 @@ class AdminModifieMdpView(APIView):
 class AdminUpdateView(APIView): 
 
     def put(self, request):
-        user = request.user  # Identifiez l'utilisateur connecté directement
 
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return Response({"error": "Utilisateur non identifié."}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error":"Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
         if not user.is_admin():
-            return Response({"error": "Vous n'êtes pas un Admin"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error":"Vous n'êtes pas un admin"}, status=status.HTTP_400_BAD_REQUEST)
+        
 
-        data = request.data
-        photo = request.FILES.get("photo")
-        user.last_name = data.get('nom', user.last_name)
+        serializer = AdminUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            user.last_name = data.get('nom', user.last_name)
 
-        if photo:
-            user.photo = photo
+            if 'photo' in request.FILES:
+                user.photo = request.FILES['photo']
 
-        user.save()
-        self.envoie_mail_de_signal(user.email, user.first_name)
+            user.save()
+            self.envoie_mail_de_signal(user.email, user.first_name)
+            return Response({"message":"Vos informations ont été mise a jour avec"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"messages": "Vos Infos ont été mises à jour avec succès"}, status=status.HTTP_200_OK)
-
+       
     def envoie_mail_de_signal(self, email, nom):
         send_mail(
             subject="Modification des infos de votre compte OldTopic",
@@ -230,40 +245,40 @@ class AdminUpdateView(APIView):
 
 # Etudiant Modifie son password
 class EtudiantModifieMdpview(APIView):
-
     def put(self, request):
-        user = request.user  # Identifiez l'utilisateur connecté directement
-        
-        if user.is_anonynous:
-            return Response({"error": "Vous devez être connecté pour modifier votre mot de passe"}, status=status.HTTP_401_UNAUTHORIZED)
-        
+        # user = request.user  # Identifiez l'utilisateur connecté directement
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return Response({"error": "Utilisateur non identifié. Veuillez vous connecter."}, status=status.HTTP_401_UNAUTHORIZED)
+       
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
 
+        
         if not user.is_etudiant():
-
             return Response({"error": "Vous n'êtes pas un étudiant"}, status=status.HTTP_403_FORBIDDEN)
 
-        ancien_mdp = request.data.get("ancien_mdp")
-        nouveau_mdp = request.data.get("nouveau_mdp")
-        confirm_nouveau_mdp = request.data.get("confirm_nouveau_mdp")
+        serializer = EtudiantModifieMdpSerializer(data=request.data)
+        if serializer.is_valid():
+            ancien_mdp = serializer.validated_data['ancien_mdp']
+            nouveau_mdp = serializer.validated_data['nouveau_mdp']
+            # confirm_nouveau_mdp = serializer.validate['confirm_nouveau_mdp']
 
-        if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
-            return Response({"error": "Tous les champs sont obligatoires"}, status=status.HTTP_400_BAD_REQUEST)
+            if not user.check_password(ancien_mdp):
+                return Response({"error":"L'ancien mot de passe ne correspond pas"}, status=status.HTTP_400_BAD_REQUEST)
+            if ancien_mdp == nouveau_mdp:
+                return Response({"error":"le nouveau mot de passe n'est pas different de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(nouveau_mdp)
+            user.save()
 
-        if not user.check_password(ancien_mdp):
-            return Response({"error": "L'ancien mot de passe est incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+            self.envoie_mail_de_signal(user.email, user.first_name)
 
-        if nouveau_mdp != confirm_nouveau_mdp:
-            return Response({"error": "Les mots de passe ne correspondent pas"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if nouveau_mdp == ancien_mdp:
-            return Response({"error": "Le nouveau mot de passe doit être différent de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.set_password(nouveau_mdp)
-        user.save()
-
-        self.envoie_mail_de_signal(user.email, user.first_name)
-
-        return Response({"message": "Votre mot de passe a été modifié avec succès"}, status=status.HTTP_200_OK)
+            return Response({"message":"Votre mot de passe à été modifier!"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
     def envoie_mail_de_signal(self, email, nom):
         send_mail(
@@ -386,15 +401,3 @@ class SendNewsletterView(APIView):
 
         return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
     
-
-
-
-
-
-# Non ce n'est pas ça que tu as fait. regarde ici bien
-# user_id = request.session.get('user_id') 
-
-# ici on recupere directe la session. la méthode que toi tu utilise la je te l'ai déja dis elle ne fonctionne pas.
-#  user_id = request.session.get('user_id') 
-#         if not user_id:
-#             return Response({"error": "Utilisateur non identifié. Veuillez recommencer le processus."}, status=status.HTTP_400_BAD_REQUEST)
