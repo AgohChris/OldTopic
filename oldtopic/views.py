@@ -1,8 +1,4 @@
-from pyexpat.errors import messages
-from unittest.result import failfast
 from django.utils import timezone
-
-
 from .models import *
 from .serializers import *
 from django.http import HttpResponse
@@ -11,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
-from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -20,7 +15,7 @@ def home(request):
 
 
 
-# Authentification & Gestion des Comptes
+#================ Authentification & Gestion des Comptes ====================
 
 # login Etudiant
 class Etudiantlogin_view(APIView):
