@@ -45,6 +45,10 @@ urlpatterns = [
     path('newsletter/message_campagne/<int:message_id>/send/', SendNewsletterView.as_view(), name='send_newsletter'),
 
 
+    # Ajout des matricules
+    path('/matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule')
+
+
 
 
 

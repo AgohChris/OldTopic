@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-
 class EtudiantRegistrationSerializer(serializers.ModelSerializer):
     nom = serializers.CharField(write_only=True)
     prenom = serializers.CharField(write_only=True)
@@ -143,10 +142,14 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
             recipient_list=[email],
             fail_silently=False,
         )
-    
+
+
+
 class AdminUpdateSerializer(serializers.Serializer):
     nom = serializers.CharField(required=False)
     photo = serializers.ImageField(required=False)
+
+
 
 class AdminModifierMdpSerializer(serializers.Serializer):
     ancien_mdp = serializers.CharField(required =True)
@@ -157,6 +160,8 @@ class AdminModifierMdpSerializer(serializers.Serializer):
         if data['nouveau_mdp'] != data['confirm_nouveau_mdp']:
             raise serializers.ValidationError("Les mots de passe ne correspondent pas.")        
         return data
+
+
 
 class  mdpResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -188,7 +193,6 @@ class  mdpResetRequestSerializer(serializers.Serializer):
             recipient_list=[email],
             fail_silently=False,
         )
-
 
 
 
@@ -281,3 +285,17 @@ class NewsletterMessageSerializer(serializers.ModelSerializer):
 
 
 
+class AjoutDeMatriculeSerializer(serializers.ModelSerializer):
+    matricule = serializers.CharField(write_only=True)
+    nom = serializers.CharField(write_only=True)
+    prenom = serializers.CharField(write_only=True)
+    Niveau = serializers.CharField(write_only=True)
+    Filiere = serializers.CharField(write_only=True)
+   
+
+    def create(self, validated_data):
+       return PreEnregistrementMatricule.objects.create(**validated_data)
+   
+    class Meta:
+        model = PreEnregistrementMatricule
+        fields = ['matricule', 'nom', 'prenom', 'Niveau', 'Filiere']

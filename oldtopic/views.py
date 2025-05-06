@@ -396,3 +396,13 @@ class SendNewsletterView(APIView):
 
         return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
     
+
+# Views pour l'ajout de matricule
+class AjoutDeMatriculeView(APIView):
+    def post(self, request):
+        serializer = AjoutDeMatriculeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message":"Matricule ajouté"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
