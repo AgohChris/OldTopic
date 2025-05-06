@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password', 'password2']
 
 
-  
+
 
 class EtudiantRegistrationSerializer(serializers.ModelSerializer):
     nom = serializers.CharField(write_only=True)

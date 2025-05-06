@@ -153,87 +153,123 @@ class AjoutAdminView(APIView):
             return Response({"message": "Administrateur Ajouté avec succès"})
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Admin modifie son Password
+class AdminModifieMdpView(APIView):
 
-# View pour les mises a jour des infos de l'admin
-class AdminUpdateView(APIView): 
     def put(self, request):
-        user = request.user
+        user = request.user  # Identifiez l'utilisateur connecté directement
 
-        if not user.is_authenticated or not user.is_admin():
-            return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
-        
-        data = request.data
-        user.last_name = data.get('nom', user.last_name)
-        user.set_password = data.get('password', user.password)
-        user.save()
-        self.envoie_mail_de_signal(user.email, user.nom)
-
-        return Response({"messages": "Vos Infos ont été mise a jour avec Succès"}, status=status.HTTP_200_OK)
-
-    def envoie_mail_de_signal(self, email, nom):
-        send_mail(
-            subject="Modfication des infos de votre compte OldTopic",
-            message = f"Bonjour Admin {nom}, les modification éffectuer a votre compte OldTopic on bien été prise en compte."
-                      f" \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant au SuperAdmin",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
-        )
-
-
-# Mise a jour des infos de l'étudiant
-
-class EtudiantUpdateview(APIView):
-
-    # permission_classes = [IsAuthenticated]
-
-    def put(self, request, user_id):
-
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "Cet Utilisateur n'existe pas!"}, status=status.HTTP_404_NOT_FOUND)
-
-        # user = request.user
-        # print(f"Utilisateur : {user}, Authentifié : {user.is_authenticated}, Est étudiant : {user.is_etudiant()}")
-
-        if not user.is_etudiant():
-            return Response({"error":"Cet utilisateur n'est pas un Etudiant"}, status=status.HTTP_403_FORBIDDEN)
-
-        # print(f"En-têtes de la requête : {request.headers}")
-        # # Pour vérifier s'il s'est authentifier
-        # if not user.is_authenticated or not user.is_etudiant():
-        #     return Response({"error": "Vous n'êtes pas autorisé"}, status=status.HTTP_403_FORBIDDEN)
+        if not user.is_admin():
+            return Response({"error": "Vous n'êtes pas un Admin"}, status=status.HTTP_403_FORBIDDEN)
 
         ancien_mdp = request.data.get("ancien_mdp")
         nouveau_mdp = request.data.get("nouveau_mdp")
         confirm_nouveau_mdp = request.data.get("confirm_nouveau_mdp")
 
         if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
-            return Response({"error": "Tous les champs sont obligtoire"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response({"error": "Tous les champs sont obligatoires"}, status=status.HTTP_400_BAD_REQUEST)
+
         if not user.check_password(ancien_mdp):
-            return Response({"error": "L'ancien mot de passe est incorrecte"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "L'ancien mot de passe est incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
         if nouveau_mdp != confirm_nouveau_mdp:
-            return Response({"error": "les mots de passes ne correspondent pas."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Les mots de passe ne correspondent pas"}, status=status.HTTP_400_BAD_REQUEST)
 
         if nouveau_mdp == ancien_mdp:
-            return Response({"error": "le nouveau mot de passe n'est pas différents de l'ancien. Choisissez un autre mot de passe."})
+            return Response({"error": "Le nouveau mot de passe doit être différent de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(nouveau_mdp)
         user.save()
 
         self.envoie_mail_de_signal(user.email, user.first_name)
 
-        return Response({"message": "Votre mot de passe à été modifier."}, status=status.HTTP_200_OK)
-
+        return Response({"message": "Votre mot de passe a été modifié avec succès"}, status=status.HTTP_200_OK)
 
     def envoie_mail_de_signal(self, email, nom):
         send_mail(
-            subject="Modfication des infos de votre compte OldTopic",
-            message = f"Bonjour {nom}, les modification éffectuer a votre compte OldTopic on bien été prise en compte."
-                      f" \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant a un Admin de l'école",
+            subject="Modification du mot de passe de votre compte OldTopic",
+            message=f"Bonjour Admin {nom}, votre mot de passe a été modifié avec succès."
+                    f"\nSi vous n'êtes pas à l'origine de cette modification, veuillez le signaler dès maintenant au SuperAdmin.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+# View pour les mises a jour des infos de l'admin
+class AdminUpdateView(APIView): 
+
+    def put(self, request):
+        user = request.user  # Identifiez l'utilisateur connecté directement
+
+        if not user.is_admin():
+            return Response({"error": "Vous n'êtes pas un Admin"}, status=status.HTTP_403_FORBIDDEN)
+
+        data = request.data
+        photo = request.FILES.get("photo")
+        user.last_name = data.get('nom', user.last_name)
+
+        if photo:
+            user.photo = photo
+
+        user.save()
+        self.envoie_mail_de_signal(user.email, user.first_name)
+
+        return Response({"messages": "Vos Infos ont été mises à jour avec succès"}, status=status.HTTP_200_OK)
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Modification des infos de votre compte OldTopic",
+            message=f"Bonjour Admin {nom}, les modifications apportées à votre compte OldTopic ont été prises en compte."
+                    f"\nSi vous n'êtes pas à l'origine de ces modifications, veuillez le signaler dès maintenant au SuperAdmin.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+# Etudiant Modifie son password
+class EtudiantModifieMdpview(APIView):
+
+    def put(self, request):
+        user = request.user  # Identifiez l'utilisateur connecté directement
+        
+        if user.is_anonynous:
+            return Response({"error": "Vous devez être connecté pour modifier votre mot de passe"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+        if not user.is_etudiant():
+
+            return Response({"error": "Vous n'êtes pas un étudiant"}, status=status.HTTP_403_FORBIDDEN)
+
+        ancien_mdp = request.data.get("ancien_mdp")
+        nouveau_mdp = request.data.get("nouveau_mdp")
+        confirm_nouveau_mdp = request.data.get("confirm_nouveau_mdp")
+
+        if not ancien_mdp or not nouveau_mdp or not confirm_nouveau_mdp:
+            return Response({"error": "Tous les champs sont obligatoires"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.check_password(ancien_mdp):
+            return Response({"error": "L'ancien mot de passe est incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if nouveau_mdp != confirm_nouveau_mdp:
+            return Response({"error": "Les mots de passe ne correspondent pas"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if nouveau_mdp == ancien_mdp:
+            return Response({"error": "Le nouveau mot de passe doit être différent de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(nouveau_mdp)
+        user.save()
+
+        self.envoie_mail_de_signal(user.email, user.first_name)
+
+        return Response({"message": "Votre mot de passe a été modifié avec succès"}, status=status.HTTP_200_OK)
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Modification du mot de passe de votre compte OldTopic",
+            message=f"Bonjour {nom}, votre mot de passe a été modifié avec succès."
+                    f"\nSi vous n'êtes pas à l'origine de cette modification, veuillez le signaler dès maintenant.",
             from_email="agohchris90@gmail.com",
             recipient_list=[email],
             fail_silently=False,
@@ -349,3 +385,16 @@ class SendNewsletterView(APIView):
         message.save()
 
         return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
+    
+
+
+
+
+
+# Non ce n'est pas ça que tu as fait. regarde ici bien
+# user_id = request.session.get('user_id') 
+
+# ici on recupere directe la session. la méthode que toi tu utilise la je te l'ai déja dis elle ne fonctionne pas.
+#  user_id = request.session.get('user_id') 
+#         if not user_id:
+#             return Response({"error": "Utilisateur non identifié. Veuillez recommencer le processus."}, status=status.HTTP_400_BAD_REQUEST)

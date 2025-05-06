@@ -35,17 +35,19 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
 
-    USERNAME_FIELD = 'username'  
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'  
+    REQUIRED_FIELDS = []
 
     ROLES = (
         ('admin', 'Admin'),
         ('etudiant', 'Etudiant'),
         ('superadmin', 'SuperAdmin'),
     )
+    email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
     is_active = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
+    photo = models.ImageField(upload_to='photo/', blank=True, null=True)
     
 
     objects = UserManager()  

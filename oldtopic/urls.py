@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # Page d'accueil
@@ -20,9 +22,8 @@ urlpatterns = [
     # ======Connexion
     path('auth/login/etudiant/', Etudiantlogin_view.as_view(), name='login_student'),
 
-    # ======Modification des infos de l'étudiants 
-    path('auth/etudiant/<int:user_id>/update/profile', EtudiantUpdateview.as_view(), name='update_student_profile'),
-
+    # ======Modification Du mdp de l'étudiants 
+    path('auth/etudiant/update/password/', EtudiantModifieMdpview.as_view(), name='update_student_password'),
 
                                         #=========Admin==============
 
@@ -33,7 +34,8 @@ urlpatterns = [
     path('auth/login/admin/', Adminlogin_view.as_view(), name='login_admin'),
 
     # ======== Modification des infos 
-    path('auth/admin/update/profile', AdminUpdateView.as_view(), name='update_admin_profile'),
+    path('auth/admin/update/profile/', AdminUpdateView.as_view(), name='update_admin_profile'),
+    path('auth/admin/update/password/', AdminModifieMdpView.as_view(), name='update_admin_password'),
 
 
                                         #==========Newsletter==========
@@ -42,4 +44,11 @@ urlpatterns = [
     path('newsletter/message_campagne/', NewsLetterMessageView.as_view(), name='newsletter_campaigns'),
     path('newsletter/message_campagne/<int:message_id>/send/', SendNewsletterView.as_view(), name='send_newsletter'),
 
-]
+
+
+
+
+
+    
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
