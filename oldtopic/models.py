@@ -2,7 +2,7 @@ from django.utils.timezone import now
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
+from .utils import *
 # Create your models here.
 
 
@@ -47,7 +47,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
     is_active = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    photo = models.ImageField(upload_to='photo/', blank=True, null=True)
+    photo = models.ImageField(upload_to=photo_upload_path, blank=True, null=True)
     
 
     objects = UserManager()  
@@ -74,6 +74,7 @@ class Etudiant(models.Model):
     
     def __str__(self):
         return f'{self.user.username} - {self.matricule} - {self.user.first_name} - {self.user.last_name}'
+
 
 
 class PreEnregistrementMatricule(models.Model):
@@ -180,8 +181,8 @@ class Sujet(models.Model):
     type = models.CharField(max_length=60)
     annee = models.CharField(max_length=60)
     auteur = models.CharField(max_length=60)
-    Sujet_url = models.FileField(upload_to='sujets/')
-    Corriger_url = models.FileField(upload_to='corriges/')
+    Sujet_url = models.FileField(upload_to=sujet_upload_path)
+    Corriger_url = models.FileField(upload_to=corriger_upload_path)
     date_upload = models.DateTimeField(auto_now=True)
     nb_telechargement = models.IntegerField()
 
@@ -206,3 +207,5 @@ class newsletterMessage(models.Model):
 class Historique(models.Model):
     date_consultation = models.DateTimeField(auto_now=True)
     action = models.CharField(max_length=30)
+
+
