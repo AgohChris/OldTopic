@@ -8,7 +8,13 @@ import LoginStudent from "./components/LoginStudent";
 import MDPoublier from "./components/MDPoublier";
 import AuthLayout from "./components/AuthLayout";
 import DownloadList from "./components/DownloadList";
-
+import AuthAdminLayout from "./components/Admin/AuthAdminLayout";
+import GestionStudent from "./components/Admin/GestionStudent";
+import GestionSujets from "./components/Admin/GestionSujets";
+import Parametre from "./components/Admin/Parametre";
+import Dashboard from "./components/Admin/Dashboard";
+import AdminLayout from "./components/Admin/AdminLayout";
+import LoginAdmin from "./components/Admin/LoginAdmin";
 function App() {
   return (
     <Routes>
@@ -18,7 +24,7 @@ function App() {
         <Route path="/register" element={<RegisterStudent />} />
         <Route path="/forgot-password" element={<MDPoublier />} />
       </Route>
-      
+
       {/* Routes principales avec Main layout (NavBar + Footer) */}
       <Route path="/" element={<Main />}>
         <Route index element={<Hero />} /> {/* page d'accueil */}
@@ -27,9 +33,27 @@ function App() {
         <Route path="download" element={<DownloadList />} />
       </Route>
       
+      {/* Routes d'authentification admin avec AuthAdminLayout */}     {/* Routes d'authentification avec AuthLayout */}
+      <Route element={<AuthAdminLayout />}>
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      </Route>
+      {/* Route pour le tableau de bord admin */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="utilisateurs" element={<GestionStudent />} />
+        <Route path="documents" element={<GestionSujets />} />
+        <Route path="parametres" element={<Parametre />} />
+      </Route>  
+    
+      {/* Redirection par défaut */}
+      <Route path="/" element={<Navigate to="/" replace />} />
+      {/* Route pour la page 404 */}
+      <Route path="/404" element={<div>Page non trouvée</div>} />
       {/* Redirection pour toutes les routes non définies */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    
   );
 }
 
