@@ -299,3 +299,12 @@ class AjoutDeMatriculeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreEnregistrementMatricule
         fields = ['matricule', 'nom', 'prenom', 'Niveau', 'Filiere']
+
+
+
+class ModifierMatriculeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreEnregistrementMatricule
+        fields = ['id', 'matricule', 'nom', 'prenom', 'Niveau', 'Filiere']
+
+

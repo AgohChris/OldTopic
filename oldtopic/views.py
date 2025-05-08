@@ -405,4 +405,26 @@ class AjoutDeMatriculeView(APIView):
             serializer.save()
             return Response({"message":"Matricule ajouté"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Pou
+class ModifieMatriculeView(APIView):
+    def put(self, request, id_mat):
+        try:
+            pre_enregistrement = PreEnregistrementMatricule.objects.get(id=id_mat)
+
+        except PreEnregistrementMatricule.DoesNotExist:
+            return Response({"error": "Matricule introuvable."}, status=status.HTTP_404_NOT_FOUND)
         
+        serializer = ModifierMatriculeSerializer(pre_enregistrement, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Matricule modifié avec succès.", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#============================== Gestion des Sujets & Corrigés ==========================
+
+
+
+

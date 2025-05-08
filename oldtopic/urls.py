@@ -45,11 +45,13 @@ urlpatterns = [
     path('newsletter/message_campagne/<int:message_id>/send/', SendNewsletterView.as_view(), name='send_newsletter'),
 
 
-    # Ajout des matricules
-    path('/matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule')
+    # Ajout et modificatio des matricules
+    path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
+    path('matricule/modifier/<int:id_mat>/', ModifieMatriculeView.as_view(), name='modifie_matricule'),
 
 
 
+#=============================== 📂 Gestion des Sujets & Corrigés =========================================
 
 
 

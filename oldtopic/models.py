@@ -7,18 +7,18 @@ from .utils import *
 
 
 
-
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, role='etudiant', **extra_fields):
-        if not username:
-            raise ValueError("L'utilisateur doit avoir un nom d'utilisateur")
+        if not email:
+            raise ValueError("L'utilisateur doit avoir une adresse email")
         email = self.normalize_email(email)
+        username = username or email.split('@')[0]  # Génère un username par défaut si non fourni
         user = self.model(username=username, email=email, role=role, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -28,10 +28,10 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
         if extra_fields.get('is_active') is not True:
-            raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
+            raise ValueError("Le superutilisateur doit avoir is_active=True.")
 
-        return self.create_user(username, email, password, role='superadmin', **extra_fields)
-
+        # Appelle create_user avec un username généré automatiquement si nécessaire
+        return self.create_user(username=None, email=email, password=password, role='superadmin', **extra_fields)
 
 class User(AbstractUser):
 
@@ -43,6 +43,7 @@ class User(AbstractUser):
         ('etudiant', 'Etudiant'),
         ('superadmin', 'SuperAdmin'),
     )
+    password = models.CharField(max_length=16)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
     is_active = models.BooleanField(default=False)
@@ -116,6 +117,8 @@ class SuperAdmin(models.Model):
     @staticmethod
     def count_superadmins():
         return SuperAdmin.objects.count()
+
+
 
 
 class Stats(models.Model):
