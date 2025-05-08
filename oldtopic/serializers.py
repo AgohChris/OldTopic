@@ -23,6 +23,7 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
 
+
     class Meta:
         model = Etudiant
         fields = ['nom', 'prenom', 'email', 'matricule', 'password', 'password2']
@@ -92,6 +93,8 @@ class EtudiantRegistrationSerializer(serializers.ModelSerializer):
         )
 
 
+
+
 class EtudiantModifieMdpSerializer(serializers.Serializer):
     ancien_mdp = serializers.CharField(required =True)
     nouveau_mdp = serializers.CharField(required =True)
@@ -103,6 +106,42 @@ class EtudiantModifieMdpSerializer(serializers.Serializer):
         
         
         return data
+
+
+
+class AjoutSuperAdminSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(write_only=True)
+
+    class Meta:
+        model = SuperAdmin
+        fields = ['email']
+
+        def create(self, validated_data):
+            email = validated_data['email']
+
+            password = generation_mdp()
+
+            user = User.objects.create_user(
+                email=email,
+                role='superadmin',
+                is_active = True
+            )
+
+            superadmin = SuperAdmin.objects.create(user=user)
+            self.envoie_mail_password(email, password)
+
+            return superadmin
+       
+        def envoie_mail_password(self, email, password):
+            send_mail(
+                subject = "Infornation de Connexion a votre compte OldTopic",
+                message=f"Bonjour, \n\n Votre compte Super Admin à été créé.\n\n Voici vos infos de connexion :"
+                        f" \n\n Email: {email}\n Mot de passe : {password} ne les partager à personne.",
+                from_email = "agohchris90@gmail.com",
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
 
 
 class AjoutAdminSerializer(serializers.ModelSerializer):
@@ -129,11 +168,11 @@ class AjoutAdminSerializer(serializers.ModelSerializer):
         )
 
         admin = Admin.objects.create(user=user)
-        self.envoie_mail(email, nom, password)
+        self.envoie_mail_password(email, nom, password)
 
         return admin
     
-    def envoie_mail(self, email, nom, password):
+    def envoie_mail_password(self, email, nom, password):
         send_mail(
             subject = "Infornation de Connexion a votre compte OldTopic",
             message=f"Bonjour {nom}, \n\n Votre compte Admin à été créé.\n\n Voici vos infos :"

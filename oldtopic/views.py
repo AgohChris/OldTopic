@@ -17,6 +17,7 @@ def home(request):
 
 #================ Authentification & Gestion des Comptes ====================
 
+                                        # Etudiant
 # login Etudiant
 class Etudiantlogin_view(APIView):
     def post(self, request):
@@ -56,6 +57,95 @@ class Etudiantlogin_view(APIView):
             recipient_list=[email],
             fail_silently=False,
         )
+
+
+# Inscription Etudiant
+class EtudiantRegistrationView(APIView):
+    def post(self, request):
+        serializers = EtudiantRegistrationSerializer(data=request.data)
+
+        if serializers.is_valid():
+            serializers.save()
+            return Response({"message": "Inscripton reussie"})
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Etudiant Modifie son password
+class EtudiantModifieMdpview(APIView):
+    def put(self, request):
+        # user = request.user  # Identifiez l'utilisateur connecté directement
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return Response({"error": "Utilisateur non identifié. Veuillez vous connecter."}, status=status.HTTP_401_UNAUTHORIZED)
+       
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+
+        
+        if not user.is_etudiant():
+            return Response({"error": "Vous n'êtes pas un étudiant"}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = EtudiantModifieMdpSerializer(data=request.data)
+        if serializer.is_valid():
+            ancien_mdp = serializer.validated_data['ancien_mdp']
+            nouveau_mdp = serializer.validated_data['nouveau_mdp']
+            # confirm_nouveau_mdp = serializer.validate['confirm_nouveau_mdp']
+
+            if not user.check_password(ancien_mdp):
+                return Response({"error":"L'ancien mot de passe ne correspond pas"}, status=status.HTTP_400_BAD_REQUEST)
+            if ancien_mdp == nouveau_mdp:
+                return Response({"error":"le nouveau mot de passe n'est pas different de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(nouveau_mdp)
+            user.save()
+
+            self.envoie_mail_de_signal(user.email, user.first_name)
+
+            return Response({"message":"Votre mot de passe à été modifier!"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def envoie_mail_de_signal(self, email, nom):
+        send_mail(
+            subject="Modification du mot de passe de votre compte OldTopic",
+            message=f"Bonjour {nom}, votre mot de passe a été modifié avec succès."
+                    f"\nSi vous n'êtes pas à l'origine de cette modification, veuillez le signaler dès maintenant.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+
+# Verification de code a 6 chiffre lors de l'inscription de l'étudiant
+class VerifierCodeView(APIView):
+
+    def post(self, request):
+        # email = request.data.get('email')
+        code = request.data.get('code')
+        try:
+            user = User.objects.get(verification_code=code)
+            user.is_active = True #on active le compte
+            user.verification_code = None #puis on supprime le code de vérification qu'on a génnerer
+            user.save()
+            
+            self.envoie_mail_succes(user.email, user.last_name)
+            return Response({"message": "Votre Compte à été activer avec succè"}, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({"message": "Votre code est incorrect ou invalide"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def envoie_mail_succes(self, email, nom):
+        send_mail(
+            subject="Compte OldTopic activer",
+            message = f"Bonjour {nom}, Votre compte à est désormais actif vous pouvez vous connecter et reviser en toute tranquilité.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
 
 
 # login Admin
@@ -100,55 +190,86 @@ class Adminlogin_view(APIView):
         )
 
 
-# Inscription Etudiant
-class EtudiantRegistrationView(APIView):
-    def post(self, request):
-        serializers = EtudiantRegistrationSerializer(data=request.data)
-
-        if serializers.is_valid():
-            serializers.save()
-            return Response({"message": "Inscripton reussie"})
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# Verification de code a 6 chiffre lors de l'inscription de l'étudiant
-class VerifierCodeView(APIView):
+# login SuperAdmin
+class SuperAdminlogin_view(APIView):
 
     def post(self, request):
-        # email = request.data.get('email')
-        code = request.data.get('code')
-        try:
-            user = User.objects.get(verification_code=code)
-            user.is_active = True #on active le compte
-            user.verification_code = None #puis on supprime le code de vérification qu'on a génnerer
-            user.save()
-            
-            self.envoie_mail_succes(user.email, user.last_name)
-            return Response({"message": "Votre Compte à été activer avec succè"}, status=status.HTTP_200_OK)
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(username=email, password=password)
+
+
+        if user is not None:
+            if user.is_superadmin() and user.is_active:
+                request.session['user_id'] = user.id
+                self.envoie_mail_de_signal(user.email)
+                return Response({"message": "Connexion réussie", "role": "superadmin", "email": f"{user.email}"}, status=status.HTTP_200_OK)
+            elif not user.is_active:
+                return Response({"error": "Votre compte n'est pas activé."}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                return Response({"error": "Votre compte n'est pas autorisé a se connecter ici."}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            if email:
+                self.envoie_mail_de_prevention(email)
+            return Response({"error": "Email ou mot de passe incorrecte"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        except User.DoesNotExist:
-            return Response({"message": "Votre code est incorrect ou invalide"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-    def envoie_mail_succes(self, email, nom):
+    
+    def envoie_mail_de_signal(self, email):
         send_mail(
-            subject="Compte OldTopic activer",
-            message = f"Bonjour {nom}, Votre compte à est désormais actif vous pouvez vous connecter et reviser en toute tranquilité.",
+            subject="Tentative de connexion à OldTopic",
+            message = f"Bonjour SuperAdmin, Vous avez tenter de vous connecter a votre compte OldTopic. \nSi vous n'y êtes pour rien veuillez le signaler dès maintenant au SuperAdmin \nou Changer de Mot de passe.",
+            from_email="agohchris90@gmail.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )  
+
+
+    def envoie_mail_de_prevention(self, email):
+        send_mail(
+            subject="Tentative de connexion à OldTopic",
+            message = f"Attention!\n\n Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
             from_email="agohchris90@gmail.com",
             recipient_list=[email],
             fail_silently=False,
         )
+            
+
+# Ajout d'un superAdmin
+class AjoutSuperAdmin(APIView):
+    
+    def post(self, request):
+        serializer = AjoutSuperAdminSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "SuperAdmin ajouté"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 
 # Ajout d'un Admin par le SuperAdmin
 class AjoutAdminView(APIView):
     def post(self, request):
-        serializers = AjoutAdminSerializer(data=request.data)
+        serializer = AjoutAdminSerializer(data=request.data)
 
-        if serializers.is_valid():
-            serializers.save()
-            return Response({"message": "Administrateur Ajouté avec succès"})
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            try:
+                superadmin = serializer.save()
+                return Response({
+                    "message": "SuperAdmin ajouté avec succès.", 
+                    "data":{
+                        "email": superadmin.user.email,
+                        "role": superadmin.user.role,
+                        "date_creation": superadmin.date_creation,
+                  }
+
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"error": f"Une érreur est survenue: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Admin modifie son Password
 class AdminModifieMdpView(APIView):
@@ -237,53 +358,6 @@ class AdminUpdateView(APIView):
             fail_silently=False,
         )
 
-
-# Etudiant Modifie son password
-class EtudiantModifieMdpview(APIView):
-    def put(self, request):
-        # user = request.user  # Identifiez l'utilisateur connecté directement
-        user_id = request.session.get('user_id')
-        if not user_id:
-            return Response({"error": "Utilisateur non identifié. Veuillez vous connecter."}, status=status.HTTP_401_UNAUTHORIZED)
-       
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
-
-        
-        if not user.is_etudiant():
-            return Response({"error": "Vous n'êtes pas un étudiant"}, status=status.HTTP_403_FORBIDDEN)
-
-        serializer = EtudiantModifieMdpSerializer(data=request.data)
-        if serializer.is_valid():
-            ancien_mdp = serializer.validated_data['ancien_mdp']
-            nouveau_mdp = serializer.validated_data['nouveau_mdp']
-            # confirm_nouveau_mdp = serializer.validate['confirm_nouveau_mdp']
-
-            if not user.check_password(ancien_mdp):
-                return Response({"error":"L'ancien mot de passe ne correspond pas"}, status=status.HTTP_400_BAD_REQUEST)
-            if ancien_mdp == nouveau_mdp:
-                return Response({"error":"le nouveau mot de passe n'est pas different de l'ancien"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            user.set_password(nouveau_mdp)
-            user.save()
-
-            self.envoie_mail_de_signal(user.email, user.first_name)
-
-            return Response({"message":"Votre mot de passe à été modifier!"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-    def envoie_mail_de_signal(self, email, nom):
-        send_mail(
-            subject="Modification du mot de passe de votre compte OldTopic",
-            message=f"Bonjour {nom}, votre mot de passe a été modifié avec succès."
-                    f"\nSi vous n'êtes pas à l'origine de cette modification, veuillez le signaler dès maintenant.",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
-        )
 
 
 # Reinitialisation du mot de passe
@@ -406,7 +480,7 @@ class AjoutDeMatriculeView(APIView):
             return Response({"message":"Matricule ajouté"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Pou
+# Pour la midification de Matricule
 class ModifieMatriculeView(APIView):
     def put(self, request, id_mat):
         try:
@@ -420,6 +494,8 @@ class ModifieMatriculeView(APIView):
             serializer.save()
             return Response({"message": "Matricule modifié avec succès.", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 

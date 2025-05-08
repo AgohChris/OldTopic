@@ -7,6 +7,36 @@ from .utils import *
 
 
 
+FILIERE_CHOICES = [
+    ('IGL', 'IGL'),
+    ('RIT', 'RIT'),
+    ('DROIT', 'DROIT'),
+    ('FBA', 'FBA'),
+    ('SEG', 'SEG'),
+    ('PFC', 'PFC'),
+    ('ACG', 'ACG'),
+
+]
+
+NIVEAU_CHOICES = [
+    ('licence_1', 'Licence 1'),
+    ('licence_2', 'Licence 2'),
+    ('licence_3', 'Licence 3'),
+    ('BTS_1',      'BTS 1' ),
+    ('BTS_2',      'BTS 2' ),
+    ('master_1', 'Master 1'),
+    ('master_2', 'Master 2'),
+]
+
+TYPE_CHOICES = [
+    ('Examen', 'Examen'),
+    ('TD', 'Traveaux Dirigés'),
+    ('TP', 'Traveaux Pratiques'),
+    ('Devoir', 'Devoir'),
+    ('Interrogation', 'Interrogation'),
+]
+
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, role='etudiant', **extra_fields):
         if not email:
@@ -32,6 +62,7 @@ class UserManager(BaseUserManager):
 
         # Appelle create_user avec un username généré automatiquement si nécessaire
         return self.create_user(username=None, email=email, password=password, role='superadmin', **extra_fields)
+
 
 class User(AbstractUser):
 
@@ -82,8 +113,8 @@ class PreEnregistrementMatricule(models.Model):
     matricule = models.CharField(max_length=15, unique=True)
     nom = models.CharField(max_length=60, null=True)
     prenom = models.CharField(max_length=70, null=True)
-    Niveau = models.CharField(max_length=30, null=True)
-    Filiere = models.CharField(max_length=100, null=True)
+    Niveau = models.CharField(max_length=30, choices=NIVEAU_CHOICES, null=True)
+    Filiere = models.CharField(max_length=100, choices=FILIERE_CHOICES ,null=True)
 
     def __str__(self):
         return f'{self.matricule} - {self.nom} {self.prenom} - {self.Filiere} - {self.Niveau}'
@@ -181,7 +212,9 @@ class Sujet(models.Model):
     titre = models.CharField()
     description = models.TextField(blank=True)
     matiere = models.CharField(max_length=60)
-    type = models.CharField(max_length=60)
+    type = models.CharField(max_length=60, choices=TYPE_CHOICES)
+    filiere = models.CharField(max_length=60, choices=FILIERE_CHOICES)
+    niveau = models.CharField(max_length=60, choices=NIVEAU_CHOICES)
     annee = models.CharField(max_length=60)
     auteur = models.CharField(max_length=60)
     Sujet_url = models.FileField(upload_to=sujet_upload_path)

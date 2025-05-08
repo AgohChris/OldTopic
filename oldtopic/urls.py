@@ -38,6 +38,11 @@ urlpatterns = [
     path('auth/admin/update/password/', AdminModifieMdpView.as_view(), name='update_admin_password'),
 
 
+                                        #================SuperAdmin==============
+    path('/auth/login/superadmin/', SuperAdminlogin_view.as_view(), name='login_super_admin'),
+
+
+
                                         #==========Newsletter==========
     path('newsletter/subscribe/', AbonnementNewsletterView.as_view(), name='newletter_subs'),
     path('newsletter/unsubscribe/', DesabonnementNewsletter.as_view(), name='newsletter_unsubs'),
@@ -47,7 +52,8 @@ urlpatterns = [
 
     # Ajout et modificatio des matricules
     path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
-    path('matricule/modifier/<int:id_mat>/', ModifieMatriculeView.as_view(), name='modifie_matricule'),
+    path('matricule/update/<int:id_mat>/', ModifieMatriculeView.as_view(), name='update_matricule'),
+    
 
 
 
