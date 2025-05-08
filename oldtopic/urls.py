@@ -39,7 +39,7 @@ urlpatterns = [
 
 
                                         #================SuperAdmin==============
-    path('/auth/login/superadmin/', SuperAdminlogin_view.as_view(), name='login_super_admin'),
+    path('auth/login/superadmin/', SuperAdminlogin_view.as_view(), name='login_super_admin'),
 
 
 

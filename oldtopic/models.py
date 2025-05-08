@@ -74,7 +74,7 @@ class User(AbstractUser):
         ('etudiant', 'Etudiant'),
         ('superadmin', 'SuperAdmin'),
     )
-    password = models.CharField(max_length=16)
+    password = models.CharField(max_length=130)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLES, default='etudiant')
     is_active = models.BooleanField(default=False)
@@ -212,9 +212,9 @@ class Sujet(models.Model):
     titre = models.CharField()
     description = models.TextField(blank=True)
     matiere = models.CharField(max_length=60)
-    type = models.CharField(max_length=60, choices=TYPE_CHOICES)
-    filiere = models.CharField(max_length=60, choices=FILIERE_CHOICES)
-    niveau = models.CharField(max_length=60, choices=NIVEAU_CHOICES)
+    type = models.CharField(max_length=60, choices=TYPE_CHOICES) #default='TD'
+    filiere = models.CharField(max_length=60, choices=FILIERE_CHOICES, default='IGL')
+    niveau = models.CharField(max_length=60, choices=NIVEAU_CHOICES, default='licence_1')
     annee = models.CharField(max_length=60)
     auteur = models.CharField(max_length=60)
     Sujet_url = models.FileField(upload_to=sujet_upload_path)
