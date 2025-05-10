@@ -1,7 +1,7 @@
 import random as rd
 import string
 import os
-
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 def generation_mdp(longueur=12):
     caract = string.ascii_letters + string.digits
@@ -31,6 +31,8 @@ def sujet_upload_path(instance, filename):
         instance.type,
         filename
     )
+
+
 def corriger_upload_path(instance, filename):
     return os.path.join(
         'corriges',
@@ -46,3 +48,11 @@ def photo_upload_path(instance, filename):
         instance.username,
         filename
     )
+
+
+
+class PasswordResetToken(PasswordResetTokenGenerator):
+    pass
+
+password_reset_token = PasswordResetToken()
+

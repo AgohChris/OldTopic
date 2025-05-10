@@ -25,11 +25,17 @@ urlpatterns = [
     # ======Modification Du mdp de l'étudiants 
     path('auth/etudiant/update/password/', EtudiantModifieMdpview.as_view(), name='update_student_password'),
 
+                                      #==========Newsletter==========
+    path('newsletter/subscribe/', AbonnementNewsletterView.as_view(), name='newletter_subs'),
+    path('newsletter/unsubscribe/', DesabonnementNewsletter.as_view(), name='newsletter_unsubs'),
+
+    
+    
+
+
                                         #=========Admin==============
 
-    # ======== Inscription et Ajout d'admin
-    path('auth/ajout_admin/', AjoutAdminView.as_view(), name='ajout_admin'),
-
+  
     # ======== Connexion
     path('auth/login/admin/', Adminlogin_view.as_view(), name='login_admin'),
 
@@ -37,27 +43,27 @@ urlpatterns = [
     path('auth/admin/update/profile/', AdminUpdateView.as_view(), name='update_admin_profile'),
     path('auth/admin/update/password/', AdminModifieMdpView.as_view(), name='update_admin_password'),
 
+    # ==== Reinitialisation
+    path('auth/admin/password/reset/request/', AdminMdpResetRequestView.as_view(), name='admin_request_reset_password'),
+    path('auth/admin/password/reset/confirm/', AdminMdpResteConfirmView.as_view(), name='admin_reset_password_confirm'),
 
-                                        #================SuperAdmin==============
-    path('auth/login/superadmin/', SuperAdminlogin_view.as_view(), name='login_super_admin'),
-
-
-
-                                        #==========Newsletter==========
-    path('newsletter/subscribe/', AbonnementNewsletterView.as_view(), name='newletter_subs'),
-    path('newsletter/unsubscribe/', DesabonnementNewsletter.as_view(), name='newsletter_unsubs'),
+    # ======== Ajout et modificatio des matricules
+    path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
+    path('matricule/update/<int:id_mat>/', ModifieMatriculeView.as_view(), name='update_matricule'),
+   
+   # ========= Newletters
     path('newsletter/message_campagne/', NewsLetterMessageView.as_view(), name='newsletter_campaigns'),
     path('newsletter/message_campagne/<int:message_id>/send/', SendNewsletterView.as_view(), name='send_newsletter'),
 
 
-    # Ajout et modificatio des matricules
-    path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
-    path('matricule/update/<int:id_mat>/', ModifieMatriculeView.as_view(), name='update_matricule'),
+
+                                        #================SuperAdmin==============
+    # Connexion du Super Admin
+    path('auth/login/superadmin/', SuperAdminlogin_view.as_view(), name='login_super_admin'),
     
-
-
-
-#=============================== 📂 Gestion des Sujets & Corrigés =========================================
+    # ======== Ajout d'admin
+    path('superadmin/ajout_admin/', AjoutAdminView.as_view(), name='ajout_admin'),
+ 
 
 
 

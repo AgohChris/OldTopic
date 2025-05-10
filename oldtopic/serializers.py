@@ -347,3 +347,4 @@ class ModifierMatriculeSerializer(serializers.ModelSerializer):
         fields = ['id', 'matricule', 'nom', 'prenom', 'Niveau', 'Filiere']
 
 
+
