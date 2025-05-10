@@ -29,7 +29,7 @@ urlpatterns = [
     path('newsletter/subscribe/', AbonnementNewsletterView.as_view(), name='newletter_subs'),
     path('newsletter/unsubscribe/', DesabonnementNewsletter.as_view(), name='newsletter_unsubs'),
 
-    
+
     
 
 
@@ -45,7 +45,7 @@ urlpatterns = [
 
     # ==== Reinitialisation
     path('auth/admin/password/reset/request/', AdminMdpResetRequestView.as_view(), name='admin_request_reset_password'),
-    path('auth/admin/password/reset/confirm/', AdminMdpResteConfirmView.as_view(), name='admin_reset_password_confirm'),
+    path('auth/admin/password/reset/confirm/<uidb64>/<token>/', AdminMdpResteConfirmView.as_view(), name='admin_reset_password_confirm'),
 
     # ======== Ajout et modificatio des matricules
     path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
