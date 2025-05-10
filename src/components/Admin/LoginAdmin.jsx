@@ -1,3 +1,5 @@
+
+// LoginAdmin.jsx (modifié)
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Shield, AlertCircle, CheckCircle, Loader } from 'lucide-react';
 
@@ -15,7 +17,7 @@ export default function LoginAdmin() {
     setIsSubmitting(true);
     setLoginError('');
 
-    // Simulation d’authentification (à remplacer par un appel API réel)
+    // Simulation d'authentification (à remplacer par un appel API réel)
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     if (email === 'admin@example.com' && password === 'admin123') {
@@ -30,8 +32,7 @@ export default function LoginAdmin() {
   };
 
   return (
-    <form onSubmit={handleLoginSubmit} className="space-y-6
-    ">
+    <form onSubmit={handleLoginSubmit} className="space-y-6">
       {/* Email */}
       <div>
         <label htmlFor="email" className="block mb-1 text-sm font-medium text-purple-400">
@@ -87,7 +88,7 @@ export default function LoginAdmin() {
           />
           Se souvenir de moi
         </label>
-        <a href="/admin/forgot-password" className="text-sm text-purple-400 hover:underline">
+        <a href="/admin/forgotAdmin-password" className="text-sm text-purple-400 hover:underline">
           Mot de passe oublié ?
         </a>
       </div>

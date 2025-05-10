@@ -7,6 +7,7 @@ import {
   FileText,
   Settings,
   LogOut,
+  UserPlus,
   X
 } from 'lucide-react';
 
@@ -20,6 +21,7 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
   const navItems = [
     { id: 'dashboard', title: 'Tableau de bord', icon: LayoutDashboard, path: '/admin' },
     { id: 'users', title: 'Utilisateurs', icon: Users, path: '/admin/utilisateurs' },
+    { id: 'Add_Mat', title: 'Ajout de Matricule', icon: UserPlus, path: '/admin/ajoutmat' },
     { id: 'documents', title: 'Documents', icon: FileText, path: '/admin/documents' },
     { id: 'settings', title: 'Paramètres', icon: Settings, path: '/admin/parametres' },
   ];

@@ -1,3 +1,4 @@
+// AuthAdminLayout.jsx
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -37,8 +38,7 @@ const AuthAdminLayout = () => {
   }
 
   return (
-    <div className="  flex-col min-h-screen text-white
-     bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center relative overflow-hidden">
+    <div className="flex-col min-h-screen text-white bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center relative overflow-hidden p-11">
       {/* Décoration de fond */}
       <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-700 opacity-20 rounded-full blur-3xl" />
       <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-indigo-700 opacity-20 rounded-full blur-3xl" />
@@ -48,8 +48,7 @@ const AuthAdminLayout = () => {
         initial="hidden"
         animate="visible"
         variants={pageVariants}
-        className="z-10 w-full max-w-md         bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm"
-
+        className="z-10 w-full max-w-md bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm"
       >
         {/* En-tête */}
         <div className="mb-6 text-center">
@@ -64,7 +63,7 @@ const AuthAdminLayout = () => {
       </motion.div>
 
       {/* Pied de page */}
-      <footer className="z-10 mt-12 text-center text-sm text-gray-500">
+      <footer className="z-10 mt-3 text-center text-sm text-gray-500">
         Sécurisé par AES-256 | Version 1.0.0
       </footer>
     </div>

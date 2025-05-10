@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Camera, Lock, User, Mail, GraduationCap, Building, Save, CheckCircle, Pencil, Calendar, X, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Lock, User, Mail, GraduationCap, Building, CheckCircle, Calendar, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export default function Profil() {
-  // Données utilisateur (simulées)
-  const [userData, setUserData] = useState({
+  // Données utilisateur fixes
+  const [userData] = useState({
     nom: "Nassere Yacouba",
     email: "Nassere@gmail.com",
     filiere: "IGL",
@@ -12,10 +12,6 @@ export default function Profil() {
     dateInscription: "12/09/2022",
     photo: null
   });
-
-  // États pour la modification
-  const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] = useState({...userData});
 
   // États pour la modification du mot de passe
   const [passwordSection, setPasswordSection] = useState(false);
@@ -33,10 +29,8 @@ export default function Profil() {
   // État pour le chargement
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState(null);
   const [activeTab, setActiveTab] = useState('info');
 
-  // Simulation de chargement
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -44,32 +38,11 @@ export default function Profil() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Réinitialiser les données d'édition lorsque le mode édition est désactivé
-  useEffect(() => {
-    if (!editMode) {
-      setEditData({...userData});
-    }
-  }, [editMode, userData]);
-
-  // Fonction pour gérer le changement de photo
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Fonction pour gérer la soumission du formulaire de mot de passe
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     setIsSaving(true);
     setMdpError("");
     
-    // Validation simple
     if (nouveauMdp !== confirmMdp) {
       setMdpError("Les mots de passe ne correspondent pas");
       setIsSaving(false);
@@ -82,7 +55,6 @@ export default function Profil() {
       return;
     }
 
-    // Simulation d'une API call
     setTimeout(() => {
       setIsSaving(false);
       setMdpSuccess(true);
@@ -90,35 +62,10 @@ export default function Profil() {
       setNouveauMdp("");
       setConfirmMdp("");
       
-      // Réinitialiser le message de succès après 3 secondes
       setTimeout(() => {
         setMdpSuccess(false);
         setPasswordSection(false);
       }, 3000);
-    }, 1000);
-  };
-
-  // Fonction pour sauvegarder les modifications du profil
-  const handleSaveProfile = () => {
-    setIsSaving(true);
-    
-    // Simulation d'une API call
-    setTimeout(() => {
-      setUserData({...editData});
-      setIsSaving(false);
-      setEditMode(false);
-    }, 1000);
-  };
-
-  // Fonction pour sauvegarder la photo
-  const handleSavePhoto = () => {
-    setIsSaving(true);
-    
-    // Simulation d'une API call
-    setTimeout(() => {
-      setUserData({...userData, photo: photoPreview});
-      setIsSaving(false);
-      setPhotoPreview(null);
     }, 1000);
   };
 
@@ -134,45 +81,23 @@ export default function Profil() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-30 px-4 sm:px-6 lg:px-8">
-      {/* En-tête avec photo de profil */}
-      <div className="max-w-6xl mx-auto
-      ">
-        <div className="p-8 mb-8 relative overflow-hidden
-        bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
-          {/* Éléments décoratifs */}
-          <div className="absolute -top-14 -right-14 w-64 h-64 bg-teal-500 opacity-10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-500 opacity-10 rounded-full blur-3xl"></div>
-          
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10
-          ">
-            {/* Photo de profil */}
-            <div className="relative group">
-              <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-600 to-blue-600 flex items-center justify-center overflow-hidden border-4 border-white/10 shadow-lg">
-                {userData.photo ? (
-                  <img src={userData.photo} alt="Profil" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-5xl font-bold text-white">
-                    {userData.nom.split(' ').map(name => name[0]).join('')}
-                  </span>
-                )}
-              </div>
-              <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
-                <span className="bg-white p-2 rounded-full">
-                  <Camera size={24} className="text-teal-600" />
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="p-8 mb-8 relative overflow-hidden bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl backdrop-blur-sm">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
+            {/* Photo de profil en lecture seule */}
+            <div className="h-40 w-40 rounded-full bg-gradient-to-br from-teal-600 to-blue-600 flex items-center justify-center overflow-hidden border-4 border-white/10 shadow-lg">
+              {userData.photo ? (
+                <img src={userData.photo} alt="Profil" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-5xl font-bold text-white">
+                  {userData.nom.split(' ').map(name => name[0]).join('')}
                 </span>
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                />
-              </label>
+              )}
             </div>
-            
+
             {/* Informations principales */}
-            <div className="text-center md:text-left
-            ">
+            <div className="text-center md:text-left flex-1">
               <h1 className="text-4xl font-black bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
                 {userData.nom}
               </h1>
@@ -190,49 +115,6 @@ export default function Profil() {
                   Inscrit depuis {userData.dateInscription}
                 </div>
               </div>
-            </div>
-
-            {/* Boutons d'action */}
-            <div className="absolute top-2 right-2 flex gap-2">
-              {photoPreview && (
-                <button 
-                  onClick={handleSavePhoto}
-                  className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded-full transition-colors"
-                >
-                  {isSaving ? (
-                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                  ) : (
-                    <Save size={18} />
-                  )}
-                </button>
-              )}
-              {!editMode ? (
-                <button 
-                  onClick={() => setEditMode(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition-colors"
-                >
-                  <Pencil size={18} />
-                </button>
-              ) : (
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setEditMode(false)}
-                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors"
-                  >
-                    <X size={18} />
-                  </button>
-                  <button 
-                    onClick={handleSaveProfile}
-                    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-colors"
-                  >
-                    {isSaving ? (
-                      <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                    ) : (
-                      <CheckCircle size={18} />
-                    )}
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -269,34 +151,24 @@ export default function Profil() {
 
         {/* Contenu des onglets */}
         <div className="space-y-6">
-          {/* Informations personnelles */}
+          {/* Section Informations personnelles (lecture seule) */}
           {activeTab === 'info' && (
-            <div className=" bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+            <div className="bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-8 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
                 <User className="mr-3 text-teal-400" />
                 Informations personnelles
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Nom complet */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Tous les champs en lecture seule */}
                 <div>
                   <label className="block text-sm font-medium text-teal-400 mb-2">Nom complet</label>
-                  {!editMode ? (
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                      <User size={20} className="text-gray-400" />
-                      <span className="text-white">{userData.nom}</span>
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      value={editData.nom}
-                      onChange={(e) => setEditData({...editData, nom: e.target.value})}
-                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
-                    />
-                  )}
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <User size={20} className="text-gray-400" />
+                    <span className="text-white">{userData.nom}</span>
+                  </div>
                 </div>
                 
-                {/* Email */}
                 <div>
                   <label className="block text-sm font-medium text-teal-400 mb-2">Email</label>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
@@ -305,87 +177,36 @@ export default function Profil() {
                   </div>
                 </div>
                 
-                {/* Filière */}
                 <div>
                   <label className="block text-sm font-medium text-teal-400 mb-2">Filière</label>
-                  {!editMode ? (
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                      <GraduationCap size={20} className="text-gray-400" />
-                      <span className="text-white">{userData.filiere}</span>
-                    </div>
-                  ) : (
-                    <select
-                      value={editData.filiere}
-                      onChange={(e) => setEditData({...editData, filiere: e.target.value})}
-                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
-                    >
-                      <option value="IGL">IGL</option>
-                      <option value="RT">RT</option>
-                      <option value="SI">SI</option>
-                      <option value="MIAGE">MIAGE</option>
-                    </select>
-                  )}
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <GraduationCap size={20} className="text-gray-400" />
+                    <span className="text-white">{userData.filiere}</span>
+                  </div>
                 </div>
                 
-                {/* Niveau */}
                 <div>
                   <label className="block text-sm font-medium text-teal-400 mb-2">Niveau</label>
-                  {!editMode ? (
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                      <GraduationCap size={20} className="text-gray-400" />
-                      <span className="text-white">{userData.niveau}</span>
-                    </div>
-                  ) : (
-                    <select
-                      value={editData.niveau}
-                      onChange={(e) => setEditData({...editData, niveau: e.target.value})}
-                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
-                    >
-                      <option value="Licence 1">Licence 1</option>
-                      <option value="Licence 2">Licence 2</option>
-                      <option value="Licence 3">Licence 3</option>
-                      <option value="Master 1">Master 1</option>
-                      <option value="Master 2">Master 2</option>
-                    </select>
-                  )}
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <GraduationCap size={20} className="text-gray-400" />
+                    <span className="text-white">{userData.niveau}</span>
+                  </div>
                 </div>
                 
-                {/* Institution */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-teal-400 mb-2">Institution</label>
-                  {!editMode ? (
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-                      <Building size={20} className="text-gray-400" />
-                      <span className="text-white">{userData.institution}</span>
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      value={editData.institution}
-                      onChange={(e) => setEditData({...editData, institution: e.target.value})}
-                      className="w-full p-4 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
-                    />
-                  )}
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <Building size={20} className="text-gray-400" />
+                    <span className="text-white">{userData.institution}</span>
+                  </div>
                 </div>
               </div>
-              
-              {!editMode && (
-                <div className="mt-8 text-center">
-                  <button 
-                    onClick={() => setEditMode(true)}
-                    className="inline-flex items-center px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-full transition-colors shadow-lg"
-                  >
-                    <Pencil size={18} className="mr-2" />
-                    Modifier mes informations
-                  </button>
-                </div>
-              )}
             </div>
           )}
 
-          {/* Sécurité */}
+          {/* Section Sécurité */}
           {activeTab === 'security' && (
-            <div className=" bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-10 backdrop-blur-sm">
+            <div className="bg-gradient-to-br from-green-500/10 to-black/40 border border-green-500/20 rounded-3xl p-8 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
                 <Lock className="mr-3 text-teal-400" />
                 Sécurité du compte
@@ -411,7 +232,7 @@ export default function Profil() {
                 </div>
               ) : (
                 <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                  {/* Ancien mot de passe */}
+                  {/* Formulaire de changement de mot de passe */}
                   <div>
                     <label className="block text-sm font-medium text-teal-400 mb-2">Mot de passe actuel</label>
                     <div className="relative">
@@ -432,7 +253,6 @@ export default function Profil() {
                     </div>
                   </div>
                   
-                  {/* Nouveau mot de passe */}
                   <div>
                     <label className="block text-sm font-medium text-teal-400 mb-2">Nouveau mot de passe</label>
                     <div className="relative">
@@ -453,7 +273,6 @@ export default function Profil() {
                     </div>
                   </div>
                   
-                  {/* Confirmer mot de passe */}
                   <div>
                     <label className="block text-sm font-medium text-teal-400 mb-2">Confirmer le nouveau mot de passe</label>
                     <div className="relative">
@@ -474,7 +293,7 @@ export default function Profil() {
                     </div>
                   </div>
                   
-                  {/* Message d'erreur */}
+                  {/* Messages d'état */}
                   {mdpError && (
                     <div className="p-4 bg-red-900/20 border border-red-500/50 rounded-xl flex items-center gap-3">
                       <AlertCircle size={20} className="text-red-500" />
@@ -482,11 +301,10 @@ export default function Profil() {
                     </div>
                   )}
                   
-                  {/* Message de succès */}
                   {mdpSuccess && (
                     <div className="p-4 bg-green-900/20 border border-green-500/50 rounded-xl flex items-center gap-3">
                       <CheckCircle size={20} className="text-green-500" />
-                      <span className="text-green-400">Votre mot de passe a été modifié avec succès.</span>
+                      <span className="text-green-400">Mot de passe modifié avec succès</span>
                     </div>
                   )}
                   

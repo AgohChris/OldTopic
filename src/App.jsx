@@ -15,6 +15,8 @@ import Parametre from "./components/Admin/Parametre";
 import Dashboard from "./components/Admin/Dashboard";
 import AdminLayout from "./components/Admin/AdminLayout";
 import LoginAdmin from "./components/Admin/LoginAdmin";
+import AjoutMat from "./components/Admin/AjoutMat";
+import MDPoublierAdmin from "./components/Admin/MDPoublierAdmin";
 function App() {
   return (
     <Routes>
@@ -36,7 +38,9 @@ function App() {
       {/* Routes d'authentification admin avec AuthAdminLayout */}     {/* Routes d'authentification avec AuthLayout */}
       <Route element={<AuthAdminLayout />}>
       <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/admin/forgotAdmin-password" element={<MDPoublierAdmin />} />
       </Route>
+      
       {/* Route pour le tableau de bord admin */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
@@ -44,6 +48,7 @@ function App() {
         <Route path="utilisateurs" element={<GestionStudent />} />
         <Route path="documents" element={<GestionSujets />} />
         <Route path="parametres" element={<Parametre />} />
+        <Route path="ajoutmat" element={<AjoutMat />} />
       </Route>  
     
       {/* Redirection par défaut */}
