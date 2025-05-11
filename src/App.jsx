@@ -17,6 +17,7 @@ import AdminLayout from "./components/Admin/AdminLayout";
 import LoginAdmin from "./components/Admin/LoginAdmin";
 import AjoutMat from "./components/Admin/AjoutMat";
 import MDPoublierAdmin from "./components/Admin/MDPoublierAdmin";
+import Newsletter from "./components/Admin/Newsletter";
 function App() {
   return (
     <Routes>
@@ -49,6 +50,7 @@ function App() {
         <Route path="documents" element={<GestionSujets />} />
         <Route path="parametres" element={<Parametre />} />
         <Route path="ajoutmat" element={<AjoutMat />} />
+        <Route path="newsletter" element={<Newsletter />} />
       </Route>  
     
       {/* Redirection par défaut */}

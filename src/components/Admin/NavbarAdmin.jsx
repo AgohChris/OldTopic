@@ -8,7 +8,8 @@ import {
   Settings,
   LogOut,
   UserPlus,
-  X
+  X,
+  Mail
 } from 'lucide-react';
 
 const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkMode, isMobile }) => {
@@ -22,6 +23,7 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
     { id: 'dashboard', title: 'Tableau de bord', icon: LayoutDashboard, path: '/admin' },
     { id: 'users', title: 'Utilisateurs', icon: Users, path: '/admin/utilisateurs' },
     { id: 'Add_Mat', title: 'Ajout de Matricule', icon: UserPlus, path: '/admin/ajoutmat' },
+    { id: 'newsletter', title: 'Gestion de Newsletter', icon: Mail, path: '/admin/newsletter' },
     { id: 'documents', title: 'Documents', icon: FileText, path: '/admin/documents' },
     { id: 'settings', title: 'Paramètres', icon: Settings, path: '/admin/parametres' },
   ];

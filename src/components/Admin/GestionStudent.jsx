@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, UserCheck, UserX } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 const GestionStudent = () => {
+  // Récupérer isDarkMode depuis le contexte de l'Outlet
+  const { isDarkMode } = useOutletContext();
+  
   // État pour stocker la liste des étudiants
   const [students, setStudents] = useState([]);
   // État pour stocker les étudiants filtrés
@@ -101,11 +105,11 @@ const GestionStudent = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Gestion des Étudiants</h1>
+    <div className={`flex flex-col h-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'} p-6 rounded-lg shadow-md`}>
+      <h1 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Gestion des Étudiants</h1>
       
       {/* Section de filtres */}
-      <div className="flex flex-col lg:flex-row gap-4 mb-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+      <div className={`flex flex-col lg:flex-row gap-4 mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'} p-4 rounded-lg`}>
         <div className="flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={18} />
@@ -115,7 +119,9 @@ const GestionStudent = () => {
               name="searchTerm"
               value={filters.searchTerm}
               onChange={handleFilterChange}
-              className="pl-10 pr-4 py-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`pl-10 pr-4 py-2 w-full rounded-md border ${
+                isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
             />
           </div>
         </div>
@@ -125,7 +131,9 @@ const GestionStudent = () => {
             name="annee"
             value={filters.annee}
             onChange={handleFilterChange}
-            className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`px-4 py-2 rounded-md border ${
+              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Année</option>
             {annees.map(annee => (
@@ -137,7 +145,9 @@ const GestionStudent = () => {
             name="niveau"
             value={filters.niveau}
             onChange={handleFilterChange}
-            className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`px-4 py-2 rounded-md border ${
+              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Niveau</option>
             {niveaux.map(niveau => (
@@ -149,7 +159,9 @@ const GestionStudent = () => {
             name="filiere"
             value={filters.filiere}
             onChange={handleFilterChange}
-            className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`px-4 py-2 rounded-md border ${
+              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Filière</option>
             {filieres.map(filiere => (
@@ -159,7 +171,9 @@ const GestionStudent = () => {
           
           <button
             onClick={resetFilters}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md flex items-center gap-2"
+            className={`px-4 py-2 ${
+              isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+            } rounded-md flex items-center gap-2`}
           >
             <Filter size={18} />
             Réinitialiser
@@ -168,45 +182,45 @@ const GestionStudent = () => {
       </div>
       
       {/* Tableau des étudiants */}
-      <div className="overflow-x-auto flex-grow bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <div className={`overflow-x-auto flex-grow ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
         {loading ? (
           <div className="flex justify-center items-center h-60">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
           </div>
         ) : filteredStudents.length === 0 ? (
-          <div className="flex justify-center items-center h-60 text-gray-500 dark:text-gray-400">
+          <div className={`flex justify-center items-center h-60 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Aucun étudiant trouvé
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+          <table className={`min-w-full divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+            <thead className={isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nom</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Prénom</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Année</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Niveau</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Filière</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Statut</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>ID</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Nom</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Prénom</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Email</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Année</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Niveau</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Filière</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Statut</th>
+                <th className={`px-6 py-3 text-right text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
               {filteredStudents.map((student) => (
-                <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.nom}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.prenom}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.annee}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.niveau}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{student.filiere}</td>
+                <tr key={student.id} className={isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.id}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.nom}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.prenom}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.email}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.annee}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.niveau}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.filiere}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       student.status === 'actif' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' 
-                        : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                        ? isDarkMode ? 'bg-green-800 text-green-100' : 'bg-green-100 text-green-800' 
+                        : isDarkMode ? 'bg-red-800 text-red-100' : 'bg-red-100 text-red-800'
                     }`}>
                       {student.status === 'actif' ? 'Actif' : 'Suspendu'}
                     </span>
@@ -241,15 +255,15 @@ const GestionStudent = () => {
       </div>
       
       {/* Pagination (pour une future implémentation) */}
-      <div className="flex justify-between items-center mt-6 text-sm text-gray-600 dark:text-gray-400">
+      <div className={`flex justify-between items-center mt-6 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
         <div>
           Affichage de {filteredStudents.length} étudiant(s) sur {students.length}
         </div>
         <div className="flex gap-2">
-          <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+          <button className={`px-3 py-1 border ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} rounded-md`}>
             Précédent
           </button>
-          <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+          <button className={`px-3 py-1 border ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} rounded-md`}>
             Suivant
           </button>
         </div>

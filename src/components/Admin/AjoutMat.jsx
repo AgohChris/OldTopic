@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Pencil, Trash2, Plus } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 const niveaux = ["L1", "L2", "L3", "M1", "M2"];
 const filieres = ["Informatique", "Droit", "Mathématiques", "Physique", "Chimie"];
 
 const AjoutMat = () => {
+  // Récupérer isDarkMode depuis le contexte de l'Outlet
+  const { isDarkMode } = useOutletContext();
+  
   const [etudiants, setEtudiants] = useState([]);
   const [form, setForm] = useState({
     id: null,
@@ -60,7 +64,7 @@ const AjoutMat = () => {
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg shadow-lg">
+    <div className={`p-6 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} rounded-lg shadow-lg`}>
       <h2 className="text-2xl font-semibold mb-4">Ajout des Étudiants</h2>
 
       {/* Formulaire */}
@@ -71,7 +75,7 @@ const AjoutMat = () => {
           placeholder="Matricule"
           value={form.matricule}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         />
         <input
           type="text"
@@ -79,7 +83,7 @@ const AjoutMat = () => {
           placeholder="Nom complet"
           value={form.nom}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         />
         <input
           type="email"
@@ -87,7 +91,7 @@ const AjoutMat = () => {
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         />
         <input
           type="text"
@@ -95,28 +99,28 @@ const AjoutMat = () => {
           placeholder="Établissement"
           value={form.etablissement}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         />
         <select
           name="niveau"
           value={form.niveau}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         >
           <option value="">Niveau</option>
           {niveaux.map(niv => (
-            <option key={niv} value={niv}>{niv}</option>
+            <option key={niv} value={niv} className={isDarkMode ? 'bg-gray-800' : 'bg-white'}>{niv}</option>
           ))}
         </select>
         <select
           name="filiere"
           value={form.filiere}
           onChange={handleChange}
-          className="p-2 border rounded-md dark:bg-gray-800"
+          className={`p-2 border rounded-md ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
         >
           <option value="">Filière</option>
           {filieres.map(fil => (
-            <option key={fil} value={fil}>{fil}</option>
+            <option key={fil} value={fil} className={isDarkMode ? 'bg-gray-800' : 'bg-white'}>{fil}</option>
           ))}
         </select>
       </div>
@@ -133,7 +137,7 @@ const AjoutMat = () => {
         {editMode && (
           <button
             onClick={resetForm}
-            className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-black dark:text-white rounded hover:bg-gray-400"
+            className={`px-4 py-2 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-300 text-black'} rounded hover:${isDarkMode ? 'bg-gray-600' : 'bg-gray-400'}`}
           >
             Annuler
           </button>
@@ -141,8 +145,8 @@ const AjoutMat = () => {
       </div>
 
       {/* Tableau */}
-      <table className="min-w-full text-left text-sm border">
-        <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-white">
+      <table className={`min-w-full text-left text-sm border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}>
+        <thead className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'}`}>
           <tr>
             <th className="p-2">Matricule</th>
             <th className="p-2">Nom</th>
@@ -155,7 +159,7 @@ const AjoutMat = () => {
         </thead>
         <tbody>
           {etudiants.map(et => (
-            <tr key={et.id} className="border-t dark:border-gray-700">
+            <tr key={et.id} className={`border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}>
               <td className="p-2">{et.matricule}</td>
               <td className="p-2">{et.nom}</td>
               <td className="p-2">{et.email}</td>
@@ -174,7 +178,9 @@ const AjoutMat = () => {
           ))}
           {etudiants.length === 0 && (
             <tr>
-              <td colSpan="7" className="p-4 text-center text-gray-500">Aucun étudiant ajouté</td>
+              <td colSpan="7" className={`p-4 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                Aucun étudiant ajouté
+              </td>
             </tr>
           )}
         </tbody>
