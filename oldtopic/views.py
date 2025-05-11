@@ -361,7 +361,7 @@ class AdminModifieMdpView(APIView):
                 user.photo = request.FILES['photo']
             
             user.save()
-            self.envoie_mail_de_signal(user.email, user.first_name)
+            self.envoie_mail_de_signal(user.email, user.last_name)
 
             return Response({"message":"Vos informations ont été modifié"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -506,13 +506,14 @@ class AdminMdpResteConfirmView(APIView):
         
         user.password = make_password(new_password)
         user.save()
+        self.envoie_mail_de_confirme(user.email, user.last_name)
 
         return Response({"message": "Votre mot de passe à été réinitilisé"}, status=status.HTTP_200_OK)
 
     def envoie_mail_de_confirme(self, email, nom):
         send_mail(
-            subject="",
-            message="",
+            subject="Mot de passe réinitialisé",
+            message=f"Bonjour Admin {nom}, votre mot de passe à été réinitialisé veuillez bien mémorisé vos informations de connexion",
             from_email="agohchris90@gmail.com",
             recipient_list=[email],
             fail_silently=False

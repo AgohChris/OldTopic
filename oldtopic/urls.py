@@ -45,7 +45,7 @@ urlpatterns = [
 
     # ==== Reinitialisation
     path('auth/admin/password/reset/request/', AdminMdpResetRequestView.as_view(), name='admin_request_reset_password'),
-    path('auth/admin/password/reset/confirm/<uidb64>/<token>/', AdminMdpResteConfirmView.as_view(), name='admin_reset_password_confirm'),
+    path('auth/admin/password/reset/confirm/<uidb64>/<token>/', AdminMdpResteConfirmView.as_view(), name='password_reset_confirm'),
 
     # ======== Ajout et modificatio des matricules
     path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
