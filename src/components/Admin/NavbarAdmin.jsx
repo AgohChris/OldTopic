@@ -21,10 +21,10 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
 
   const navItems = [
     { id: 'dashboard', title: 'Tableau de bord', icon: LayoutDashboard, path: '/admin' },
-    { id: 'users', title: 'Utilisateurs', icon: Users, path: '/admin/utilisateurs' },
+    { id: 'users', title: 'Suspendre un etudiant', icon: Users, path: '/admin/utilisateurs' },
     { id: 'Add_Mat', title: 'Ajout de Matricule', icon: UserPlus, path: '/admin/ajoutmat' },
     { id: 'newsletter', title: 'Gestion de Newsletter', icon: Mail, path: '/admin/newsletter' },
-    { id: 'documents', title: 'Documents', icon: FileText, path: '/admin/documents' },
+    { id: 'documents', title: 'Ajout de Documents', icon: FileText, path: '/admin/documents' },
     { id: 'settings', title: 'Paramètres', icon: Settings, path: '/admin/parametres' },
   ];
 
@@ -101,7 +101,7 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
               } hover:${isDarkMode ? 'bg-white/5' : 'bg-gray-100'} rounded-lg`}
             >
               <LogOut className="w-5 h-5" />
-              <span>Déconnexion</span>
+              <a href='/admin/login'>Déconnexion</a>
             </motion.button>
           </div>
         </motion.div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, UserCheck, UserX } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, FileDown } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 
 const GestionStudent = () => {
@@ -19,6 +19,13 @@ const GestionStudent = () => {
   });
   // État pour le chargement
   const [loading, setLoading] = useState(true);
+  
+  // États pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [studentsPerPage] = useState(5);
+  
+  // État pour le menu d'exportation
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Données factices pour la démonstration
   useEffect(() => {
@@ -31,6 +38,12 @@ const GestionStudent = () => {
         { id: 4, nom: "Petit", prenom: "Thomas", email: "thomas.petit@example.com", annee: "2024", niveau: "M2", filiere: "Informatique", status: "actif" },
         { id: 5, nom: "Robert", prenom: "Emma", email: "emma.robert@example.com", annee: "2023", niveau: "L1", filiere: "Mathématiques", status: "actif" },
         { id: 6, nom: "Richard", prenom: "Lucas", email: "lucas.richard@example.com", annee: "2024", niveau: "L3", filiere: "Biologie", status: "suspendu" },
+        { id: 7, nom: "Moreau", prenom: "Léa", email: "lea.moreau@example.com", annee: "2023", niveau: "M1", filiere: "Physique", status: "actif" },
+        { id: 8, nom: "Simon", prenom: "Hugo", email: "hugo.simon@example.com", annee: "2024", niveau: "L2", filiere: "Mathématiques", status: "actif" },
+        { id: 9, nom: "Michel", prenom: "Camille", email: "camille.michel@example.com", annee: "2023", niveau: "L3", filiere: "Chimie", status: "suspendu" },
+        { id: 10, nom: "Dubois", prenom: "Alexandre", email: "alexandre.dubois@example.com", annee: "2024", niveau: "M2", filiere: "Informatique", status: "actif" },
+        { id: 11, nom: "Leroy", prenom: "Julie", email: "julie.leroy@example.com", annee: "2023", niveau: "L1", filiere: "Biologie", status: "actif" },
+        { id: 12, nom: "Girard", prenom: "Maxime", email: "maxime.girard@example.com", annee: "2024", niveau: "M1", filiere: "Informatique", status: "suspendu" },
       ];
       setStudents(mockStudents);
       setFilteredStudents(mockStudents);
@@ -47,6 +60,7 @@ const GestionStudent = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+    setCurrentPage(1); // Réinitialiser à la première page lors du filtrage
   };
 
   // Appliquer les filtres
@@ -102,14 +116,113 @@ const GestionStudent = () => {
       niveau: '',
       filiere: ''
     });
+    setCurrentPage(1); // Réinitialiser à la première page
+  };
+
+  // Calculer les étudiants de la page courante
+  const indexOfLastStudent = currentPage * studentsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+  const currentStudents = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
+
+  // Changer de page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculer le nombre total de pages
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+
+  // Fonction pour exporter en CSV
+  const exportToCSV = () => {
+    // Préparer les entêtes CSV
+    const headers = ['ID', 'Nom', 'Prénom', 'Email', 'Année', 'Niveau', 'Filière', 'Statut'];
+    
+    // Transformer les données en format CSV
+    const csvData = filteredStudents.map(student => [
+      student.id,
+      student.nom,
+      student.prenom,
+      student.email,
+      student.annee,
+      student.niveau,
+      student.filiere,
+      student.status
+    ]);
+    
+    // Créer le contenu CSV
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+    
+    // Créer un blob et un lien de téléchargement
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'etudiants.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Fermer le menu d'exportation
+    setShowExportMenu(false);
+  };
+
+  // Fonction pour exporter en PDF (simulée, nécessiterait une bibliothèque comme jsPDF)
+  const exportToPDF = () => {
+    alert('Exportation en PDF. Cette fonctionnalité nécessiterait une bibliothèque comme jsPDF.');
+    // Dans un cas réel, vous utiliseriez une bibliothèque comme jsPDF pour générer le PDF
+    
+    // Fermer le menu d'exportation
+    setShowExportMenu(false);
   };
 
   return (
-    <div className={`flex flex-col h-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-      <h1 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Gestion des Étudiants</h1>
+    <div className={`flex flex-col h-full ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} p-6 rounded-lg shadow-md`}>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Gestion des Étudiants</h1>
+        
+        {/* Bouton d'exportation avec menu déroulant */}
+        <div className="relative">
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            className={`px-4 py-2 ${
+              isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
+            } text-white rounded-md flex items-center gap-2`}
+          >
+            <FileDown size={18} />
+            Exporter
+          </button>
+          
+          {showExportMenu && (
+            <div className={`absolute right-0 mt-2 w-40 rounded-md shadow-lg z-10 ${
+              isDarkMode ? 'bg-gray-800' : 'bg-white'
+            } border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+              <div className="py-1">
+                <button
+                  onClick={exportToCSV}
+                  className={`block w-full text-left px-4 py-2 text-sm ${
+                    isDarkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Exporter en CSV
+                </button>
+                <button
+                  onClick={exportToPDF}
+                  className={`block w-full text-left px-4 py-2 text-sm ${
+                    isDarkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Exporter en PDF
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
       
       {/* Section de filtres */}
-      <div className={`flex flex-col lg:flex-row gap-4 mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'} p-4 rounded-lg`}>
+      <div className={`flex flex-col lg:flex-row gap-4 mb-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-50'} p-4 rounded-lg`}>
         <div className="flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={18} />
@@ -182,7 +295,7 @@ const GestionStudent = () => {
       </div>
       
       {/* Tableau des étudiants */}
-      <div className={`overflow-x-auto flex-grow ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
+      <div className={`overflow-x-auto flex-grow ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-lg shadow-sm`}>
         {loading ? (
           <div className="flex justify-center items-center h-60">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -206,8 +319,8 @@ const GestionStudent = () => {
                 <th className={`px-6 py-3 text-right text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Actions</th>
               </tr>
             </thead>
-            <tbody className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
-              {filteredStudents.map((student) => (
+            <tbody className={`${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+              {currentStudents.map((student) => (
                 <tr key={student.id} className={isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.id}</td>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{student.nom}</td>
@@ -254,16 +367,50 @@ const GestionStudent = () => {
         )}
       </div>
       
-      {/* Pagination (pour une future implémentation) */}
+      {/* Pagination fonctionnelle */}
       <div className={`flex justify-between items-center mt-6 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
         <div>
-          Affichage de {filteredStudents.length} étudiant(s) sur {students.length}
+          Affichage de {indexOfFirstStudent + 1}-{Math.min(indexOfLastStudent, filteredStudents.length)} sur {filteredStudents.length} étudiant(s)
         </div>
         <div className="flex gap-2">
-          <button className={`px-3 py-1 border ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} rounded-md`}>
+          <button 
+            onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 border ${
+              currentPage === 1 
+                ? isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500 cursor-not-allowed' : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                : isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700'
+            } rounded-md`}
+          >
             Précédent
           </button>
-          <button className={`px-3 py-1 border ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} rounded-md`}>
+          
+          {/* Affichage des numéros de page */}
+          <div className="flex gap-1">
+            {[...Array(totalPages).keys()].map(number => (
+              <button
+                key={number + 1}
+                onClick={() => paginate(number + 1)}
+                className={`px-3 py-1 border rounded-md ${
+                  currentPage === number + 1
+                    ? isDarkMode ? 'bg-blue-600 border-blue-700 text-white' : 'bg-blue-500 border-blue-600 text-white'
+                    : isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700'
+                }`}
+              >
+                {number + 1}
+              </button>
+            ))}
+          </div>
+          
+          <button 
+            onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className={`px-3 py-1 border ${
+              currentPage === totalPages || totalPages === 0
+                ? isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500 cursor-not-allowed' : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                : isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700'
+            } rounded-md`}
+          >
             Suivant
           </button>
         </div>

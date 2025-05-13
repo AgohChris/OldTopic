@@ -131,7 +131,7 @@ const Newsletter = () => {
 
   return (
     // Apply base background and text color based on isDarkMode
-    <div className={`p-6 ${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-800'}`}>
+    <div className={`p-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-50 text-gray-800'}`}>
       {/* En-tête de la page */}
       <div className="mb-8">
         <h1 className={`text-3xl font-bold flex items-center gap-3 mb-2 ${isDarkMode ? 'text-gray-50' : 'text-gray-800'}`}>
@@ -271,7 +271,7 @@ const Newsletter = () => {
       </div>
 
       {/* Tableau des abonnés */}
-      <div className={`overflow-x-auto rounded-xl shadow mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+      <div className={`overflow-x-auto rounded-xl shadow mb-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'}`}>
         <table className="w-full">
           <thead className={`${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-600'}`}> {/* Apply text color to thead */}
             <tr>
@@ -431,7 +431,7 @@ const Newsletter = () => {
       {/* Modal de composition de newsletter */}
       {showComposeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className={`w-full max-w-3xl ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl overflow-hidden`}>
+          <div className={`w-full max-w-3xl ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-xl shadow-xl overflow-hidden`}>
             <div className={`p-6 ${isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}`}> {/* Adjust border color */}
               <div className="flex justify-between items-center">
                 <h3 className={`text-xl font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Composer une Newsletter</h3>
@@ -486,7 +486,7 @@ const Newsletter = () => {
               </div>
             </div>
 
-            <div className={`p-6 flex justify-end gap-3 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <div className={`p-6 flex justify-end gap-3 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-50'}`}>
               <button
                 onClick={() => setShowComposeModal(false)}
                 className={`px-4 py-2 rounded-lg ${

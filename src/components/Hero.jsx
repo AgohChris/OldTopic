@@ -287,15 +287,6 @@ const Hero = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white font-medium inline-flex items-center gap-2 shadow-lg shadow-green-500/20"
-                href="#explore"
-              >
-                Explorer les ressources
-                <ArrowRight className="w-5 h-5" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
                 className="px-8 py-3 rounded-lg bg-white/10 text-white border border-white/20 backdrop-blur-sm hover:bg-white/20 transition-colors font-medium"
                 href="#about"
               >

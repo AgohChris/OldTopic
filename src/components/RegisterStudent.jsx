@@ -9,7 +9,7 @@ export default function RegisterStudent() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [nom, setNom] = useState("");
-  const [institution, setInstitution] = useState("");
+  const [matricule, setMatricule] = useState("");
   
   // États pour la gestion du formulaire
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -132,20 +132,20 @@ export default function RegisterStudent() {
                   </div>
                 </div>
                 
-                {/* Institution (optionnel) */}
+                {/* Matricule (optionnel) */}
                 <div>
-                  <label htmlFor="institution" className="block text-sm font-medium text-teal-400 mb-2">
-                    Institution (optionnel)
+                  <label htmlFor="matricule" className="block text-sm font-medium text-teal-400 mb-2">
+                    Matricule
                   </label>
                   <div className="mt-1 relative">
                     <input
-                      id="institution"
-                      name="institution"
+                      id="matricule"
+                      name="matricule"
                       type="text"
-                      value={institution}
-                      onChange={(e) => setInstitution(e.target.value)}
+                      value={matricule}
+                      onChange={(e) => setMatricule(e.target.value)}
                       className="w-full p-4 pr-12 rounded-xl bg-white/5 border border-teal-400/30 focus:border-teal-400 text-white outline-none"
-                      placeholder="Votre université ou école"
+                      placeholder="Votre matricule"
                     />
                   </div>
                 </div>

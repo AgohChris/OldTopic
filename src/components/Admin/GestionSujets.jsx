@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom'; // << 1. Importer useOutletContext
+import { useOutletContext } from 'react-router-dom';
 import { FileText, File, Plus, X, Upload, Search, Filter, Trash2, Edit, Save } from 'lucide-react';
 
 const GestionSujets = () => {
-  const { isDarkMode } = useOutletContext(); // << 2. Récupérer isDarkMode
+  const { isDarkMode } = useOutletContext();
 
   // États pour les sujets et le filtrage
   const [sujets, setSujets] = useState([]);
@@ -22,6 +22,10 @@ const GestionSujets = () => {
     annee: ''
   });
 
+  // États pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Nombre d'éléments par page
+
   // État pour le formulaire
   const [formData, setFormData] = useState({
     titre: '',
@@ -34,7 +38,7 @@ const GestionSujets = () => {
     fichier: null
   });
 
-  // Données factices pour la démonstration
+  // Données factices - AUGMENTÉES pour tester la pagination
   useEffect(() => {
     setTimeout(() => {
       const mockSujets = [
@@ -43,12 +47,35 @@ const GestionSujets = () => {
         { id: 3, titre: "TP Réseaux informatiques", type: "tp", niveau: "L3", filiere: "Informatique", annee: "2023", professeur: "Dr. Dubois", description: "Configuration d'un réseau local", dateAjout: "2023-11-15" },
         { id: 4, titre: "Devoir maison Analyse", type: "devoir", niveau: "M1", filiere: "Mathématiques", annee: "2024", professeur: "Dr. Petit", description: "Problèmes d'optimisation", dateAjout: "2024-03-10" },
         { id: 5, titre: "Interrogation surprise Physique", type: "interrogation", niveau: "L2", filiere: "Physique", annee: "2023", professeur: "Dr. Lambert", description: "Questions sur les lois de Newton", dateAjout: "2023-12-05" },
+        // Ajout de plus de sujets pour déclencher la pagination
+        { id: 6, titre: "Examen Java Avancé", type: "examen", niveau: "L3", filiere: "Informatique", annee: "2024", professeur: "Pr. Dupont", description: "Programmation orientée objet en Java", dateAjout: "2024-05-10" },
+        { id: 7, titre: "TD Algèbre Linéaire", type: "td", niveau: "L2", filiere: "Mathématiques", annee: "2024", professeur: "Pr. Leclerc", description: "Espaces vectoriels et matrices", dateAjout: "2024-05-05" },
+        { id: 8, titre: "TP Bases de Données", type: "tp", niveau: "L3", filiere: "Informatique", annee: "2023", professeur: "Dr. Morin", description: "Modélisation Entité/Relation", dateAjout: "2023-10-25" },
+        { id: 9, titre: "Devoir Thermodynamique", type: "devoir", niveau: "M1", filiere: "Physique", annee: "2024", professeur: "Pr. Roussel", description: "Cycles thermodynamiques", dateAjout: "2024-04-01" },
+        { id: 10, titre: "Interrogation Chimie Organique", type: "interrogation", niveau: "L2", filiere: "Chimie", annee: "2023", professeur: "Dr. Girard", description: "Réactions de substitution", dateAjout: "2023-11-20" },
+        { id: 11, titre: "TD Probabilités et Statistiques", type: "td", niveau: "L2", filiere: "Mathématiques", annee: "2024", professeur: "Dr. Lefevre", description: "Variables aléatoires", dateAjout: "2024-05-12" },
+        { id: 12, titre: "TP Systèmes d'Exploitation", type: "tp", niveau: "L3", filiere: "Informatique", annee: "2024", professeur: "Pr. Bernard", description: "Gestion des processus et mémoire", dateAjout: "2024-05-11" },
+
       ];
       setSujets(mockSujets);
       setFilteredSujets(mockSujets);
       setLoading(false);
     }, 1000);
   }, []);
+
+  // Réinitialiser la page courante lorsque les filtres changent
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  // Calcul des index pour le découpage des éléments de la page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredSujets.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Calcul du nombre total de pages
+  const totalPages = Math.ceil(filteredSujets.length / itemsPerPage);
+
 
   const typesSujet = ["examen", "td", "tp", "devoir", "interrogation"];
   const niveaux = ["L1", "L2", "L3", "M1", "M2"];
@@ -64,8 +91,8 @@ const GestionSujets = () => {
     let result = [...sujets];
     if (filters.searchTerm) {
       const searchLower = filters.searchTerm.toLowerCase();
-      result = result.filter(sujet => 
-        sujet.titre.toLowerCase().includes(searchLower) || 
+      result = result.filter(sujet =>
+        sujet.titre.toLowerCase().includes(searchLower) ||
         sujet.professeur.toLowerCase().includes(searchLower) ||
         sujet.description.toLowerCase().includes(searchLower)
       );
@@ -97,10 +124,10 @@ const GestionSujets = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
-      setSujets(prev => prev.map(sujet => 
+      setSujets(prev => prev.map(sujet =>
         sujet.id === editId ? {
           ...sujet, ...formData,
-          fichier: selectedFile ? selectedFile.name : sujet.fichier 
+          fichier: selectedFile ? selectedFile.name : sujet.fichier
         } : sujet
       ));
       setIsEditing(false);
@@ -118,7 +145,7 @@ const GestionSujets = () => {
     setFormData({ titre: '', type: 'examen', niveau: '', filiere: '', annee: '', professeur: '', description: '', fichier: null });
     setSelectedFile(null);
   };
-  
+
   const handleEdit = (sujet) => {
     setIsEditing(true);
     setEditId(sujet.id);
@@ -155,8 +182,8 @@ const GestionSujets = () => {
 
   // Classes conditionnelles pour les inputs, selects, textareas
   const formElementClasses = `w-full px-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-    isDarkMode 
-      ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400' 
+    isDarkMode
+      ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400'
       : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
   }`;
 
@@ -168,7 +195,7 @@ const GestionSujets = () => {
   return (
     <div className={`flex flex-col h-full p-6 rounded-lg shadow-md ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <h1 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Gestion des Sujets</h1>
-      
+
       <div className={`flex flex-col lg:flex-row gap-4 mb-6 p-4 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
         <div className="flex-1">
           <div className="relative">
@@ -180,14 +207,14 @@ const GestionSujets = () => {
               value={filters.searchTerm}
               onChange={handleFilterChange}
               className={`pl-10 pr-4 py-2 w-full rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                isDarkMode 
-                  ? 'border-gray-600 bg-gray-700 text-gray-200' 
+                isDarkMode
+                  ? 'border-gray-600 bg-gray-700 text-gray-200'
                   : 'border-gray-300 bg-white text-gray-900'
               }`}
             />
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           {[
             { name: "type", value: filters.type, options: [{ value: "", label: "Type de sujet" }, ...typesSujet.map(type => ({ value: type, label: formatType(type)}))] },
@@ -201,20 +228,20 @@ const GestionSujets = () => {
               value={filter.value}
               onChange={handleFilterChange}
               className={`px-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                isDarkMode 
-                  ? 'border-gray-600 bg-gray-700 text-gray-200' 
+                isDarkMode
+                  ? 'border-gray-600 bg-gray-700 text-gray-200'
                   : 'border-gray-300 bg-white text-gray-900'
               }`}
             >
               {filter.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
             </select>
           ))}
-          
+
           <button
             onClick={resetFilters}
             className={`px-4 py-2 rounded-md flex items-center gap-2 ${
-              isDarkMode 
-                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+              isDarkMode
+                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
                 : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
             }`}
           >
@@ -223,7 +250,7 @@ const GestionSujets = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         {typesSujet.map(type => (
           <button
@@ -236,7 +263,7 @@ const GestionSujets = () => {
           </button>
         ))}
       </div>
-      
+
       <div className={`overflow-x-auto flex-grow rounded-lg shadow-sm ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         {loading ? (
           <div className="flex justify-center items-center h-60">
@@ -258,7 +285,7 @@ const GestionSujets = () => {
               </tr>
             </thead>
             <tbody className={`divide-y ${isDarkMode ? 'bg-gray-800 divide-gray-700' : 'bg-white divide-gray-200'}`}>
-              {filteredSujets.map((sujet) => (
+                {currentItems.map((sujet) => ( // Utilise currentItems ici
                 <tr key={sujet.id} className={`${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -283,17 +310,32 @@ const GestionSujets = () => {
           </table>
         )}
       </div>
-      
+
+      {/* Controls de pagination */}
       <div className={`flex justify-between items-center mt-6 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
         <div>
-          Affichage de {filteredSujets.length} sujet(s) sur {sujets.length}
+          Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, filteredSujets.length)} sur {filteredSujets.length} sujet(s)
         </div>
-        <div className="flex gap-2">
-          <button className={`px-3 py-1 border rounded-md ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'}`}>Précédent</button>
-          <button className={`px-3 py-1 border rounded-md ${isDarkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'}`}>Suivant</button>
+        <div className="flex items-center gap-2">
+           {/* Afficher le numéro de page courante et total */}
+           <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Page {currentPage} sur {totalPages}</span>
+           <button
+             onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} // S'assurer de ne pas descendre en dessous de 1
+             disabled={currentPage === 1} // Désactiver si on est sur la première page
+             className={`px-3 py-1 border rounded-md ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'hover:bg-gray-700 text-gray-200' : 'hover:bg-gray-100 text-gray-800')}`}
+           >
+             Précédent
+           </button>
+           <button
+             onClick={() => setCurrentPage(p => p + 1)}
+             disabled={currentPage >= totalPages} // Désactiver si on est sur la dernière page
+             className={`px-3 py-1 border rounded-md ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'hover:bg-gray-700 text-gray-200' : 'hover:bg-gray-100 text-gray-800')}`}
+           >
+             Suivant
+           </button>
         </div>
       </div>
-      
+
       {/* Modal d'ajout/modification (combiné pour simplifier, ajustez au besoin) */}
       {(showModal || showEditModal) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -302,14 +344,14 @@ const GestionSujets = () => {
               <h3 className={`text-xl font-semibold ${modalTextColorClass}`}>
                 {isEditing ? `Modifier le ${formatType(formData.type)}` : `Ajouter un ${formatType(formData.type)}`}
               </h3>
-              <button 
+              <button
                 onClick={() => { setShowModal(false); setShowEditModal(false); setIsEditing(false); }}
                 className={`${isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'}`}
               >
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-6">
               <div className="space-y-4">
                 {/* Champs du formulaire */}
@@ -352,13 +394,13 @@ const GestionSujets = () => {
                   <label className={labelClass}>Description (optionnelle)</label>
                   <textarea name="description" value={formData.description} onChange={handleFormChange} rows={3} placeholder="Description du sujet..." className={formElementClasses}/>
                 </div>
-                
+
                 <div>
                   <label className={labelClass}>Fichier du sujet{isEditing ? ' (Optionnel pour changer)' : '*'}</label>
                   <div className="flex items-center justify-center w-full">
                     <label className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-gray-600 hover:border-gray-500 bg-gray-700 hover:bg-gray-800' 
+                      isDarkMode
+                        ? 'border-gray-600 hover:border-gray-500 bg-gray-700 hover:bg-gray-800'
                         : 'border-gray-300 hover:border-gray-200 bg-gray-50 hover:bg-gray-100'
                     }`}>
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -387,14 +429,14 @@ const GestionSujets = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6 flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => { setShowModal(false); setShowEditModal(false); setIsEditing(false);}}
                   className={`px-4 py-2 rounded-md ${
-                    isDarkMode 
-                      ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                    isDarkMode
+                      ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
                       : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
                   }`}
                 >
