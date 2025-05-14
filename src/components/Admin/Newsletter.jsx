@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Search, Edit, Trash2, Send, Filter, Download, Info, CheckCircle, XCircle } from 'lucide-react';
-import { useOutletContext } from 'react-router-dom'; // Import useOutletContext
+import { Mail, Search, Edit, Trash2, Send, Filter, Info, CheckCircle, XCircle } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
-// Remove the isDarkMode prop from here
 const Newsletter = () => {
   // Retrieve isDarkMode from the Outlet context
   const { isDarkMode } = useOutletContext();
 
-  // État pour stocker les abonnés (données factices)
+  // États pour stocker les abonnés et contrôler l'interface
   const [subscribers, setSubscribers] = useState([]);
   const [filteredSubscribers, setFilteredSubscribers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,30 +20,47 @@ const Newsletter = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [subscribersPerPage] = useState(10);
   const [notification, setNotification] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // État pour gérer le chargement
+
+  // State for Edit Modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingSubscriber, setEditingSubscriber] = useState(null);
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', status: '' });
+
 
   // Charger les données factices au chargement du composant
   useEffect(() => {
-    // Simulation d'un appel API avec des données factices
-    const mockSubscribers = [
-      { id: 1, email: 'johndoe@example.com', name: 'John Doe', subscribed_date: '2025-04-15', status: 'active', opens: 12, clicks: 5 },
-      { id: 2, email: 'alice@example.com', name: 'Alice Smith', subscribed_date: '2025-04-10', status: 'active', opens: 8, clicks: 3 },
-      { id: 3, email: 'robert@example.com', name: 'Robert Johnson', subscribed_date: '2025-04-05', status: 'inactive', opens: 0, clicks: 0 },
-      { id: 4, email: 'maria@example.com', name: 'Maria Garcia', subscribed_date: '2025-04-02', status: 'active', opens: 15, clicks: 7 },
-      { id: 5, email: 'david@example.com', name: 'David Brown', subscribed_date: '2025-03-28', status: 'active', opens: 6, clicks: 2 },
-      { id: 6, email: 'sophie@example.com', name: 'Sophie Wilson', subscribed_date: '2025-03-25', status: 'inactive', opens: 1, clicks: 0 },
-      { id: 7, email: 'michael@example.com', name: 'Michael Chen', subscribed_date: '2025-03-20', status: 'active', opens: 10, clicks: 4 },
-      { id: 8, email: 'emma@example.com', name: 'Emma Taylor', subscribed_date: '2025-03-18', status: 'active', opens: 7, clicks: 3 },
-      { id: 9, email: 'james@example.com', name: 'James Lee', subscribed_date: '2025-03-15', status: 'active', opens: 9, clicks: 5 },
-      { id: 10, email: 'olivia@example.com', name: 'Olivia Moore', subscribed_date: '2025-03-10', status: 'inactive', opens: 2, clicks: 0 },
-      { id: 11, email: 'william@example.com', name: 'William Davis', subscribed_date: '2025-03-08', status: 'active', opens: 11, clicks: 6 },
-      { id: 12, email: 'natalie@example.com', name: 'Natalie Wright', subscribed_date: '2025-03-05', status: 'active', opens: 5, clicks: 2 },
-      { id: 13, email: 'thomas@example.com', name: 'Thomas Martin', subscribed_date: '2025-03-01', status: 'inactive', opens: 0, clicks: 0 },
-      { id: 14, email: 'sarah@example.com', name: 'Sarah Johnson', subscribed_date: '2025-02-25', status: 'active', opens: 8, clicks: 4 },
-      { id: 15, email: 'daniel@example.com', name: 'Daniel White', subscribed_date: '2025-02-20', status: 'active', opens: 14, clicks: 9 }
-    ];
+    // Simulation d'un appel API avec un délai pour montrer le chargement
+    const fetchData = async () => {
+      setIsLoading(true);
 
-    setSubscribers(mockSubscribers);
-    setFilteredSubscribers(mockSubscribers);
+      // Simuler un délai de chargement des données
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const mockSubscribers = [
+        { id: 1, email: 'johndoe@example.com', name: 'John Doe', subscribed_date: '2025-04-15', status: 'active', opens: 12, clicks: 5 },
+        { id: 2, email: 'alice@example.com', name: 'Alice Smith', subscribed_date: '2025-04-10', status: 'active', opens: 8, clicks: 3 },
+        { id: 3, email: 'robert@example.com', name: 'Robert Johnson', subscribed_date: '2025-04-05', status: 'inactive', opens: 0, clicks: 0 },
+        { id: 4, email: 'maria@example.com', name: 'Maria Garcia', subscribed_date: '2025-04-02', status: 'active', opens: 15, clicks: 7 },
+        { id: 5, email: 'david@example.com', name: 'David Brown', subscribed_date: '2025-03-28', status: 'active', opens: 6, clicks: 2 },
+        { id: 6, email: 'sophie@example.com', name: 'Sophie Wilson', subscribed_date: '2025-03-25', status: 'inactive', opens: 1, clicks: 0 },
+        { id: 7, email: 'michael@example.com', name: 'Michael Chen', subscribed_date: '2025-03-20', status: 'active', opens: 10, clicks: 4 },
+        { id: 8, email: 'emma@example.com', name: 'Emma Taylor', subscribed_date: '2025-03-18', status: 'active', opens: 7, clicks: 3 },
+        { id: 9, email: 'james@example.com', name: 'James Lee', subscribed_date: '2025-03-15', status: 'active', opens: 9, clicks: 5 },
+        { id: 10, email: 'olivia@example.com', name: 'Olivia Moore', subscribed_date: '2025-03-10', status: 'inactive', opens: 2, clicks: 0 },
+        { id: 11, email: 'william@example.com', name: 'William Davis', subscribed_date: '2025-03-08', status: 'active', opens: 11, clicks: 6 },
+        { id: 12, email: 'natalie@example.com', name: 'Natalie Wright', subscribed_date: '2025-03-05', status: 'active', opens: 5, clicks: 2 },
+        { id: 13, email: 'thomas@example.com', name: 'Thomas Martin', subscribed_date: '2025-03-01', status: 'inactive', opens: 0, clicks: 0 },
+        { id: 14, email: 'sarah@example.com', name: 'Sarah Johnson', subscribed_date: '2025-02-25', status: 'active', opens: 8, clicks: 4 },
+        { id: 15, email: 'daniel@example.com', name: 'Daniel White', subscribed_date: '2025-02-20', status: 'active', opens: 14, clicks: 9 }
+      ];
+
+      setSubscribers(mockSubscribers);
+      setFilteredSubscribers(mockSubscribers);
+      setIsLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   // Filtrer les abonnés selon le terme de recherche et le statut
@@ -124,10 +140,50 @@ const Newsletter = () => {
     }
   };
 
-  // Fonction pour exporter les abonnés (simulation)
-  const handleExportSubscribers = () => {
-    showNotification('Liste des abonnés exportée avec succès!');
+  // --- Modifier l'abonné ---
+
+  // Ouvre le modal de modification avec les données de l'abonné
+  const openEditModal = (subscriber) => {
+    setEditingSubscriber(subscriber);
+    setEditFormData({ name: subscriber.name, email: subscriber.email, status: subscriber.status });
+    setShowEditModal(true);
   };
+
+  // Gère les changements dans le formulaire de modification
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({ ...editFormData, [name]: value });
+  };
+
+  // Gère la sauvegarde des modifications
+  const handleUpdateSubscriber = () => {
+    if (!editFormData.name || !editFormData.email || !editFormData.status) {
+      showNotification('Veuillez remplir tous les champs du formulaire de modification.', 'error');
+      return;
+    }
+
+    // Mettre à jour la liste des abonnés avec les nouvelles données
+    const updatedSubscribers = subscribers.map(sub =>
+      sub.id === editingSubscriber.id ? { ...sub, ...editFormData } : sub
+    );
+    setSubscribers(updatedSubscribers);
+
+    showNotification(`Abonné ${editFormData.name} mis à jour avec succès!`);
+    setShowEditModal(false);
+    setEditingSubscriber(null);
+    setEditFormData({ name: '', email: '', status: '' });
+  };
+
+  // Ferme le modal de modification
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingSubscriber(null);
+    setEditFormData({ name: '', email: '', status: '' });
+  };
+
+
+  // Définir la hauteur minimale pour le conteneur du tableau
+  const tableMinHeight = '400px'; // Hauteur fixe pour le tableau
 
   return (
     // Apply base background and text color based on isDarkMode
@@ -162,49 +218,6 @@ const Newsletter = () => {
         </div>
       )}
 
-      {/* Carte des statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className={`p-6 rounded-xl shadow-md ${isDarkMode ? 'bg-gradient-to-br from-black to-gray-900 border border-gray-700' : 'bg-white border border-gray-200'}`}>
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-teal-100 text-teal-600">
-              <Mail size={24} />
-            </div>
-            <div>
-              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Total Abonnés</h3>
-              <p className={`text-2xl font-bold ${isDarkMode ? 'text-gray-50' : 'text-gray-900'}`}>{subscribers.length}</p> {/* Ensure this text color changes */}
-            </div>
-          </div>
-        </div>
-
-        <div className={`p-6 rounded-xl shadow-md ${isDarkMode ? 'bg-gradient-to-br from-black to-gray-900 border border-gray-700' : 'bg-white border border-gray-200'}`}>
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-green-100 text-green-600">
-              <CheckCircle size={24} />
-            </div>
-            <div>
-              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Abonnés Actifs</h3>
-              <p className={`text-2xl font-bold ${isDarkMode ? 'text-gray-50' : 'text-gray-900'}`}> {/* Ensure this text color changes */}
-                {subscribers.filter(sub => sub.status === 'active').length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className={`p-6 rounded-xl shadow-md ${isDarkMode ? 'bg-gradient-to-br from-black to-gray-900 border border-gray-700' : 'bg-white border border-gray-200'}`}>
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-              <Send size={24} />
-            </div>
-            <div>
-              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Taux d'ouverture</h3>
-              <p className={`text-2xl font-bold ${isDarkMode ? 'text-gray-50' : 'text-gray-900'}`}> {/* Ensure this text color changes */}
-                {subscribers.length > 0 ? Math.round(subscribers.reduce((acc, curr) => acc + curr.opens, 0) / subscribers.length) : 0}% {/* Added check for subscribers.length */}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Barre d'actions */}
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-between">
         <div className="flex flex-wrap gap-3">
@@ -213,12 +226,12 @@ const Newsletter = () => {
             disabled={selectedSubscribers.length === 0}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
               selectedSubscribers.length === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-br from-black to-gray-900 bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-green-500 hover:bg-green-600 text-white'
             }`}
           >
             <Send size={16} />
-            Envoyer Newsletter
+            Envoyer Newsletter ({selectedSubscribers.length})
           </button>
 
           <button
@@ -226,41 +239,42 @@ const Newsletter = () => {
             disabled={selectedSubscribers.length === 0}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
               selectedSubscribers.length === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? ' bg-gradient-to-br from-black to-gray-900 bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-red-500 hover:bg-red-600 text-white'
             }`}
           >
             <Trash2 size={16} />
-            Supprimer
+            Supprimer ({selectedSubscribers.length})
           </button>
 
-          <button
+          {/* Removed the Export button */}
+          {/* <button
             onClick={handleExportSubscribers}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center gap-2"
           >
             <Download size={16} />
             Exporter
-          </button>
+          </button> */}
         </div>
 
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-3 flex-wrap ">
           <div className={`relative rounded-lg overflow-hidden flex items-center ${isDarkMode ? 'bg-gray-800' : 'bg-white border border-gray-300'}`}>
-            <Search size={18} className="absolute left-3 text-gray-400" />
+            <Search size={18} className="absolute left-3 text-gray-400 " />
             <input
               type="text"
               placeholder="Rechercher un abonné..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`pl-10 pr-4 py-2 w-64 focus:outline-none ${isDarkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}
+              className={`pl-10 pr-4 py-2 w-64 focus:outline-none ${isDarkMode ? 'bg-gradient-to-br from-black to-gray-900text-gray-200' : 'bg-white text-gray-700'}`}
             />
           </div>
 
-          <div className={`relative ${isDarkMode ? 'bg-gray-800' : 'bg-white border border-gray-300'} rounded-lg overflow-hidden flex items-center`}>
+          <div className={`relative ${isDarkMode ? 'bg-gray-800 ' : 'bg-white border border-gray-300'} rounded-lg overflow-hidden flex items-center`}>
             <Filter size={18} className="absolute left-3 text-gray-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className={`pl-10 pr-4 py-2 focus:outline-none ${isDarkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}
+              className={`pl-10 pr-4 py-2 focus:outline-none ${isDarkMode ? 'bg-gray-800 text-gray-200 bg-gradient-to-br from-black to-gray-900' : 'bg-white text-gray-700'}`}
             >
               <option value="all">Tous les statuts</option>
               <option value="active">Actifs</option>
@@ -270,18 +284,22 @@ const Newsletter = () => {
         </div>
       </div>
 
-      {/* Tableau des abonnés */}
-      <div className={`overflow-x-auto rounded-xl shadow mb-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'}`}>
+      {/* Tableau des abonnés - Avec hauteur fixe et état de chargement */}
+      <div
+        className={`overflow-hidden rounded-xl shadow mb-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'}`}
+        style={{ minHeight: tableMinHeight }}
+      >
         <table className="w-full">
-          <thead className={`${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-600'}`}> {/* Apply text color to thead */}
+          <thead className={`${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-600'}`}>
             <tr>
               <th className="py-4 px-4 text-left">
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    checked={currentSubscribers.length > 0 && selectedSubscribers.length === currentSubscribers.length}
+                    checked={currentSubscribers.length > 0 && selectedSubscribers.length === currentSubscribers.length && currentSubscribers.every(sub => selectedSubscribers.includes(sub.id))}
                     onChange={handleSelectAll}
                     className="rounded text-green-500 focus:ring-green-500"
+                    disabled={isLoading || currentSubscribers.length === 0}
                   />
                 </div>
               </th>
@@ -293,8 +311,18 @@ const Newsletter = () => {
               <th className={`py-4 px-4 text-left`}>Actions</th>
             </tr>
           </thead>
-          <tbody className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}> {/* Adjust divider color */}
-            {currentSubscribers.length > 0 ? (
+          <tbody className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+            {isLoading ? (
+              // État de chargement
+              <tr>
+                <td colSpan="7" className="py-32">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                </td>
+              </tr>
+            ) : currentSubscribers.length > 0 ? (
+              // Données des abonnés
               currentSubscribers.map(subscriber => (
                 <tr key={subscriber.id} className={`${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
                   <td className="py-3 px-4">
@@ -312,7 +340,7 @@ const Newsletter = () => {
                     <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
                       subscriber.status === 'active'
                         ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800' // These status pills often have fixed colors
+                        : 'bg-gray-100 text-gray-800'
                     }`}>
                       {subscriber.status === 'active' ? 'Actif' : 'Inactif'}
                     </span>
@@ -330,7 +358,11 @@ const Newsletter = () => {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex gap-2">
-                      <button className={`p-1 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`} title="Modifier">
+                      <button
+                        className={`p-1 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                        title="Modifier"
+                        onClick={() => openEditModal(subscriber)} // Open edit modal on click
+                      >
                         <Edit size={16} className="text-blue-500" />
                       </button>
                       <button
@@ -340,6 +372,7 @@ const Newsletter = () => {
                           if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'abonné ${subscriber.email}?`)) {
                             const updatedSubscribers = subscribers.filter(s => s.id !== subscriber.id);
                             setSubscribers(updatedSubscribers);
+                            setSelectedSubscribers(selectedSubscribers.filter(id => id !== subscriber.id)); // Remove from selection too
                             showNotification('Abonné supprimé avec succès!');
                           }
                         }}
@@ -351,9 +384,20 @@ const Newsletter = () => {
                 </tr>
               ))
             ) : (
+              // Aucun abonné trouvé
               <tr>
-                <td colSpan="7" className={`py-6 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Aucun abonné trouvé
+                <td colSpan="7" className="py-32 text-center">
+                  <div className="flex flex-col items-center justify-center">
+                    <Info size={36} className={`${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                    <p className={`mt-4 text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Aucun abonné trouvé
+                    </p>
+                    {searchTerm && (
+                      <p className={`mt-2 ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                        Essayez de modifier vos critères de recherche
+                      </p>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}
@@ -362,7 +406,7 @@ const Newsletter = () => {
       </div>
 
       {/* Pagination */}
-      {filteredSubscribers.length > subscribersPerPage && (
+      {filteredSubscribers.length > subscribersPerPage && !isLoading && (
         <div className="flex justify-between items-center">
           <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Affichage de {indexOfFirstSubscriber + 1} à {Math.min(indexOfLastSubscriber, filteredSubscribers.length)} sur {filteredSubscribers.length} abonnés
@@ -382,6 +426,7 @@ const Newsletter = () => {
               Précédent
             </button>
 
+            {/* Dynamic pagination buttons */}
             {Array.from({ length: Math.min(totalPages, 5) }).map((_, index) => {
               let pageNumber;
               if (totalPages <= 5) {
@@ -432,7 +477,7 @@ const Newsletter = () => {
       {showComposeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className={`w-full max-w-3xl ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-xl shadow-xl overflow-hidden`}>
-            <div className={`p-6 ${isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}`}> {/* Adjust border color */}
+            <div className={`p-6 ${isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}`}>
               <div className="flex justify-between items-center">
                 <h3 className={`text-xl font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Composer une Newsletter</h3>
                 <button onClick={() => setShowComposeModal(false)} className="text-gray-500 hover:text-gray-700">
@@ -499,10 +544,109 @@ const Newsletter = () => {
               </button>
               <button
                 onClick={handleSendNewsletter}
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center gap-2"
+                disabled={!newsletterContent.subject || !newsletterContent.content}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  !newsletterContent.subject || !newsletterContent.content
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-green-500 hover:bg-green-600 text-white'
+                }`}
               >
                 <Send size={16} />
-                Envoyer
+                Envoyer Newsletter
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de modification d'abonné */}
+      {showEditModal && editingSubscriber && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`w-full max-w-md ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-xl shadow-xl overflow-hidden`}>
+            <div className={`p-6 ${isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}`}>
+              <div className="flex justify-between items-center">
+                <h3 className={`text-xl font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Modifier l'abonné</h3>
+                <button onClick={closeEditModal} className="text-gray-500 hover:text-gray-700">
+                  <XCircle size={24} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-4">
+                <label className={`block mb-2 font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleEditInputChange}
+                  className={`w-full px-4 py-2 rounded-lg ${
+                    isDarkMode
+                      ? 'bg-gray-700 text-gray-200 border border-gray-600'
+                      : 'border border-gray-300 text-gray-800'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                />
+              </div>
+              <div className="mb-4">
+                <label className={`block mb-2 font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleEditInputChange}
+                  className={`w-full px-4 py-2 rounded-lg ${
+                    isDarkMode
+                      ? 'bg-gray-700 text-gray-200 border border-gray-600'
+                      : 'border border-gray-300 text-gray-800'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                />
+              </div>
+               <div className="mb-4">
+                <label className={`block mb-2 font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Statut <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="status"
+                  value={editFormData.status}
+                  onChange={handleEditInputChange}
+                  className={`w-full px-4 py-2 rounded-lg ${
+                    isDarkMode
+                      ? 'bg-gray-700 text-gray-200 border border-gray-600'
+                      : 'border border-gray-300 text-gray-800'
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                >
+                  <option value="active">Actif</option>
+                  <option value="inactive">Inactif</option>
+                </select>
+              </div>
+            </div>
+
+            <div className={`p-6 flex justify-end gap-3 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-50'}`}>
+              <button
+                onClick={closeEditModal}
+                className={`px-4 py-2 rounded-lg ${
+                  isDarkMode
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleUpdateSubscriber}
+                disabled={!editFormData.name || !editFormData.email || !editFormData.status}
+                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  !editFormData.name || !editFormData.email || !editFormData.status
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              >
+                 <Edit size={16} />
+                Sauvegarder
               </button>
             </div>
           </div>

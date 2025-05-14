@@ -9,7 +9,9 @@ import {
   LogOut,
   UserPlus,
   X,
-  Mail
+  Mail,
+  Shield,
+  User
 } from 'lucide-react';
 
 const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkMode, isMobile }) => {
@@ -25,7 +27,10 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
     { id: 'Add_Mat', title: 'Ajout de Matricule', icon: UserPlus, path: '/admin/ajoutmat' },
     { id: 'newsletter', title: 'Gestion de Newsletter', icon: Mail, path: '/admin/newsletter' },
     { id: 'documents', title: 'Ajout de Documents', icon: FileText, path: '/admin/documents' },
-    { id: 'settings', title: 'Paramètres', icon: Settings, path: '/admin/parametres' },
+    // Nouvel élément admin
+    { id: 'admin_management', title: 'Gestion des Admin', icon: Shield, path: '/admin/gestionAdmin' },
+    // Paramètres transformé en Profil
+    { id: 'profil', title: 'Profil', icon: User, path: '/admin/parametres' },
   ];
 
   return (
@@ -44,6 +49,7 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
           animate="open"
           exit="closed"
         >
+          {/* Le reste du code reste inchangé */}
           <div className="p-6 h-full flex flex-col">
             {isMobile && (
               <button
@@ -93,6 +99,7 @@ const NavbarAdmin = ({ activeSidebar, showMobileMenu, setShowMobileMenu, isDarkM
               ))}
             </nav>
 
+            {/* Le reste du code reste inchangé */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

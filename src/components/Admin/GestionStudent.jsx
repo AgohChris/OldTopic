@@ -222,7 +222,7 @@ const GestionStudent = () => {
       </div>
       
       {/* Section de filtres */}
-      <div className={`flex flex-col lg:flex-row gap-4 mb-6 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-50'} p-4 rounded-lg`}>
+      <div className={`flex flex-col lg:flex-row gap-4 mb-6 ${isDarkMode ? '' : 'bg-gray-50'} p-4 rounded-lg`}>
         <div className="flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={18} />
@@ -233,7 +233,7 @@ const GestionStudent = () => {
               value={filters.searchTerm}
               onChange={handleFilterChange}
               className={`pl-10 pr-4 py-2 w-full rounded-md border ${
-                isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+                isDarkMode ? 'border-gray-600 bg-gradient-to-br from-black to-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
               } focus:outline-none focus:ring-2 focus:ring-blue-500`}
             />
           </div>
@@ -245,7 +245,7 @@ const GestionStudent = () => {
             value={filters.annee}
             onChange={handleFilterChange}
             className={`px-4 py-2 rounded-md border ${
-              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+              isDarkMode ? 'border-gray-600 bg-gray-700 bg-gradient-to-br from-black to-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Année</option>
@@ -259,7 +259,7 @@ const GestionStudent = () => {
             value={filters.niveau}
             onChange={handleFilterChange}
             className={`px-4 py-2 rounded-md border ${
-              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+              isDarkMode ? 'border-gray-600 bg-gradient-to-br from-black to-gray-900 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Niveau</option>
@@ -273,7 +273,7 @@ const GestionStudent = () => {
             value={filters.filiere}
             onChange={handleFilterChange}
             className={`px-4 py-2 rounded-md border ${
-              isDarkMode ? 'border-gray-600 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
+              isDarkMode ? 'border-gray-600 bg-gray-700 bg-gradient-to-br from-black to-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'
             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Filière</option>
@@ -285,7 +285,7 @@ const GestionStudent = () => {
           <button
             onClick={resetFilters}
             className={`px-4 py-2 ${
-              isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+              isDarkMode ? 'bg-gray-700 bg-gradient-to-br from-black to-gray-900 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
             } rounded-md flex items-center gap-2`}
           >
             <Filter size={18} />

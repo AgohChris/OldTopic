@@ -70,18 +70,18 @@ const Dashboard = () => {
       variants={itemVariants}
       className={`${
         isDarkMode 
-          ? 'bg-white/5 border-green-500/20' 
+          ? ' bg-white/5 border-green-500/20' 
           : 'bg-gray-100 border-green-500/50'
       } backdrop-blur-sm rounded-xl border p-6 shadow-md`}
     >
       <h3 className={`${isDarkMode ? 'text-white' : 'text-gray-900'} text-lg font-semibold mb-4`}>Actions rapides</h3>
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+      <div className="grid  grid-cols-2 md:grid-cols-2 gap-4">
         <Link to="/admin/documents">
           <motion.button
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             className={`p-4 w-full ${
-              isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-200/50 hover:bg-gray-200'
+              isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-200/50 hover:bg-gray-200'
             } rounded-lg flex flex-col items-center shadow-sm hover:shadow transition-all`}
           >
             <Plus className="h-6 w-6 text-green-400 mb-2" />
@@ -93,7 +93,7 @@ const Dashboard = () => {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             className={`p-4 w-full ${
-              isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-200/50 hover:bg-gray-200'
+              isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-gray-200/50 hover:bg-gray-200'
             } rounded-lg flex flex-col items-center shadow-sm hover:shadow transition-all`}
           >
             <User className="h-6 w-6 text-blue-400 mb-2" />
@@ -115,7 +115,7 @@ const Dashboard = () => {
       <motion.div
         variants={itemVariants}
         className={`${
-          isDarkMode ? 'bg-white/5 border-green-500/20' : 'bg-gray-100 border-green-500/50'
+          isDarkMode ? ' bg-gradient-to-br from-gray-900 to-black bg-white/5 border-green-500/20' : 'bg-gray-100 border-green-500/50'
         } rounded-xl border shadow-md p-6`}
       >
         <h3 className={`${isDarkMode ? 'text-white' : 'text-gray-900'} text-lg font-semibold mb-2`}>
@@ -138,7 +138,7 @@ const Dashboard = () => {
                 return (
                   <div
                     key={index}
-                    className={`absolute top-0 left-0 w-full h-full ${item.color}`}
+                    className={`absolute top-0 left-0 w-full h-full  ${item.color}`}
                     style={{
                       clipPath: `polygon(50% 50%, ${50 + 40 * Math.cos(2 * Math.PI * startPercent)}% ${50 + 40 * Math.sin(2 * Math.PI * startPercent)}%, ${50 + 50 * Math.cos(2 * Math.PI * startPercent + 0.01)}% ${50 + 50 * Math.sin(2 * Math.PI * startPercent + 0.01)}%, ${50 + 50 * Math.cos(2 * Math.PI * cumulativePercent - 0.01)}% ${50 + 50 * Math.sin(2 * Math.PI * cumulativePercent - 0.01)}%, ${50 + 40 * Math.cos(2 * Math.PI * cumulativePercent)}% ${50 + 40 * Math.sin(2 * Math.PI * cumulativePercent)}%)`,
                       transformOrigin: 'center',
@@ -188,9 +188,9 @@ const Dashboard = () => {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="space-y-8 max-w-7xl mx-auto"
+      className="space-y-8 max-w-7xl mx-auto "
     >
-      <motion.div variants={itemVariants} className="flex justify-between items-center">
+      <motion.div variants={itemVariants} className="flex justify-between items-center ">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Tableau de bord</h1>
           <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>

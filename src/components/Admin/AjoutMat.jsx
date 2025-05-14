@@ -333,20 +333,20 @@ const AjoutMat = () => {
         </div>
 
         {/* Filtres et barre de recherche */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6" id="student-table-section">
+        <div className="flex flex-col sm:flex-row items-center justify-between  gap-4 mb-6" id="student-table-section">
           <div className="relative w-full sm:max-w-xs">
-            <input type="text" placeholder="Rechercher (matricule, nom, email)..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={`${getInputClass()} pl-10`} />
+            <input type="text" placeholder="Rechercher (matricule, nom, email)..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={`${getInputClass()} pl-10 bg-gradient-to-br from-black to-gray-900`} />
             <Search size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
           </div>
-          <select value={filterNiveau} onChange={(e) => setFilterNiveau(e.target.value)} className={`${getInputClass()} text-sm sm:text-base`}>
+          <select value={filterNiveau} onChange={(e) => setFilterNiveau(e.target.value)} className={`${getInputClass()} text-sm sm:text-base bg-gradient-to-br from-black to-gray-900`}>
             <option value="">Tous niveaux</option>
             {niveaux.map(niv => (<option key={niv} value={niv} className={isDarkMode ? 'bg-gray-700 text-white' : ''}>{niv}</option>))}
           </select>
-          <select value={filterFiliere} onChange={(e) => setFilterFiliere(e.target.value)} className={`${getInputClass()} text-sm sm:text-base`}>
+          <select value={filterFiliere} onChange={(e) => setFilterFiliere(e.target.value)} className={`${getInputClass()} text-sm sm:text-base bg-gradient-to-br from-black to-gray-900`}>
             <option value="">Toutes filières</option>
             {filieres.map(fil => (<option key={fil} value={fil} className={isDarkMode ? 'bg-gray-700 text-white' : ''}>{fil}</option>))}
           </select>
-          <button onClick={handleRefresh} className={`p-2.5 rounded-md ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`} title="Réinitialiser filtres et données">
+          <button onClick={handleRefresh} className={`p-2.5 rounded-md ${isDarkMode ? 'bg-gradient-to-br from-black to-gray-900 hover:bg-gray-200' : 'bg-gray-200 hover:bg-gray-300'} transition-colors`} title="Réinitialiser filtres et données">
             <RefreshCw size={18} />
           </button>
           
@@ -380,105 +380,103 @@ const AjoutMat = () => {
           </div>
         </div>
 
-        {/* Tableau */}
-      <div className={`overflow-x-auto flex-grow ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-lg shadow-sm`}>
-          <table className={`min-w-full divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
-            <thead className={isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}>
-              <tr>
-                {['Matricule', 'Nom', 'Email', 'Établissement', 'Niveau', 'Filière'].map(header => (
-                  <th key={header} className="px-4 py-3 text-left font-medium uppercase tracking-wider">{header}</th>
-                ))}
-                <th className="px-4 py-3 text-center font-medium uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className={`${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
-              {loading ? (
+        {/* Tableau avec hauteur fixe */}
+        <div className={`overflow-x-auto flex-grow ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} rounded-lg shadow-sm`}>
+          <div className="h-80 overflow-y-auto relative">
+            <table className={`min-w-full divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+              <thead className={`${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} sticky top-0 z-10`}>
                 <tr>
-                  <td colSpan="7" className="p-8 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-                    </div>
-                  </td>
+                  {['Matricule', 'Nom', 'Email', 'Établissement', 'Niveau', 'Filière'].map(header => (
+                    <th key={header} className="px-4 py-3 text-left font-medium uppercase tracking-wider">{header}</th>
+                  ))}
+                  <th className="px-4 py-3 text-center font-medium uppercase tracking-wider">Actions</th>
                 </tr>
-              ) : paginatedEtudiants.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="p-8 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <Filter className={`h-10 w-10 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
-                      <p className={`mt-2 text-base ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        {searchTerm || filterNiveau || filterFiliere ? "Aucun étudiant ne correspond à vos critères." : "Aucun étudiant enregistré pour le moment."}
-                      </p>
-                      {!editMode && !(searchTerm || filterNiveau || filterFiliere) && (
-                        <button onClick={openAddModal} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                          Ajouter un étudiant
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                paginatedEtudiants.map(etudiant => (
-                  <tr key={etudiant.id} className={`transition-colors duration-150 ${isDarkMode ? 'hover:bg-gray-700/[0.5]' : 'hover:bg-gray-50'}`}>
-                    <td className="px-4 py-3 whitespace-nowrap">{etudiant.matricule}</td>
-                    <td className="px-4 py-3 whitespace-nowrap font-medium">{etudiant.nom}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{etudiant.email}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{etudiant.etablissement || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{etudiant.niveau || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{etudiant.filiere || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center justify-center gap-2 sm:gap-3">
-                        <button onClick={() => handleEdit(etudiant)} className={`p-1.5 rounded-full transition-colors ${isDarkMode ? 'text-blue-400 hover:bg-blue-600 hover:text-white' : 'text-blue-500 hover:bg-blue-100'}`} title="Modifier">
-                          <Pencil size={16} />
-                        </button>
-                        <button onClick={() => handleDelete(etudiant.id)} className={`p-1.5 rounded-full transition-colors ${isDarkMode ? 'text-red-400 hover:bg-red-600 hover:text-white' : 'text-red-500 hover:bg-red-100'}`} title="Supprimer">
-                          <Trash2 size={16} />
-                        </button>
+              </thead>
+              <tbody className={`${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+                {loading ? (
+                  <tr>
+                    <td colSpan="7" className="h-64">
+                      <div className="flex h-full items-center justify-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : paginatedEtudiants.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="h-64">
+                      <div className="flex flex-col h-full items-center justify-center">
+                        <Filter className={`h-10 w-10 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
+                        <p className={`mt-2 text-base ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          {searchTerm || filterNiveau || filterFiliere ? "Aucun étudiant ne correspond à vos critères." : "Aucun étudiant enregistré pour le moment."}
+                        </p>
+                        {!editMode && !(searchTerm || filterNiveau || filterFiliere) && (
+                          <button onClick={openAddModal} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                            Ajouter un étudiant
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  // Affichage des étudiants
+                  paginatedEtudiants.map(etudiant => (
+                    <tr key={etudiant.id} className={`transition-colors duration-150 ${isDarkMode ? 'hover:bg-gray-700/[0.5]' : 'hover:bg-gray-50'}`}>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.matricule}</td>
+                      <td className="px-4 py-3 whitespace-nowrap font-medium">{etudiant.nom}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.email}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.etablissement || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.niveau || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.filiere || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center justify-center gap-2 sm:gap-3">
+                          <button onClick={() => handleEdit(etudiant)} className={`p-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition-colors`}>
+                            <Pencil size={18} />
+                          </button>
+                          <button onClick={() => handleDelete(etudiant.id)} className={`p-1.5 rounded-md bg-red-600 hover:bg-red-700 text-white transition-colors`}>
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Contrôles de Pagination et Informations */}
-        {!loading && filteredEtudiants.length > 0 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm">
-            <div className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mb-3 sm:mb-0`}>
-              Affichage de <span className={`font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{paginatedEtudiants.length}</span> sur
-              <span className={`font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}> {filteredEtudiants.length}</span> étudiant{filteredEtudiants.length !== 1 ? 's' : ''}
-              {(filteredEtudiants.length !== etudiants.length) && ` (sur ${etudiants.length} au total)`}
-            </div>
-            {pageCount > 1 && (
-              <div className="flex items-center gap-1 sm:gap-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1.5 border rounded-md flex items-center transition-colors text-xs sm:text-sm
-                    ${currentPage === 1 ? (isDarkMode ? 'border-gray-700 text-gray-600 cursor-not-allowed' : 'border-gray-300 text-gray-400 cursor-not-allowed')
-                      : (isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700')}`}
-                >
-                  <ChevronLeft size={16} className="mr-1" /> Préc.
-                </button>
-                <span className={`px-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Page {currentPage} / {pageCount}
-                </span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === pageCount}
-                  className={`px-3 py-1.5 border rounded-md flex items-center transition-colors text-xs sm:text-sm
-                    ${currentPage === pageCount ? (isDarkMode ? 'border-gray-700 text-gray-600 cursor-not-allowed' : 'border-gray-300 text-gray-400 cursor-not-allowed')
-                    : (isDarkMode ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700')}`}
-                >
-                  Suiv. <ChevronRight size={16} className="ml-1" />
-                </button>
-              </div>
+        {/* Pagination */}
+        <div className={`mt-6 flex items-center justify-between ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <div className="text-sm">
+            {filteredEtudiants.length > 0 && (
+              <>
+                Affichage de {(currentPage - 1) * ITEMS_PER_PAGE + 1} à{' '}
+                {Math.min(currentPage * ITEMS_PER_PAGE, filteredEtudiants.length)} sur{' '}
+                {filteredEtudiants.length} étudiants
+              </>
             )}
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`p-2 rounded-md ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''} ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <span className="px-3 py-1 rounded-md bg-blue-600 text-white">
+              {currentPage}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === pageCount}
+              className={`p-2 rounded-md ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : ''} ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
       </div>
-   
   );
 };
 

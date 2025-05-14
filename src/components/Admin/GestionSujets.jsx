@@ -193,10 +193,10 @@ const GestionSujets = () => {
   const labelClass = `block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`;
 
   return (
-    <div className={`flex flex-col h-full p-6 rounded-lg shadow-md ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className={`flex flex-col h-full p-6 rounded-lg shadow-md ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'bg-white'}`}>
       <h1 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Gestion des Sujets</h1>
 
-      <div className={`flex flex-col lg:flex-row gap-4 mb-6 p-4 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+      <div className={`flex flex-col lg:flex-row gap-4 mb-6 p-4 rounded-lg ${isDarkMode ? '' : 'bg-gray-50'}`}>
         <div className="flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={18} />
@@ -208,7 +208,7 @@ const GestionSujets = () => {
               onChange={handleFilterChange}
               className={`pl-10 pr-4 py-2 w-full rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDarkMode
-                  ? 'border-gray-600 bg-gray-700 text-gray-200'
+                  ? 'bg-gradient-to-br from-black to-gray-900 border-gray-600 bg-gray-700 text-gray-200'
                   : 'border-gray-300 bg-white text-gray-900'
               }`}
             />
@@ -229,7 +229,7 @@ const GestionSujets = () => {
               onChange={handleFilterChange}
               className={`px-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDarkMode
-                  ? 'border-gray-600 bg-gray-700 text-gray-200'
+                  ? ' bg-gradient-to-br from-black to-gray-900 border-gray-600 bg-gray-700 text-gray-200'
                   : 'border-gray-300 bg-white text-gray-900'
               }`}
             >
@@ -241,7 +241,7 @@ const GestionSujets = () => {
             onClick={resetFilters}
             className={`px-4 py-2 rounded-md flex items-center gap-2 ${
               isDarkMode
-                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                ? ' bg-gradient-to-br from-black to-gray-900 bg-gray-700 hover:bg-gray-600 text-gray-200'
                 : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
             }`}
           >
@@ -339,7 +339,7 @@ const GestionSujets = () => {
       {/* Modal d'ajout/modification (combiné pour simplifier, ajustez au besoin) */}
       {(showModal || showEditModal) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className={`${modalBgClass} rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto`}>
+          <div className={`${modalBgClass} bg-gradient-to-br from-black to-gray-900 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto`}>
             <div className={`flex justify-between items-center border-b p-4 ${modalBorderClass}`}>
               <h3 className={`text-xl font-semibold ${modalTextColorClass}`}>
                 {isEditing ? `Modifier le ${formatType(formData.type)}` : `Ajouter un ${formatType(formData.type)}`}
@@ -352,16 +352,16 @@ const GestionSujets = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 ">
+              <div className="space-y-4 ">
                 {/* Champs du formulaire */}
-                <div>
+                <div >
                   <label className={labelClass}>Titre du sujet*</label>
                   <input type="text" name="titre" value={formData.titre} onChange={handleFormChange} required className={formElementClasses}/>
                 </div>
                 <div>
                   <label className={labelClass}>Type de sujet*</label>
-                  <select name="type" value={formData.type} onChange={handleFormChange} required className={formElementClasses}>
+                  <select name="type" value={formData.type} onChange={handleFormChange} required className= {formElementClasses}>
                     {typesSujet.map(type => <option key={type} value={type}>{formatType(type)}</option>)}
                   </select>
                 </div>
@@ -436,7 +436,7 @@ const GestionSujets = () => {
                   onClick={() => { setShowModal(false); setShowEditModal(false); setIsEditing(false);}}
                   className={`px-4 py-2 rounded-md ${
                     isDarkMode
-                      ? 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                      ? 'bg-gradient-to-br from-black to-gray-900bg-gray-700 hover:bg-gray-600 text-gray-200'
                       : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
                   }`}
                 >
