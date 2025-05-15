@@ -13,6 +13,14 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.hashers import make_password
 
+import pandas as pd
+from PyPDF2 import PdfReader
+import tempfile
+import os
+from tabula import convert_into
+from rest_framework.parsers import MultiPartParser, FormParser
+from PyPDF2 import PdfReader
+
 
 
 def home(request):
@@ -448,6 +456,71 @@ class ModifieMatriculeView(APIView):
             return Response({"message": "Matricule modifié avec succès.", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ImportMatriculeView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        fichier = request.FILES.get('file')
+
+        if not fichier:
+            return Response({"error": "Aucun fichier fourni."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            df = self.read_fichier(fichier)
+        except Exception as e:
+            return Response({"error": f"Erreur lors de la lecxture du fichier : {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        created, errors = self.create_matricule(df)
+        return Response({
+            "message": f"{created} matricule ajoutés",
+            "errors": errors
+        }, status=status.HTTP_201_CREATED if created else status.HTTP_400_BAD_REQUEST)
+
+    def read_fichier(self, fichier):
+        nom_fichier = fichier.name.lower()
+        if nom_fichier.endswith('csv'):
+            return pd.read_csv(fichier)
+        elif nom_fichier.endswith('xlsx') or nom_fichier.endswith('.xls'):
+            return pd.read_excel(fichier)
+        elif nom_fichier.endswith('pdf'):
+            return self.pdf_to_dataframe(fichier)
+        else:
+            raise Exception("Format de fichier non supporté.")
+        
+    def pdf_to_dataframe(self, fichier):
+        reader = PdfReader(fichier)
+        text = ""
+
+        for page in reader.pages:
+            text += page.extract_text() + "\n"
+
+        rows = [line.split(',') for line in text.splitlines() if ',' in line]
+
+        return pd.DataFrame(rows, columns=['matricule', 'nom', 'prenom', 'Niveau', 'Filiere'])
+    
+
+    def create_matricule(self, df):
+        created = 0
+        errors = []
+
+        for _, row in df.iterrows():
+            try:
+                PreEnregistrementMatricule.objects.create(
+                    matricule = row[''],
+                    nom = row['nom'],
+                    prenom = row['prenom'],
+                    Niveau = row['Niveau'],
+                    Filiere = row['Filiere']
+                )
+                created += 1
+            except Exception as e:
+                errors.append(str(e))
+        return created, errors
+        
+
+
+    
 
 class AdminMdpResetRequestView(APIView):
     def post(self, request):
