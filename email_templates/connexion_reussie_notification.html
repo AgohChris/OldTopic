@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion réussie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2ECC71;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #dddddd;
+            border-top: none;
+        }
+        .success-icon {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 48px;
+        }
+        .info-box {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #E74C3C;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dddddd;
+            font-size: 12px;
+            color: #888888;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Connexion réussie</h1>
+        </div>
+        <div class="content">
+            <p>Bonjour {nom},</p>
+            
+            <div class="success-icon">✅</div>
+            
+            <p>Nous vous confirmons que vous vous êtes connecté avec succès à votre compte OldTopic.</p>
+            
+            <div class="info-box">
+                <p><strong>Détails de connexion :</strong></p>
+                <p>📅 Date : {date_connexion}<br>
+                🕒 Heure : {heure_connexion}<br>
+                📱 Appareil : {appareil}<br>
+                📍 Localisation approximative : {localisation}</p>
+            </div>
+            
+            <p>Si vous n'êtes pas à l'origine de cette connexion, veuillez immédiatement :</p>
+            
+            <div style="text-align: center;">
+                <a href="#" class="button">Signaler une activité suspecte</a>
+            </div>
+            
+            <p>Cordialement,<br>
+            L'équipe de sécurité OldTopic</p>
+        </div>
+        <div class="footer">
+            <p>Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            <p>© 2025 OldTopic. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de compte Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #F39C12;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #dddddd;
+            border-top: none;
+        }
+        .admin-icon {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 48px;
+        }
+        .credentials {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #F39C12;
+        }
+        .credentials p {
+            margin: 10px 0;
+        }
+        .security-note {
+            background-color: #FFF3E0;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #FF9800;
+        }
+        .button {
+            display: inline-block;
+            background-color: #F39C12;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dddddd;
+            font-size: 12px;
+            color: #888888;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bienvenue dans l'équipe OldTopic</h1>
+        </div>
+        <div class="content">
+            <p>Bonjour {nom},</p>
+            
+            <div class="admin-icon">👑</div>
+            
+            <p>Nous avons le plaisir de vous informer que votre compte <strong>{type_compte}</strong> a été créé avec succès sur la plateforme OldTopic.</p>
+            
+            <p>Vous trouverez ci-dessous vos informations de connexion :</p>
+            
+            <div class="credentials">
+                <p><strong>Email :</strong> {email}</p>
+                <p><strong>Mot de passe temporaire :</strong> {password}</p>
+            </div>
+            
+            <div class="security-note">
+                <p><strong>Important :</strong> Pour des raisons de sécurité, nous vous recommandons de changer votre mot de passe dès votre première connexion.</p>
+            </div>
+            
+            <p>En tant que {type_compte}, vous avez accès à :</p>
+            <ul>
+                <li>Gestion des utilisateurs</li>
+                <li>Tableau de bord et statistiques</li>
+                <li>Gestion du contenu de la plateforme</li>
+                <li>Configuration des paramètres système</li>
+            </ul>
+            
+            <div style="text-align: center;">
+                <a href="#" class="button">Accéder à la plateforme</a>
+            </div>
+            
+            <p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à contacter notre équipe technique.</p>
+            
+            <p>Cordialement,<br>
+            L'équipe OldTopic</p>
+        </div>
+        <div class="footer">
+            <p>Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            <p>© 2025 OldTopic. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>
