@@ -1,381 +1,462 @@
-// src/components/Admin/GestionAdmin.jsx
 import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import {
-  FaPlus, FaEdit, FaTrashAlt, FaBan, 
-  FaCheckCircle, FaInfoCircle, FaUserShield
-} from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PuffLoader } from 'react-spinners';
+import { Plus, Trash2, Edit, AlertCircle, Check, X, Search, Eye, EyeOff } from 'lucide-react';
 
-const Modal = ({ title, children, onClose, isDarkMode }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
-  >
-    <div className={`relative rounded-xl shadow-2xl max-w-lg w-full mx-4 border ${
-      isDarkMode 
-        ? ' text-white' 
-        : 'bg-white border-gray-200 text-gray-900'
-    }`}>
-      <div className="p-6 border-b border-gray-600 flex justify-between items-center">
-        <h3 className="text-xl font-bold">{title}</h3>
-        <button
-          onClick={onClose}
-          className="text-2xl hover:text-gray-400"
-          aria-label="Fermer"
-        >
-          &times;
-        </button>
-      </div>
-      <div className="p-6">{children}</div>
-    </div>
-  </motion.div>
-);
-
-const AdminForm = ({ admin, onSubmit, onCancel, isDarkMode, isEditing }) => {
-  const [formData, setFormData] = useState(admin || { name: '', email: '' });
-  const [errors, setErrors] = useState({});
-
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Le nom est requis';
-    if (!formData.email.trim()) {
-      newErrors.email = 'L\'email est requis';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email invalide';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      onSubmit(formData);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-          Nom complet
-        </label>
-        <div className="mt-1 relative">
-          <input
-            name="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 ${
-              isDarkMode 
-                ? 'bg-gray-800 border-gray-600 focus:ring-blue-500 text-white' 
-                : 'border-gray-300 focus:ring-indigo-500 text-gray-900'
-            } ${errors.name ? 'border-red-500' : ''}`}
-            placeholder="Jean Dupont"
-          />
-          {errors.name && (
-            <p className="absolute text-xs text-red-500 mt-1">{errors.name}</p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-          Adresse email
-        </label>
-        <div className="mt-1 relative">
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 ${
-              isDarkMode 
-                ? 'bg-gray-800 border-gray-600 focus:ring-blue-500 text-white' 
-                : 'border-gray-300 focus:ring-indigo-500 text-gray-900'
-            } ${errors.email ? 'border-red-500' : ''}`}
-            placeholder="jean.dupont@example.com"
-          />
-          {errors.email && (
-            <p className="absolute text-xs text-red-500 mt-1">{errors.email}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className={`px-5 py-2.5 rounded-lg font-medium transition-colors ${
-            isDarkMode 
-              ? 'text-gray-300 hover:bg-gray-700/50' 
-              : 'text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          Annuler
-        </button>
-        <button
-          type="submit"
-          className={`px-5 py-2.5 rounded-lg font-medium text-white transition-colors ${
-            isDarkMode 
-              ? 'bg-blue-600 hover:bg-blue-700' 
-              : 'bg-indigo-600 hover:bg-indigo-700'
-          }`}
-        >
-          {isEditing ? 'Sauvegarder' : 'Ajouter'}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-function GestionAdmin() {
-  const { isDarkMode } = useOutletContext();
+const GestionAdmin = () => {
+  // Récupération du contexte (mode sombre)
+  const { isDarkMode } = useOutletContext() || { isDarkMode: false };
+  
+  // États
   const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [modalState, setModalState] = useState({ 
-    type: null, 
-    data: null 
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [currentAdmin, setCurrentAdmin] = useState(null);
+  const [formData, setFormData] = useState({
+    nom: '',
+    email: '',
   });
+  const [formErrors, setFormErrors] = useState({});
 
+  // Données temporaires pour la démo (à remplacer par l'API Django)
   useEffect(() => {
+    // Simulation d'un appel API
     setTimeout(() => {
       setAdmins([
-        { id: 1, name: 'Admin One', email: 'admin1@example.com', status: 'active' },
-        { id: 2, name: 'Admin Two', email: 'admin2@example.com', status: 'suspended' },
+        { id: 1, nom: 'Jean Dupont', email: 'jean.dupont@example.com', actif: true, dateCreation: '2023-10-15' },
+        { id: 2, nom: 'Marie Lambert', email: 'marie.lambert@example.com', actif: true, dateCreation: '2023-11-20' },
+        { id: 3, nom: 'Thomas Martin', email: 'thomas.martin@example.com', actif: false, dateCreation: '2024-01-05' }
       ]);
-      setLoading(false);
-    }, 1500);
+      setIsLoading(false);
+    }, 800);
   }, []);
 
-  const handleAdminAction = (action, admin = null) => {
-    setModalState({ type: action, data: admin });
-  };
+  // Filtrer les admins selon la recherche
+  const filteredAdmins = admins.filter(admin => 
+    admin.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    admin.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleCloseModal = () => {
-    setModalState({ type: null, data: null });
-  };
-
-  const handleSaveAdmin = (adminData) => {
-    if (modalState.type === 'add') {
-      setAdmins(prev => [...prev, { ...adminData, id: Date.now(), status: 'active' }]);
-    } else {
-      setAdmins(prev => prev.map(a => a.id === adminData.id ? adminData : a));
+  // Handlers
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    // Réinitialiser l'erreur pour ce champ
+    if (formErrors[name]) {
+      setFormErrors({ ...formErrors, [name]: '' });
     }
-    handleCloseModal();
   };
 
-  const handleDelete = () => {
-    setAdmins(prev => prev.filter(a => a.id !== modalState.data?.id));
-    handleCloseModal();
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.nom.trim()) errors.nom = "Le nom est requis";
+    if (!formData.email.trim()) {
+      errors.email = "L'email est requis";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Format d'email invalide";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  const toggleStatus = (admin) => {
-    setAdmins(prev => prev.map(a => 
-      a.id === admin.id 
-        ? { ...a, status: a.status === 'active' ? 'suspended' : 'active' } 
-        : a
-    ));
+  const handleAddSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    
+    // Simuler l'ajout (à remplacer par l'API)
+    const newAdmin = {
+      id: admins.length + 1,
+      nom: formData.nom,
+      email: formData.email,
+      actif: true,
+      dateCreation: new Date().toISOString().split('T')[0]
+    };
+    
+    setAdmins([...admins, newAdmin]);
+    setShowAddModal(false);
+    setFormData({ nom: '', email: '' });
+    
+    // Notification de succès (à implémenter)
+    alert(`Un email avec les identifiants a été envoyé à ${formData.email}`);
   };
 
-  return (
-    <div className={`p-6 min-h-screen border-gray-600 ${
-      isDarkMode 
-        ? 'text-gray-200 border-none' 
-        : 'bg-gray-50 text-gray-900'
-    }`}>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-          <h1 className="text-3xl font-bold flex items-center gap-3 mb-4 sm:mb-0">
-            <FaUserShield className={isDarkMode ? 'text-blue-400' : 'text-indigo-600'} />
-            <span>Gestion des Administrateurs</span>
-          </h1>
-          <button
-            onClick={() => handleAdminAction('add')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 ${
-              isDarkMode 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-            }`}
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    
+    // Simuler la modification (à remplacer par l'API)
+    const updatedAdmins = admins.map(admin => 
+      admin.id === currentAdmin.id ? 
+      { ...admin, nom: formData.nom, email: formData.email } : 
+      admin
+    );
+    
+    setAdmins(updatedAdmins);
+    setShowEditModal(false);
+    setCurrentAdmin(null);
+    setFormData({ nom: '', email: '' });
+  };
+
+  const handleDeleteConfirm = () => {
+    // Simuler la suppression (à remplacer par l'API)
+    setAdmins(admins.filter(admin => admin.id !== currentAdmin.id));
+    setShowDeleteModal(false);
+    setCurrentAdmin(null);
+  };
+
+  const handleToggleStatus = (admin) => {
+    // Simuler la modification du statut (à remplacer par l'API)
+    const updatedAdmins = admins.map(a => 
+      a.id === admin.id ? { ...a, actif: !a.actif } : a
+    );
+    setAdmins(updatedAdmins);
+  };
+
+  const openEditModal = (admin) => {
+    setCurrentAdmin(admin);
+    setFormData({ nom: admin.nom, email: admin.email });
+    setFormErrors({});
+    setShowEditModal(true);
+  };
+
+  const openDeleteModal = (admin) => {
+    setCurrentAdmin(admin);
+    setShowDeleteModal(true);
+  };
+
+  // Classes conditionnelles
+  const themeClasses = {
+    card: isDarkMode 
+      ? 'bg-gray-800 border-gray-700' 
+      : 'bg-white border-gray-200',
+    header: isDarkMode 
+      ? 'bg-gray-900 text-white border-gray-700' 
+      : 'bg-gray-100 text-gray-800 border-gray-200',
+    button: {
+      primary: isDarkMode 
+        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+        : 'bg-blue-500 hover:bg-blue-600 text-white',
+      danger: isDarkMode 
+        ? 'bg-red-600 hover:bg-red-700 text-white' 
+        : 'bg-red-500 hover:bg-red-600 text-white',
+      success: isDarkMode 
+        ? 'bg-green-600 hover:bg-green-700 text-white' 
+        : 'bg-green-500 hover:bg-green-600 text-white',
+      warning: isDarkMode 
+        ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
+        : 'bg-yellow-500 hover:bg-yellow-600 text-white',
+      secondary: isDarkMode 
+        ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+        : 'bg-gray-300 hover:bg-gray-400 text-gray-800',
+    },
+    input: isDarkMode 
+      ? 'bg-gray-700 border-gray-600 text-white' 
+      : 'bg-white border-gray-300 text-gray-900',
+    modal: isDarkMode 
+      ? 'bg-gray-800 border-gray-700 text-white' 
+      : 'bg-white border-gray-200 text-gray-900',
+  };
+
+  // Rendu du Modal Ajout
+  const AddModal = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className={`${themeClasses.modal} p-6 rounded-lg shadow-lg max-w-md w-full`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold">Ajouter un administrateur</h3>
+          <button 
+            onClick={() => setShowAddModal(false)}
+            className="text-gray-400 hover:text-gray-600"
           >
-            <FaPlus /> Nouvel Admin
+            <X size={24} />
           </button>
         </div>
-
-        {loading ? (
-          <div className="flex justify-center mt-12">
-            <PuffLoader 
-              color={isDarkMode ? "#fff" : "#4F46E5"}
-              size={50}
-              loading={true}
-              aria-label="Chargement en cours"
+        
+        <form onSubmit={handleAddSubmit}>
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium">
+              Nom complet
+            </label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={handleInputChange}
+              className={`${themeClasses.input} w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500`}
+              placeholder="Nom de l'administrateur"
             />
+            {formErrors.nom && (
+              <p className="mt-1 text-sm text-red-500">{formErrors.nom}</p>
+            )}
           </div>
-        ) : admins.length === 0 ? (
-          <div className={`text-center p-12 rounded-xl border ${
-            isDarkMode 
-              ? 'bg-gray-800/50 border-gray-600 text-gray-400' 
-              : 'bg-white border-gray-200 text-gray-500'
-          }`}>
-            <FaInfoCircle className="mx-auto text-4xl mb-4" />
-            <p className="text-xl">Aucun administrateur trouvé</p>
+          
+          <div className="mb-6">
+            <label className="block mb-2 text-sm font-medium">
+              Adresse email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className={`${themeClasses.input} w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500`}
+              placeholder="email@exemple.com"
+            />
+            {formErrors.email && (
+              <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
+            )}
+          </div>
+          
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setShowAddModal(false)}
+              className={`${themeClasses.button.secondary} px-4 py-2 rounded-lg`}
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className={`${themeClasses.button.primary} px-4 py-2 rounded-lg flex items-center`}
+            >
+              <Plus size={18} className="mr-1" />
+              Ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  // Rendu du Modal Modification
+  const EditModal = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className={`${themeClasses.modal} p-6 rounded-lg shadow-lg max-w-md w-full`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold">Modifier un administrateur</h3>
+          <button 
+            onClick={() => setShowEditModal(false)}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <form onSubmit={handleEditSubmit}>
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium">
+              Nom complet
+            </label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={handleInputChange}
+              className={`${themeClasses.input} w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500`}
+            />
+            {formErrors.nom && (
+              <p className="mt-1 text-sm text-red-500">{formErrors.nom}</p>
+            )}
+          </div>
+          
+          <div className="mb-6">
+            <label className="block mb-2 text-sm font-medium">
+              Adresse email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className={`${themeClasses.input} w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500`}
+            />
+            {formErrors.email && (
+              <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
+            )}
+          </div>
+          
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setShowEditModal(false)}
+              className={`${themeClasses.button.secondary} px-4 py-2 rounded-lg`}
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className={`${themeClasses.button.primary} px-4 py-2 rounded-lg flex items-center`}
+            >
+              <Check size={18} className="mr-1" />
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  // Rendu du Modal Suppression
+  const DeleteModal = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className={`${themeClasses.modal} p-6 rounded-lg shadow-lg max-w-md w-full`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold">Confirmer la suppression</h3>
+          <button 
+            onClick={() => setShowDeleteModal(false)}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <p className="mb-6">
+          Êtes-vous sûr de vouloir supprimer l'administrateur <strong>{currentAdmin?.nom}</strong> ? 
+          Cette action est irréversible.
+        </p>
+        
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setShowDeleteModal(false)}
+            className={`${themeClasses.button.secondary} px-4 py-2 rounded-lg`}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleDeleteConfirm}
+            className={`${themeClasses.button.danger} px-4 py-2 rounded-lg flex items-center`}
+          >
+            <Trash2 size={18} className="mr-1" />
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="container mx-auto">
+      {/* Titre et bouton d'ajout */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold">Gestion des administrateurs</h1>
+        <button 
+          onClick={() => {
+            setFormData({ nom: '', email: '' });
+            setFormErrors({});
+            setShowAddModal(true);
+          }}
+          className={`${themeClasses.button.primary} px-4 py-2 rounded-lg flex items-center`}
+        >
+          <Plus size={18} className="mr-2" />
+          Ajouter un administrateur
+        </button>
+      </div>
+
+      {/* Barre de recherche */}
+      <div className={`${themeClasses.card} border rounded-lg p-4 mb-6`}>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Search size={18} className="text-gray-500" />
+          </div>
+          <input 
+            type="text" 
+            className={`${themeClasses.input} w-full pl-10 pr-4 py-2 rounded-lg`}
+            placeholder="Rechercher un administrateur..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Tableau des administrateurs */}
+      <div className={`${themeClasses.card} border rounded-lg overflow-hidden`}>
+        <div className={`${themeClasses.header} px-6 py-4 border-b`}>
+          <h2 className="font-semibold">Liste des administrateurs</h2>
+        </div>
+        
+        {isLoading ? (
+          <div className="p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-2">Chargement des données...</p>
           </div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`rounded-xl shadow-lg overflow-hidden border ${
-              isDarkMode 
-                ? 'bg-gradient-to-br from-black to-gray-900 border-gray-600' 
-                : 'bg-white border-gray-200'
-            }`}
-          >
-            <table className="w-full">
-              <thead className={isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50'}>
-                <tr>
-                  {['Nom', 'Email', 'Statut', 'Actions'].map((header) => (
-                    <th
-                      key={header}
-                      className={`px-6 py-4 text-left text-sm font-semibold border-b ${
-                        isDarkMode 
-                          ? 'border-gray-600 text-gray-300' 
-                          : 'border-gray-200 text-gray-700'
-                      }`}
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {admins.map((admin) => (
-                  <tr
-                    key={admin.id}
-                    className={`group ${
-                      isDarkMode 
-                        ? 'hover:bg-gray-800/30 border-t border-gray-600' 
-                        : 'hover:bg-gray-50 border-t border-gray-200'
-                    }`}
-                  >
-                    <td className="px-6 py-4 font-medium">{admin.name}</td>
-                    <td className={`px-6 py-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {admin.email}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
-                        admin.status === 'active'
-                          ? isDarkMode
-                            ? 'bg-green-800/30 text-green-400'
-                            : 'bg-green-100 text-green-800'
-                          : isDarkMode
-                            ? 'bg-red-800/30 text-red-400'
-                            : 'bg-red-100 text-red-800'
-                      }`}>
-                        {admin.status === 'active' ? 'Actif' : 'Suspendu'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 flex items-center gap-3">
-                      <button
-                        onClick={() => handleAdminAction('edit', admin)}
-                        className={`p-2 rounded-lg hover:bg-opacity-20 ${
-                          isDarkMode 
-                            ? 'text-blue-400 hover:bg-blue-400' 
-                            : 'text-indigo-600 hover:bg-indigo-100'
-                        }`}
-                        title="Modifier"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => toggleStatus(admin)}
-                        className={`p-2 rounded-lg hover:bg-opacity-20 ${
-                          admin.status === 'active'
-                            ? isDarkMode
-                              ? 'text-yellow-400 hover:bg-yellow-400'
-                              : 'text-yellow-600 hover:bg-yellow-100'
-                            : isDarkMode
-                              ? 'text-green-400 hover:bg-green-400'
-                              : 'text-green-600 hover:bg-green-100'
-                        }`}
-                        title={admin.status === 'active' ? 'Suspendre' : 'Activer'}
-                      >
-                        {admin.status === 'active' ? <FaBan /> : <FaCheckCircle />}
-                      </button>
-                      <button
-                        onClick={() => handleAdminAction('delete', admin)}
-                        className={`p-2 rounded-lg hover:bg-opacity-20 ${
-                          isDarkMode 
-                            ? 'text-red-400 hover:bg-red-400' 
-                            : 'text-red-600 hover:bg-red-100'
-                        }`}
-                        title="Supprimer"
-                      >
-                        <FaTrashAlt />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
+          <>
+            {filteredAdmins.length === 0 ? (
+              <div className="p-8 text-center">
+                <AlertCircle size={36} className="mx-auto mb-2 text-gray-400" />
+                <p>Aucun administrateur trouvé</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className={isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}>
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nom</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Statut</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date de création</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {filteredAdmins.map((admin) => (
+                      <tr key={admin.id} className={isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
+                        <td className="px-6 py-4 whitespace-nowrap">{admin.nom}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{admin.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            admin.actif 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                          }`}>
+                            {admin.actif ? 'Actif' : 'Suspendu'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">{admin.dateCreation}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => handleToggleStatus(admin)}
+                              className={`${
+                                admin.actif ? themeClasses.button.warning : themeClasses.button.success
+                              } p-1 rounded-lg tooltip-container`}
+                              title={admin.actif ? "Suspendre" : "Activer"}
+                            >
+                              {admin.actif ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                            <button
+                              onClick={() => openEditModal(admin)}
+                              className={`${themeClasses.button.secondary} p-1 rounded-lg`}
+                              title="Modifier"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => openDeleteModal(admin)}
+                              className={`${themeClasses.button.danger} p-1 rounded-lg`}
+                              title="Supprimer"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      <AnimatePresence>
-        {modalState.type === 'add' || modalState.type === 'edit' ? (
-          <Modal
-            title={modalState.type === 'add' ? 'Nouvel Administrateur' : 'Modifier Administrateur'}
-            onClose={handleCloseModal}
-            isDarkMode={isDarkMode}
-          >
-            <AdminForm
-              admin={modalState.data}
-              onSubmit={handleSaveAdmin}
-              onCancel={handleCloseModal}
-              isDarkMode={isDarkMode}
-              isEditing={modalState.type === 'edit'}
-            />
-          </Modal>
-        ) : null}
-
-        {modalState.type === 'delete' && (
-          <Modal title="Confirmer la suppression" onClose={handleCloseModal} isDarkMode={isDarkMode}>
-            <div className="space-y-6">
-              <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Êtes-vous sûr de vouloir supprimer définitivement l'administrateur{" "}
-                <span className="font-semibold">{modalState.data?.name}</span> ?
-              </p>
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={handleCloseModal}
-                  className={`px-5 py-2.5 rounded-lg font-medium ${
-                    isDarkMode 
-                      ? 'text-gray-300 hover:bg-gray-700/50' 
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className={`px-5 py-2.5 rounded-lg font-medium text-white ${
-                    isDarkMode 
-                      ? 'bg-red-600 hover:bg-red-700' 
-                      : 'bg-red-500 hover:bg-red-600'
-                  }`}
-                >
-                  Supprimer
-                </button>
-              </div>
-            </div>
-          </Modal>
-        )}
-      </AnimatePresence>
+      {/* Modals */}
+      {showAddModal && <AddModal />}
+      {showEditModal && <EditModal />}
+      {showDeleteModal && <DeleteModal />}
     </div>
   );
-}
+};
 
 export default GestionAdmin;
