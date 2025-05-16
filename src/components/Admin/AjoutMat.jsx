@@ -14,8 +14,7 @@ const AjoutMat = () => {
     id: null,
     matricule: '',
     nom: '',
-    email: '',
-    etablissement: '',
+    prenom: '',
     niveau: '',
     filiere: ''
   });
@@ -38,16 +37,16 @@ const AjoutMat = () => {
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 1500));
       const mockData = [
-        { id: 1, matricule: 'MAT001', nom: 'Jean Dupont', email: 'jean.dupont@example.com', etablissement: 'Université Paris 1', niveau: 'L3', filiere: 'Informatique' },
-        { id: 2, matricule: 'MAT002', nom: 'Marie Martin', email: 'marie.martin@example.com', etablissement: 'Université Lyon 2', niveau: 'M1', filiere: 'Droit' },
-        { id: 3, matricule: 'MAT003', nom: 'Pierre Durand', email: 'pierre.durand@example.com', etablissement: 'École Polytechnique', niveau: 'L2', filiere: 'Physique' },
-        { id: 4, matricule: 'MAT004', nom: 'Sophie Leroy', email: 'sophie.leroy@example.com', etablissement: 'HEC Paris', niveau: 'M2', filiere: 'Informatique' },
-        { id: 5, matricule: 'MAT005', nom: 'Lucas Bernard', email: 'lucas.bernard@example.com', etablissement: 'Université Bordeaux', niveau: 'L1', filiere: 'Chimie' },
-        { id: 6, matricule: 'MAT006', nom: 'Camille Petit', email: 'camille.petit@example.com', etablissement: 'Sciences Po', niveau: 'M1', filiere: 'Droit' },
-        { id: 7, matricule: 'MAT007', nom: 'Antoine Moreau', email: 'antoine.moreau@example.com', etablissement: 'Université de Lille', niveau: 'L3', filiere: 'Mathématiques' },
-        { id: 8, matricule: 'MAT008', nom: 'Juliette Girard', email: 'juliette.girard@example.com', etablissement: 'Université de Strasbourg', niveau: 'L2', filiere: 'Informatique' },
-        { id: 9, matricule: 'MAT009', nom: 'Thomas Roussel', email: 'thomas.roussel@example.com', etablissement: 'Université de Nantes', niveau: 'M2', filiere: 'Physique' },
-        { id: 10, matricule: 'MAT010', nom: 'Manon Lefevre', email: 'manon.lefevre@example.com', etablissement: 'Université de Rennes', niveau: 'L1', filiere: 'Droit' },
+        { id: 1, matricule: 'MAT001', nom: 'Jean Dupont',  prenon: 'Université Paris 1', niveau: 'L3', filiere: 'Informatique' },
+        { id: 2, matricule: 'MAT002', nom: 'Marie Martin',  prenon: 'Université Lyon 2', niveau: 'M1', filiere: 'Droit' },
+        { id: 3, matricule: 'MAT003', nom: 'Pierre Durand',  prenon: 'École Polytechnique', niveau: 'L2', filiere: 'Physique' },
+        { id: 4, matricule: 'MAT004', nom: 'Sophie Leroy',  prenon: 'HEC Paris', niveau: 'M2', filiere: 'Informatique' },
+        { id: 5, matricule: 'MAT005', nom: 'Lucas Bernard', prenon: 'Université Bordeaux', niveau: 'L1', filiere: 'Chimie' },
+        { id: 6, matricule: 'MAT006', nom: 'Camille Petit', prenon: 'Sciences Po', niveau: 'M1', filiere: 'Droit' },
+        { id: 7, matricule: 'MAT007', nom: 'Antoine Moreau',  prenon: 'Université de Lille', niveau: 'L3', filiere: 'Mathématiques' },
+        { id: 8, matricule: 'MAT008', nom: 'Juliette Girard', prenon: 'Université de Strasbourg', niveau: 'L2', filiere: 'Informatique' },
+        { id: 9, matricule: 'MAT009', nom: 'Thomas Roussel',  prenon: 'Université de Nantes', niveau: 'M2', filiere: 'Physique' },
+        { id: 10, matricule: 'MAT010', nom: 'Manon Lefevre',  prenon: 'Université de Rennes', niveau: 'L1', filiere: 'Droit' },
       ];
       setEtudiants(mockData);
       setLoading(false);
@@ -62,8 +61,7 @@ const AjoutMat = () => {
       const term = searchTerm.toLowerCase();
       result = result.filter(et =>
         et.matricule.toLowerCase().includes(term) ||
-        et.nom.toLowerCase().includes(term) ||
-        et.email.toLowerCase().includes(term)
+        et.nom.toLowerCase().includes(term) 
       );
     }
     if (filterNiveau) {
@@ -92,8 +90,6 @@ const AjoutMat = () => {
     const newErrors = {};
     if (!form.matricule) newErrors.matricule = "Le matricule est requis";
     if (!form.nom) newErrors.nom = "Le nom est requis";
-    if (!form.email) newErrors.email = "L'email est requis";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = "Format d'email invalide";
     if (!form.niveau) newErrors.niveau = "Le niveau est requis";
     if (!form.filiere) newErrors.filiere = "La filière est requise";
 
@@ -118,8 +114,7 @@ const AjoutMat = () => {
       id: null,
       matricule: '',
       nom: '',
-      email: '',
-      etablissement: '',
+      prenon: '',
       niveau: '',
       filiere: ''
     });
@@ -195,16 +190,16 @@ const AjoutMat = () => {
     // Simulate refetching initial data or just reset view if mock data isn't reloaded
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
      const mockData = [ // Resetting to original mock data as an example
-        { id: 1, matricule: 'MAT001', nom: 'Jean Dupont', email: 'jean.dupont@example.com', etablissement: 'Université Paris 1', niveau: 'L3', filiere: 'Informatique' },
-        { id: 2, matricule: 'MAT002', nom: 'Marie Martin', email: 'marie.martin@example.com', etablissement: 'Université Lyon 2', niveau: 'M1', filiere: 'Droit' },
-        { id: 3, matricule: 'MAT003', nom: 'Pierre Durand', email: 'pierre.durand@example.com', etablissement: 'École Polytechnique', niveau: 'L2', filiere: 'Physique' },
-        { id: 4, matricule: 'MAT004', nom: 'Sophie Leroy', email: 'sophie.leroy@example.com', etablissement: 'HEC Paris', niveau: 'M2', filiere: 'Informatique' },
-        { id: 5, matricule: 'MAT005', nom: 'Lucas Bernard', email: 'lucas.bernard@example.com', etablissement: 'Université Bordeaux', niveau: 'L1', filiere: 'Chimie' },
-        { id: 6, matricule: 'MAT006', nom: 'Camille Petit', email: 'camille.petit@example.com', etablissement: 'Sciences Po', niveau: 'M1', filiere: 'Droit' },
-        { id: 7, matricule: 'MAT007', nom: 'Antoine Moreau', email: 'antoine.moreau@example.com', etablissement: 'Université de Lille', niveau: 'L3', filiere: 'Mathématiques' },
-        { id: 8, matricule: 'MAT008', nom: 'Juliette Girard', email: 'juliette.girard@example.com', etablissement: 'Université de Strasbourg', niveau: 'L2', filiere: 'Informatique' },
-        { id: 9, matricule: 'MAT009', nom: 'Thomas Roussel', email: 'thomas.roussel@example.com', etablissement: 'Université de Nantes', niveau: 'M2', filiere: 'Physique' },
-        { id: 10, matricule: 'MAT010', nom: 'Manon Lefevre', email: 'manon.lefevre@example.com', etablissement: 'Université de Rennes', niveau: 'L1', filiere: 'Droit' },
+        { id: 1, matricule: 'MAT001', nom: 'Jean Dupont', prenon: 'Université Paris 1', niveau: 'L3', filiere: 'Informatique' },
+        { id: 2, matricule: 'MAT002', nom: 'Marie Martin',prenon: 'Université Lyon 2', niveau: 'M1', filiere: 'Droit' },
+        { id: 3, matricule: 'MAT003', nom: 'Pierre Durand', prenon: 'École Polytechnique', niveau: 'L2', filiere: 'Physique' },
+        { id: 4, matricule: 'MAT004', nom: 'Sophie Leroy',  prenon: 'HEC Paris', niveau: 'M2', filiere: 'Informatique' },
+        { id: 5, matricule: 'MAT005', nom: 'Lucas Bernard', prenon: 'Université Bordeaux', niveau: 'L1', filiere: 'Chimie' },
+        { id: 6, matricule: 'MAT006', nom: 'Camille Petit',  prenon: 'Sciences Po', niveau: 'M1', filiere: 'Droit' },
+        { id: 7, matricule: 'MAT007', nom: 'Antoine Moreau', prenon: 'Université de Lille', niveau: 'L3', filiere: 'Mathématiques' },
+        { id: 8, matricule: 'MAT008', nom: 'Juliette Girard', prenon: 'Université de Strasbourg', niveau: 'L2', filiere: 'Informatique' },
+        { id: 9, matricule: 'MAT009', nom: 'Thomas Roussel', prenon: 'Université de Nantes', niveau: 'M2', filiere: 'Physique' },
+        { id: 10, matricule: 'MAT010', nom: 'Manon Lefevre', prenon: 'Université de Rennes', niveau: 'L1', filiere: 'Droit' },
       ];
       setEtudiants(mockData);
     setLoading(false);
@@ -212,9 +207,9 @@ const AjoutMat = () => {
 
   const exportToCSV = () => {
     // Fonction simple d'export en CSV (simulation)
-    const csvHeader = "Matricule,Nom,Email,Etablissement,Niveau,Filiere\n";
+    const csvHeader = "Matricule,Nom,Prenon,Niveau,Filiere\n";
     const csvRows = filteredEtudiants.map(et =>
-      `${et.matricule},"${et.nom.replace(/"/g, '""')}","${et.email.replace(/"/g, '""')}","${(et.etablissement || '').replace(/"/g, '""')}",${et.niveau || ''},${et.filiere || ''}`
+      `${et.matricule},"${et.nom.replace(/"/g, '""')}","${(et.prenon || '').replace(/"/g, '""')}",${et.niveau || ''},${et.filiere || ''}`
     ).join("\n");
     const csvContent = csvHeader + csvRows;
     const blob = new Blob([`\uFEFF${csvContent}`], { type: 'text/csv;charset=utf-8;' }); // Added BOM for Excel
@@ -287,13 +282,8 @@ const AjoutMat = () => {
                 {errors.nom && <p className="mt-1 text-xs text-red-500">{errors.nom}</p>}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">Email*</label>
-                <input id="email" type="email" name="email" placeholder="exemple@email.com" value={form.email} onChange={handleChange} disabled={submitting} className={getInputClass(!!errors.email)} />
-                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
-              </div>
-              <div>
-                <label htmlFor="etablissement" className="block text-sm font-medium mb-1">Établissement</label>
-                <input id="etablissement" type="text" name="etablissement" placeholder="Nom de l'établissement" value={form.etablissement} onChange={handleChange} disabled={submitting} className={getInputClass()} />
+                <label htmlFor="prenon" className="block text-sm font-medium mb-1">Prenon</label>
+                <input id="prenon" type="text" name="prenon" placeholder="Prenom" value={form.prenon} onChange={handleChange} disabled={submitting} className={getInputClass()} />
               </div>
               <div>
                 <label htmlFor="niveau" className="block text-sm font-medium mb-1">Niveau*</label>
@@ -335,7 +325,7 @@ const AjoutMat = () => {
         {/* Filtres et barre de recherche */}
         <div className="flex flex-col sm:flex-row items-center justify-between  gap-4 mb-6" id="student-table-section">
           <div className="relative w-full sm:max-w-xs">
-            <input type="text" placeholder="Rechercher (matricule, nom, email)..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={`${getInputClass()} pl-10 bg-gradient-to-br from-black to-gray-900`} />
+            <input type="text" placeholder="Rechercher (matricule, nom)..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={`${getInputClass()} pl-10 bg-gradient-to-br from-black to-gray-900`} />
             <Search size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
           </div>
           <select value={filterNiveau} onChange={(e) => setFilterNiveau(e.target.value)} className={`${getInputClass()} text-sm sm:text-base bg-gradient-to-br from-black to-gray-900`}>
@@ -386,7 +376,7 @@ const AjoutMat = () => {
             <table className={`min-w-full divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
               <thead className={`${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} sticky top-0 z-10`}>
                 <tr>
-                  {['Matricule', 'Nom', 'Email', 'Établissement', 'Niveau', 'Filière'].map(header => (
+                  {['Matricule', 'Nom', 'Prenon', 'Niveau', 'Filière'].map(header => (
                     <th key={header} className="px-4 py-3 text-left font-medium uppercase tracking-wider">{header}</th>
                   ))}
                   <th className="px-4 py-3 text-center font-medium uppercase tracking-wider">Actions</th>
@@ -423,8 +413,7 @@ const AjoutMat = () => {
                     <tr key={etudiant.id} className={`transition-colors duration-150 ${isDarkMode ? 'hover:bg-gray-700/[0.5]' : 'hover:bg-gray-50'}`}>
                       <td className="px-4 py-3 whitespace-nowrap">{etudiant.matricule}</td>
                       <td className="px-4 py-3 whitespace-nowrap font-medium">{etudiant.nom}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.email}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.etablissement || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{etudiant.prenon || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{etudiant.niveau || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{etudiant.filiere || <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>N/A</span>}</td>
                       <td className="px-4 py-3 whitespace-nowrap">
