@@ -51,12 +51,26 @@ urlpatterns = [
     path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
     path('matricule/update/<int:id_mat>/', ModifieMatriculeView.as_view(), name='update_matricule'),
     path("matricule/import/", ImportMatriculeView.as_view(), name="import_matricule"),
+    path("matricule/liste/", ListeMatriculeView.as_view(), name="liste_matricule"),
     
+    path("etudiant/liste/", ListeEtudiantView.as_view(), name="liste_etudiant"),
+    path("etudiant/suspendre/<int:etudiant_id>", SuspendreEtudiantView.as_view(), name="supendre_etudiant"),
+    path("etudiant/reactiver/<int:etudiant_id>", ReactiverEtudiantView.as_view(), name="reactiver_etudiant"),
+
    
    # ========= Newletters
     path('newsletter/message_campagne/', NewsLetterMessageView.as_view(), name='newsletter_campaigns'),
     path('newsletter/message_campagne/<int:message_id>/send/', SendNewsletterView.as_view(), name='send_newsletter'),
+    path('newsletter/liste/abonne', ListeAdbonneNewsletter.as_view(), name='newsletter_abonnee_liste'),
+    path('newsletter/liste/message', ListeMessageNiewsLetter.as_view(), name='newsletter_message_liste'),
 
+
+    #============Sujet
+    path('sujet/ajout', AjoutSujetCorrigerView.as_view(), name='ajout_sujet'),
+    path('sujet/supprimer', SupprimerSujetCorrigerView.as_view(), name='supprimer_sujet'),
+    path('sujet/modifier', ModifierSujetCorrigerView.as_view(), name='modifier_sujet'),
+    path('sujet/liste',  ListeSujetView.as_view(), name='liste_sujet'),
+     
 
 
 

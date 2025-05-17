@@ -243,5 +243,3 @@ class newsletterMessage(models.Model):
 class Historique(models.Model):
     date_consultation = models.DateTimeField(auto_now=True)
     action = models.CharField(max_length=30)
-
-

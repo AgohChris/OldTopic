@@ -323,6 +323,16 @@ class NewsletterMessageSerializer(serializers.ModelSerializer):
 
 
 
+class NewsletterListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = newletter
+        fields = ['email']
+
+class NewletterMessageListeSerializer(serializers.ModelField):
+    class Meta:
+        model = newsletterMessage
+        fields = ['objet', 'contenue', 'creted_at', 'sent_at']
+
 
 class AjoutDeMatriculeSerializer(serializers.ModelSerializer):
     matricule = serializers.CharField(write_only=True)
@@ -347,4 +357,30 @@ class ModifierMatriculeSerializer(serializers.ModelSerializer):
         fields = ['id', 'matricule', 'nom', 'prenom', 'Niveau', 'Filiere']
 
 
+
+class ListeMatriculeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreEnregistrementMatricule
+        fields = ['matricule', 'nom', 'prenom', 'Niveau', 'FIliere']
+
+
+class ListeEtudiantSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    is_active = serializers.BooleanField(source='user.is_active', read_only=True)
+
+    class Meta:
+        model = Etudiant
+        fields = ['id', 'matricule', 'last_name', 'first_name', 'email', 'is_active']
+
+
+
+class AjoutSujetCorrigerSerilizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sujet
+        fields = ['titre', 'description', 'matiere', 'type', 'filiere', 
+                   'niveau', 'annee', 'auteur', 'Sujet_url', 'Corriger_url'
+                ]
 

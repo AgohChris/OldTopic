@@ -84,6 +84,7 @@ class EtudiantRegistrationView(APIView):
 
 
 # Etudiant Modifie son password
+
 class EtudiantModifieMdpview(APIView):
     def put(self, request):
         # user = request.user  # Identifiez l'utilisateur connecté directement
@@ -243,33 +244,6 @@ class NewsLetterMessageView(APIView):
         messages = newsletterMessage.objects.all()
         serializer = NewsletterMessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# Envoi de la newsletter  ==> Pour l'Étudiant
-class SendNewsletterView(APIView):
-    def post(self, request, message_id):
-        try:
-            message = newsletterMessage.objects.get(id=message_id)
-        except newsletterMessage.DoesNotExist:
-            return Response({"error":"message introuvable"}, status=status.HTTP_404_NOT_FOUND)
-        
-
-        Les_Abonnees = newletter.objects.all()
-
-        for abonnees in Les_Abonnees:
-            send_mail(
-                subject=message.objet,
-                message=message.contenue,
-                from_email="agohchris90@gmail.com",
-                recipient_list=[abonnees.email],
-                fail_silently=False,
-            )
-
-        message.sent_at = timezone.now()
-        message.save()
-
-        return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
-    
 
 
 
@@ -457,6 +431,7 @@ class ModifieMatriculeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Importation de Matricule par fichier Csv ou excel
 class ImportMatriculeView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
@@ -517,11 +492,64 @@ class ImportMatriculeView(APIView):
             except Exception as e:
                 errors.append(str(e))
         return created, errors
+
+
+# Liste des Matricule
+class ListeMatriculeView(APIView):
+    queryset = PreEnregistrementMatricule.objects.all()
+    serializers_class = ListeMatriculeSerializer
+
+
+# Envoi de la newsletter 
+class SendNewsletterView(APIView):
+    def post(self, request, message_id):
+        try:
+            message = newsletterMessage.objects.get(id=message_id)
+        except newsletterMessage.DoesNotExist:
+            return Response({"error":"message introuvable"}, status=status.HTTP_404_NOT_FOUND)
         
 
+        Les_Abonnees = newletter.objects.all()
 
+        for abonnees in Les_Abonnees:
+            send_mail(
+                subject=message.objet,
+                message=message.contenue,
+                from_email="agohchris90@gmail.com",
+                recipient_list=[abonnees.email],
+                fail_silently=False,
+            )
+
+        message.sent_at = timezone.now()
+        message.save()
+
+        return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
     
 
+# Liste des Abonnées a la newsletter
+class ListeAdbonneNewsletter(APIView):
+    queryset = newletter.objects.all()
+    serializer_class = NewsletterListSerializer
+
+
+# liste des messages de la newsletter
+class ListeMessageNiewsLetter(APIView):
+    queryset = newsletterMessage.objects.all()
+    serializer_class = NewletterMessageListeSerializer
+
+
+
+# Liste des Etudiants
+class ListeEtudiantView(APIView):
+   def get(self, request):
+        etudiants = Etudiant.objects.all()
+        serializer = ListeEtudiantSerializer(etudiants, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+# Admin demande une réinitialisation de son mot de passe
 class AdminMdpResetRequestView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -555,6 +583,7 @@ class AdminMdpResetRequestView(APIView):
        )
   
 
+# Admin réinitialise son mot de passe
 class AdminMdpResteConfirmView(APIView):
     def post(self, request, uidb64, token):
         try:
@@ -592,11 +621,75 @@ class AdminMdpResteConfirmView(APIView):
             fail_silently=False
         )
 
+# Suspendre un Etudiant
+class SuspendreEtudiantView(APIView):
+    def put(self, reuqest, etudiant_id):
+        try :
+            etudiant = Etudiant.objects.get(id=etudiant_id)
+            etudiant.user.is_active = False #on désactive l'étudiant
+            etudiant.user.save()
+            return Response({"message": f"L'étudiant {etudiant.user.first_name} {etudiant.user.last_name} à été suspendu."}, status=status.HTTP_200_OK)
+        except Etudiant.DoesNotExist:
+            return Response({"error": "Etudiant introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
 
+# Reactiver un Etudiant
+class ReactiverEtudiantView(APIView):
+    def put(self, reuqest, etudiant_id):
+        try :
+            etudiant = Etudiant.objects.get(id=etudiant_id)
+            etudiant.user.is_active = True #on réactive l'étudiant
+            etudiant.user.save()
+            return Response({"message": f"L'étudiant {etudiant.user.first_name} {etudiant.user.last_name} à été acrivé."}, status=status.HTTP_200_OK)
+        except Etudiant.DoesNotExist:
+            return Response({"error": "Etudiant introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
 
+# Ajout de Sujet et corriger
+class AjoutSujetCorrigerView(APIView):
+    def post(self, request):
+        serializer = AjoutSujetCorrigerSerilizer(data=request.data)
+        if serializer.is_valid():
+            sujet = serializer.save()
+            return Response({
+                "message": "Sujet ajouté",
+                "data": serializer.data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# Suppression de sujjet
+class SupprimerSujetCorrigerView(APIView):
+    def delete(self, request, sujet_id):
+        try:
+            sujet = Sujet.objects.get(id=sujet_id)
+            sujet.delete()
+            return Response({"message": "Sujet supprimer."}, status=status.HTTP_200_OK)
+        except Sujet.DoesNotExist:
+            return Response({"error": "Le sujet est introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
+# Modifiaction de sujet 
+class ModifierSujetCorrigerView(APIView):
+    def put(self, request, sujet_id):
+        try:
+            sujet = Sujet.objects.get(id=sujet_id)
+        except Sujet.DoesNotExist:
+            return Response({"error": "Le sujet introuvable."})
+        
+        serializer = AjoutSujetCorrigerSerilizer(sujet, data=request.data, partial=True)
 
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "le Sujet a été modifier.", 
+                             "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Liste de sujet
+class ListeSujetView(APIView):
+    def get(self, request):
+        sujets = Sujet.objects.all()
+        serializer = AjoutSujetCorrigerSerilizer(sujets, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 #=========================================== SuperAdmin ==================================
