@@ -2,6 +2,8 @@ import random as rd
 import string
 import os
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 def generation_mdp(longueur=12):
     caract = string.ascii_letters + string.digits
@@ -48,6 +50,19 @@ def photo_upload_path(instance, filename):
         instance.username,
         filename
     )
+
+
+
+def envoyer_email(subject, to_email, template_name, context):
+    html_content = render_to_string(template_name, context)
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body="",
+        from_email="agohchris90@gmail.com",
+        to=[to_email]
+    )
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
 
 

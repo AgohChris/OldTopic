@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newsletter OldTopic</title>
     <style>
         body {
@@ -107,43 +106,34 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Newsletter OldTopic - {mois_annee}</h1>
+            <h1>Newsletter OldTopic</h1>
         </div>
         <div class="content">
-            <p>Bonjour {nom},</p>
-            
+            <p>Bonjour {{ user.last_name }},</p>
             <p>Voici les dernières actualités et ressources de OldTopic ce mois-ci :</p>
-            
+            {% for article in articles %}
             <div class="article">
-                <h2>{titre_article_1}</h2>
+                <h2>{{ article.titre }}</h2>
                 <div class="article-image">
-                    [Image article 1]
+                    {% if article.image_url %}
+                        <img src="{{ article.image_url }}" alt="Image article" style="max-width:100%;max-height:200px;">
+                    {% else %}
+                        [Image non disponible]
+                    {% endif %}
                 </div>
-                <p>{description_article_1}</p>
-                <a href="{lien_article_1}" class="read-more">Lire la suite →</a>
+                <p>{{ article.description }}</p>
+                <a href="{{ article.lien }}" class="read-more">Lire la suite →</a>
             </div>
-            
-            <div class="article">
-                <h2>{titre_article_2}</h2>
-                <div class="article-image">
-                    [Image article 2]
-                </div>
-                <p>{description_article_2}</p>
-                <a href="{lien_article_2}" class="read-more">Lire la suite →</a>
-            </div>
-            
+            {% endfor %}
             <div class="article">
                 <h2>Événements à venir</h2>
-                <p><strong>{date_evenement_1}</strong> - {titre_evenement_1}<br>
-                <strong>{date_evenement_2}</strong> - {titre_evenement_2}</p>
-                <a href="{lien_calendrier}" class="button">Voir tous les événements</a>
+                {% for event in evenements %}
+                    <p><strong>{{ event.date }}</strong> - {{ event.titre }}</p>
+                {% endfor %}
+                <a href="{{ lien_calendrier }}" class="button">Voir tous les événements</a>
             </div>
-            
             <p>Nous espérons que ces ressources vous seront utiles. N'hésitez pas à partager cette newsletter avec vos collègues et amis.</p>
-            
-            <p>Cordialement,<br>
-            L'équipe OldTopic</p>
-            
+            <p>Cordialement,<br>L'équipe OldTopic</p>
             <div class="social-links">
                 <a href="#">Facebook</a>
                 <a href="#">Twitter</a>

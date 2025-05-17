@@ -51,6 +51,7 @@ urlpatterns = [
     path('matricule/ajout/', AjoutDeMatriculeView.as_view(), name='ajout_matricule'),
     path('matricule/update/<int:id_mat>/', ModifieMatriculeView.as_view(), name='update_matricule'),
     path("matricule/import/", ImportMatriculeView.as_view(), name="import_matricule"),
+    
    
    # ========= Newletters
     path('newsletter/message_campagne/', NewsLetterMessageView.as_view(), name='newsletter_campaigns'),
@@ -72,3 +73,4 @@ urlpatterns = [
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
