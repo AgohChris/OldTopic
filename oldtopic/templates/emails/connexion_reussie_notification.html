@@ -81,7 +81,7 @@
             <h1>Connexion réussie</h1>
         </div>
         <div class="content">
-            <p>Bonjour {nom},</p>
+            <p>Bonjour {{ nom }},</p>
             
             <div class="success-icon">✅</div>
             
@@ -89,10 +89,10 @@
             
             <div class="info-box">
                 <p><strong>Détails de connexion :</strong></p>
-                <p>📅 Date : {date_connexion}<br>
-                🕒 Heure : {heure_connexion}<br>
-                📱 Appareil : {appareil}<br>
-                📍 Localisation approximative : {localisation}</p>
+                <p>📅 Date : {{ date_connexion }}<br>
+                🕒 Heure : {{ heure_connexion }}<br>
+                📱 Appareil : {{ appareil }}<br>
+                📍 Localisation approximative : {{ localisation }}</p>
             </div>
             
             <p>Si vous n'êtes pas à l'origine de cette connexion, veuillez immédiatement :</p>

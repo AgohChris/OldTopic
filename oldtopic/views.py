@@ -12,14 +12,16 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.hashers import make_password
+from .utils import *
 
 import pandas as pd
 from PyPDF2 import PdfReader
-import tempfile
-import os
 from tabula import convert_into
 from rest_framework.parsers import MultiPartParser, FormParser
 from PyPDF2 import PdfReader
+from datetime import datetime
+from user_agents import parse
+import requests
 
 
 
@@ -33,6 +35,7 @@ def home(request):
 #================================================ Etudiant ===================================
 # login Etudiant
 class Etudiantlogin_view(APIView):
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -50,25 +53,54 @@ class Etudiantlogin_view(APIView):
             else:
                 return Response({"error": "Votre compte n'est pas autorisé a se connecter ici."}, status=status.HTTP_403_FORBIDDEN)
         else:
-            self.envoie_mail_de_prevention(user.email, user.last_name)
+            print(f"échec de l'authentification: {email}")
+            self.envoie_mail_de_prevention(email, "User inconnu")
             return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)    
     
-    def envoie_mail_de_signal(self, email, nom):
-        send_mail(
-            subject="de connexion à OldTopic",
-            message = f"Bonjour {nom}, Vous avez tenter de vous connecter a votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
+
+    def envoie_mail_de_signal(self, email, nom, request):
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        parsed_user_agent = parse(user_agent)
+        appareil = f"{parsed_user_agent.browser.family} sur {parsed_user_agent.os.family} ({parsed_user_agent.device.family})"
+
+        ip_adress = request.META.get('REMOT_ADDR', '127.0.0.1')
+        localisation = self.get_localisation(ip_adress)
+
+        context = {
+            'nom': nom,
+            'date_connexion': datetime.now().strftime('%d/%m/%Y'),
+            'heure_connexion': datetime.now().strftime('%H:%M:%S'),
+            'appareil': appareil,
+            'localisation': localisation,
+        }
+        envoyer_email(
+            subject="Tentative de connexion à OldTopic",
+            to_email=email,
+            template_name="emails/connexion_reussie_notification.html",
+            context= context
         )
 
+
+    def get_localisation(ip_address):
+        try:
+            response = requests.get(f"https://ipinfo.io/{ip_address}/json")
+            if response.status_code == 200:
+                data = response.json()
+                return data.get('city', 'Inconnu') + ", " + data.get('country', 'Inconnu')
+        except Exception as e:
+            print(f"Erreur lors de la récupération de la localisation : {e}")
+        return "Localisation inconnue"
+
+
     def envoie_mail_de_prevention(self, email, nom):
-        send_mail(
+        context = {
+            'nom': nom,
+        }
+        envoyer_email(
             subject="Tentative de connexion à OldTopic",
-            message = f"Attention {nom}, Quelqu'un tente de se connecter à votre compte OldTopic. Si vous n'y êtes pour rien veuillez Changer de Mot de passe dès maintenant",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
+            to_email=email,
+            template_name="emails/tentative_connexion_alerte.html",
+            context= context
         )
 
 

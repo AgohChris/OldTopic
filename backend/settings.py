@@ -52,6 +52,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'oldtopic.authentication_backends.EmailBackend',  # Backend personnalisé
+    'django.contrib.auth.backends.ModelBackend',      # Backend par défaut
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
