@@ -233,6 +233,17 @@ class  mdpResetRequestSerializer(serializers.Serializer):
             fail_silently=False,
         )
 
+        context = {
+            'nom': nom,
+            'code': code
+        }
+        envoyer_email(
+            subject="Modification du mot de passe de votre compte OldTopic",
+            to_email=email,
+            template_name="emails/.html",
+            context= context
+        )
+
 
 
 class verifCodeReinitialisationSerializer(serializers.Serializer):

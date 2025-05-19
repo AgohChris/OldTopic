@@ -118,6 +118,7 @@ class EtudiantRegistrationView(APIView):
 # Etudiant Modifie son password
 
 class EtudiantModifieMdpview(APIView):
+
     def put(self, request):
         # user = request.user  # Identifiez l'utilisateur connecté directement
         user_id = request.session.get('user_id')
@@ -153,14 +154,38 @@ class EtudiantModifieMdpview(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    def envoie_mail_de_signal(self, email, nom):
-        send_mail(
+    def get_localisation(ip_address):
+        try:
+            response = requests.get(f"https://ipinfo.io/{ip_address}/json")
+            if response.status_code == 200:
+                data = response.json()
+                return data.get('city', 'Inconnu') + ", " + data.get('country', 'Inconnu')
+        except Exception as e:
+            print(f"Erreur lors de la récupération de la localisation : {e}")
+        return "Localisation inconnue"
+
+
+    def envoie_mail_de_signal(self, email, nom, request):
+      
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        parsed_user_agent = parse(user_agent)
+        appareil = f"{parsed_user_agent.browser.family} sur {parsed_user_agent.os.family} ({parsed_user_agent.device.family})"
+
+        ip_adress = request.META.get('REMOT_ADDR', '127.0.0.1')
+        localisation = self.get_localisation(ip_adress)
+
+        context = {
+            'nom': nom,
+            'date_connexion': datetime.now().strftime('%d/%m/%Y'),
+            'heure_connexion': datetime.now().strftime('%H:%M:%S'),
+            'appareil': appareil,
+            'localisation': localisation,
+        }
+        envoyer_email(
             subject="Modification du mot de passe de votre compte OldTopic",
-            message=f"Bonjour {nom}, votre mot de passe a été modifié avec succès."
-                    f"\nSi vous n'êtes pas à l'origine de cette modification, veuillez le signaler dès maintenant.",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
+            to_email=email,
+            template_name="emails/connexion_reussie_notification.html",
+            context= context
         )
 
 
@@ -177,7 +202,7 @@ class VerifierCodeView(APIView):
             user.save()
             
             self.envoie_mail_succes(user.email, user.last_name)
-            return Response({"message": "Votre Compte à été activer avec succè"}, status=status.HTTP_200_OK)
+            return Response({"message": "Votre Compte à été activer avec succès"}, status=status.HTTP_200_OK)
         
         except User.DoesNotExist:
             return Response({"message": "Votre code est incorrect ou invalide"}, status=status.HTTP_400_BAD_REQUEST)

@@ -79,11 +79,11 @@
             <h1>Vérification de votre compte</h1>
         </div>
         <div class="content">
-            <p>Bonjour {nom},</p>
+            <p>Bonjour {{ nom }},</p>
             <p>Merci de vous être inscrit sur notre plateforme. Pour activer votre compte, veuillez saisir le code de vérification ci-dessous :</p>
             
             <div class="verification-code">
-                {verification_code}
+                {{ code }}
             </div>
             
             <p>Ce code est valable pendant 24 heures. Si vous n'avez pas demandé ce code, veuillez ignorer cet e-mail.</p>
