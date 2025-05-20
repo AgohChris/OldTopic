@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from .utils import *
+from django.utils import timezone
 # Create your models here.
 
 
@@ -225,7 +226,7 @@ class Sujet(models.Model):
 
 class newletter(models.Model):
     email = models.EmailField(unique=True)
-    date_inscription = models.DateTimeField(auto_now_add=True)
+    date_inscription = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     
     
