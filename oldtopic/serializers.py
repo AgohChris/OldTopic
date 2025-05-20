@@ -201,7 +201,7 @@ class AdminModifierMdpSerializer(serializers.Serializer):
         return data
 
 
-
+# Pour la réinitialisation du mot de passe de l'étudiant 
 class  mdpResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -222,25 +222,16 @@ class  mdpResetRequestSerializer(serializers.Serializer):
 
         self.envoie_du_code_de_reset_par_mail(user.email, reset_code, user.last_name)
 
-    
-    def envoie_du_code_de_reset_par_mail(self, email, code, nom):
-        send_mail(
-            subject="Votre Code de Réinitialisation",
-            message=f"Bonjour {nom}, \n\n Votre code de réinitialisation est {code}" 
-                    " \n\n Saisissez le pour réinitialiser votre mot de passe",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
-        )
 
+    def envoie_du_code_de_reset_par_mail(self, email, code, nom):
         context = {
             'nom': nom,
             'code': code
         }
         envoyer_email(
-            subject="Modification du mot de passe de votre compte OldTopic",
+            subject="Votre Code de Réinitialisation",
             to_email=email,
-            template_name="emails/.html",
+            template_name="emails/reinitialisation_mot_de_passe_etudiant.html",
             context= context
         )
 
@@ -282,12 +273,14 @@ class NouveauMotDePasseSerializer(serializers.Serializer):
 
     def envoie_mail_de_signal_succes(self, email, nom):
 
-        send_mail(
+        context = {
+            'nom': nom,
+        }
+        envoyer_email(
             subject="Mot de passse réinitaliser",
-            message=f"Bonjour {nom}, \n\n Votre mot de passe à été reinitialiser avec succès",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
+            to_email=email,
+            template_name="emails/confirmation_reinitialisation_mot_de_passe.html",
+            context= context
         )
 
 
@@ -316,12 +309,22 @@ class NewsLetterEmailSendSerializer(serializers.ModelSerializer):
 
     def send_confirmation_email(self, email):
 
-        send_mail(
+        # send_mail(
+        #     subject="Confirmation d'inscription à la newsletter",
+        #     message=f"Merci {email} de vous être inscrit à notre newsletter !",
+        #     from_email="agohchris90@gmail.com",
+        #     recipient_list=[email],
+        #     fail_silently=False,
+        # )
+
+        context = {
+            "email": email
+        }
+        envoyer_email(
             subject="Confirmation d'inscription à la newsletter",
-            message="Merci de vous être inscrit à notre newsletter !",
-            from_email="agohchris90@gmail.com",
-            recipient_list=[email],
-            fail_silently=False,
+            to_email=email,
+            template_name="emails/inscription_newsletter_confirmation.html",
+            context= context
         )
 
 

@@ -564,23 +564,36 @@ class SendNewsletterView(APIView):
             message = newsletterMessage.objects.get(id=message_id)
         except newsletterMessage.DoesNotExist:
             return Response({"error":"message introuvable"}, status=status.HTTP_404_NOT_FOUND)
-        
+    
+
 
         Les_Abonnees = newletter.objects.all()
+        self.envoyer_newsletter(message, Les_Abonnees)
 
-        for abonnees in Les_Abonnees:
-            send_mail(
-                subject=message.objet,
-                message=message.contenue,
-                from_email="agohchris90@gmail.com",
-                recipient_list=[abonnees.email],
-                fail_silently=False,
-            )
 
-        message.sent_at = timezone.now()
-        message.save()
+    def envoyer_newsletter(self, message, abonnés):
+            # Envoie la newsletter à tous les abonnés.
+            for abonné in abonnés:
+                # Envoi d'un email en texte brut
+                self.envoyer_email_texte(message, abonné.email)
 
-        return Response({"message": "Newsletter envoyer"}, status=status.HTTP_200_OK)
+                # Envoi d'un email avec un template HTML
+                self.envoyer_email_html(message, abonné.email)
+
+    def envoyer_email_html(self, message, email):
+        # Envoie un email avec un template HTML.
+        context = {
+            "objet": message.objet,
+            "contenue": message.contenue,
+            
+        }
+        envoyer_email(
+            subject=message.objet,
+            to_email=email,
+            template_name="emails/campagne_newsletter_template.html",  # Assurez-vous que ce fichier existe
+            context=context,
+        )
+
     
 
 # Liste des Abonnées a la newsletter

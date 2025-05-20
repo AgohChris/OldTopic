@@ -224,10 +224,13 @@ class Sujet(models.Model):
 
 
 class newletter(models.Model):
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
+    date_inscription = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    
     
     def __str__(self):
-        return self.email
+        return f"{self.email} inscrit le {self.date_inscription}"
 
 
 class newsletterMessage(models.Model):

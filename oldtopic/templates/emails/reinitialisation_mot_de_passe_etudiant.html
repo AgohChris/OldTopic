@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation de réinitialisation de mot de passe</title>
+    <title>Réinitialisation de mot de passe</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
             padding: 20px;
         }
         .header {
-            background-color: #2ECC71;
+            background-color: #3498DB;
             padding: 20px;
             text-align: center;
         }
@@ -34,31 +34,27 @@
             border: 1px solid #dddddd;
             border-top: none;
         }
-        .success-icon {
+        .reset-icon {
             text-align: center;
             margin: 20px 0;
             font-size: 48px;
         }
-        .security-tips {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        .security-tips h3 {
-            margin-top: 0;
-            color: #333;
-        }
         .button {
-            display: inline-block;
-            background-color: #2ECC71;
+            display: block;
+            background-color: #3498DB;
             color: white;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 4px;
+       
             font-weight: bold;
-            margin-top: 15px;
+            margin: 25px auto;
             text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+        .expiry-note {
+            font-size: 13px;
+            color: #777777;
+            text-align: center;
+            margin-top: 20px;
         }
         .footer {
             text-align: center;
@@ -82,32 +78,23 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Mot de passe réinitialisé</h1>
+            <h1>Réinitialisation de mot de passe</h1>
         </div>
         <div class="content">
             <p>Bonjour {{ nom }},</p>
             
-            <div class="success-icon">✅</div>
+            <div class="reset-icon">🔑</div>
             
-            <p>Nous vous confirmons que votre mot de passe a été réinitialisé avec succès.</p>
+            <p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte OldTopic. Pour procéder à la réinitialisation, veuillez saisir le code à 6 chiffre suivant :</p>
             
-            <p>Vous pouvez désormais vous connecter à votre compte OldTopic avec votre nouveau mot de passe.</p>
+            <span class="button">{{ code }}</span>
+
             
-            <div class="security-tips">
-                <h3>Conseils de sécurité :</h3>
-                <ul>
-                    <li>Ne partagez jamais votre mot de passe avec qui que ce soit</li>
-                    <li>Utilisez un mot de passe unique pour chaque site web</li>
-                    <li>Changez régulièrement votre mot de passe</li>
-                    <li>Activez l'authentification à deux facteurs lorsque c'est possible</li>
-                </ul>
-            </div>
+            <p class="expiry-note">Ce lien est valable pendant 24 heures et ne peut être utilisé qu'une seule fois.</p>
             
-            <!-- <div style="text-align: center;">
-                <a href="#" class="button">Se connecter</a>
-            </div> -->
+            <p>Si vous n'avez pas demandé à réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail. Votre compte reste sécurisé.</p>
             
-            <p>Si vous n'avez pas demandé cette réinitialisation, veuillez contacter immédiatement votre administration.</p>
+            <p>Pour toute question, n'hésitez pas à contacter l'administration.</p>
             
             <p>Cordialement,<br>
             L'équipe OldTopic</p>

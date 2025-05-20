@@ -53,8 +53,11 @@ urlpatterns = [
     path("matricule/import/", ImportMatriculeView.as_view(), name="import_matricule"),
     path("matricule/liste/", ListeMatriculeView.as_view(), name="liste_matricule"),
     
+    # liste des Etudiants présents sur la platforme
     path("etudiant/liste/", ListeEtudiantView.as_view(), name="liste_etudiant"),
+    # Suspension Etudaint
     path("etudiant/suspendre/<int:etudiant_id>", SuspendreEtudiantView.as_view(), name="supendre_etudiant"),
+    # Réactivation étudiant
     path("etudiant/reactiver/<int:etudiant_id>", ReactiverEtudiantView.as_view(), name="reactiver_etudiant"),
 
    

@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Newsletter OldTopic</title>
+    <title>{{ objet }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,46 +33,6 @@
             border: 1px solid #dddddd;
             border-top: none;
         }
-        .article {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eeeeee;
-            padding-bottom: 20px;
-        }
-        .article:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .article h2 {
-            color: #9B59B6;
-            margin-top: 0;
-        }
-        .article-image {
-            width: 100%;
-            height: 200px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .read-more {
-            display: inline-block;
-            color: #9B59B6;
-            font-weight: bold;
-            text-decoration: none;
-        }
-        .button {
-            display: inline-block;
-            background-color: #9B59B6;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -80,17 +40,6 @@
             border-top: 1px solid #dddddd;
             font-size: 12px;
             color: #888888;
-        }
-        .social-links {
-            text-align: center;
-            margin: 15px 0;
-        }
-        .social-links a {
-            display: inline-block;
-            margin: 0 10px;
-            text-decoration: none;
-            color: #9B59B6;
-            font-weight: bold;
         }
         @media only screen and (max-width: 600px) {
             .container {
@@ -105,45 +54,18 @@
 </head>
 <body>
     <div class="container">
+        <!-- En-tête de la newsletter -->
         <div class="header">
-            <h1>Newsletter OldTopic</h1>
+            <h1>{{ objet }}</h1>
         </div>
+
+        <!-- Contenu principal -->
         <div class="content">
-            <p>Bonjour {{ user.last_name }},</p>
-            <p>Voici les dernières actualités et ressources de OldTopic ce mois-ci :</p>
-            {% for article in articles %}
-            <div class="article">
-                <h2>{{ article.titre }}</h2>
-                <div class="article-image">
-                    {% if article.image_url %}
-                        <img src="{{ article.image_url }}" alt="Image article" style="max-width:100%;max-height:200px;">
-                    {% else %}
-                        [Image non disponible]
-                    {% endif %}
-                </div>
-                <p>{{ article.description }}</p>
-                <a href="{{ article.lien }}" class="read-more">Lire la suite →</a>
-            </div>
-            {% endfor %}
-            <div class="article">
-                <h2>Événements à venir</h2>
-                {% for event in evenements %}
-                    <p><strong>{{ event.date }}</strong> - {{ event.titre }}</p>
-                {% endfor %}
-                <a href="{{ lien_calendrier }}" class="button">Voir tous les événements</a>
-            </div>
-            <p>Nous espérons que ces ressources vous seront utiles. N'hésitez pas à partager cette newsletter avec vos collègues et amis.</p>
-            <p>Cordialement,<br>L'équipe OldTopic</p>
-            <div class="social-links">
-                <a href="#">Facebook</a>
-                <a href="#">Twitter</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">Instagram</a>
-            </div>
+            <p>{{ contenue }}</p>
         </div>
+
+        <!-- Pied de page -->
         <div class="footer">
-            <p>Vous recevez cet e-mail car vous vous êtes inscrit à notre newsletter.</p>
-            <p>Pour vous désabonner, <a href="#" style="color: #888888; text-decoration: underline;">cliquez ici</a>.</p>
             <p>© 2025 OldTopic. Tous droits réservés.</p>
         </div>
     </div>
